@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DailyRunning</string>
+
+    // Activity, Fragment name
+    <string name="post">Post</string>
+    <string name="record">Record</string>
+    <string name="find">Find</string>
+    <string name="user">User</string>
 </resources>
