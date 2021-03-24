@@ -6,8 +6,13 @@ import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.ActionProvider;
+import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.SubMenu;
+import android.view.View;
 
 import com.example.dailyrunning.Find.FindFragment;
 import com.example.dailyrunning.R;
@@ -36,6 +41,9 @@ public class PostActivity extends AppCompatActivity {
 
         // Enable BottomNavigationViewEx
         setupBottomNavView();
+
+
+
     }
 
     private void initWidgets() {
