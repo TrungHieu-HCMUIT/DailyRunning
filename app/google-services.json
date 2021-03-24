@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "405342416872",
+    "project_id": "dailyrunning-6e8e9",
+    "storage_bucket": "dailyrunning-6e8e9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405342416872:android:d12c1047e265823edd7e5d",
+        "android_client_info": {
+          "package_name": "com.example.dailyrunning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "405342416872-0ho16p7nb69ucg9fllvc32os6fsutt9d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCupRfz9LRwAloO6UnmomG8g362UDeEnKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "405342416872-0ho16p7nb69ucg9fllvc32os6fsutt9d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
