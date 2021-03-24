@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "405342416872",
+    "firebase_url": "https://dailyrunning-6e8e9-default-rtdb.firebaseio.com",
     "project_id": "dailyrunning-6e8e9",
     "storage_bucket": "dailyrunning-6e8e9.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "405342416872-4m4hmaviuc4heus6c9ne82brvr11qlb7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.dailyrunning",
+            "certificate_hash": "3f54202d9a29b9057a2b84905014a8807f9eef61"
+          }
+        },
         {
           "client_id": "405342416872-0ho16p7nb69ucg9fllvc32os6fsutt9d.apps.googleusercontent.com",
           "client_type": 3
