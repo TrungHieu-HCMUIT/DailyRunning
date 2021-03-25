@@ -44,14 +44,18 @@ dependencies {
     // Import BottomNavigationViewEx library
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
 
-    //firebase
+    //facebook auth
+    implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+
+    //region firebase
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
     implementation 'com.google.firebase:firebase-analytics'
     //firebase ui
     implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
     //firebase auth
     implementation 'com.google.firebase:firebase-auth:20.0.3'
-
+    //endregion
+    //region Viewmodel dependencies
     //viewmodel
     def lifecycle_version = "2.3.0"
     def arch_version = "2.1.0"
@@ -82,4 +86,5 @@ dependencies {
 
     // optional - Test helpers for LiveData
     testImplementation "androidx.arch.core:core-testing:$arch_version"
+    //endregion
 }

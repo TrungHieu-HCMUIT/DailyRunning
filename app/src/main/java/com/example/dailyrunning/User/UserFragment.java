@@ -37,4 +37,9 @@ public class UserFragment extends Fragment {
 
         return userView;
     }
+
+    private void signOut(){
+
+    }
+
 }

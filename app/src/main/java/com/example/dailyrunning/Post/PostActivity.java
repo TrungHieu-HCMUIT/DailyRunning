@@ -45,6 +45,7 @@ public class PostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
 
+        //region firebase
         //init firebase auth
         //init userViewModel
         mUserViewModel=new ViewModelProvider(this).get(UserViewModel.class);
@@ -69,7 +70,7 @@ public class PostActivity extends AppCompatActivity {
             }
         };
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-        //end firebase auth
+        //endregion
 
 
         // Binding views by its id
@@ -84,6 +85,9 @@ public class PostActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -102,6 +106,7 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+    //region Bottom widget and Fragment
     private void initWidgets() {
         bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottom_nav_view_ex);
     }
@@ -154,4 +159,5 @@ public class PostActivity extends AppCompatActivity {
         }
         return false;
     }
+    //endregion
 }

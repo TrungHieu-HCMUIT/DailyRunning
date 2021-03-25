@@ -7,6 +7,12 @@ public class UserInfo {
     private String email;
     private int point;
     private int gender;
+    private String userID;
+
+    private Date dob;
+    private double height;
+    private double weight;
+    private String avatarURI;
 
     public UserInfo(String displayName, String email, int point, int gender,
                     Date dob, double height, double weight, String avatarURI) {
@@ -19,11 +25,6 @@ public class UserInfo {
         this.weight = weight;
         this.avatarURI = avatarURI;
     }
-
-    private Date dob;
-    private double height;
-    private double weight;
-    private String avatarURI;
 
     public String getDisplayName() {
         return displayName;

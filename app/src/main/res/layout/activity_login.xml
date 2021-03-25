@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <android.widget.Button
+            android:id="@+id/loginGmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/google_custom_button_backgound"
+            android:drawableStart="@drawable/google_icon_drawable"
+            android:minWidth="250dp"
+            android:onClick="LoginGmail_Click"
+            android:paddingStart="30dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="8dp"
+            android:text="@string/google"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/loginFacebookReal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+        <android.widget.Button
+            android:id="@+id/loginFacebook"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@drawable/facebook_custom_button_background"
+            android:drawableStart="@drawable/facebook_icon_drawable"
+            android:minWidth="250dp"
+            android:onClick="LoginFacebook_Click"
+            android:paddingStart="30dp"
+            android:layout_gravity="center"
+            android:paddingTop="8dp"
+            android:paddingEnd="30dp"
+            android:paddingBottom="8dp"
+            android:text="@string/facebook"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+    </FrameLayout>
+</LinearLayout>

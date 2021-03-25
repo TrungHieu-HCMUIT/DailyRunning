@@ -12,4 +12,5 @@
         android:text="User fragment"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large" />
 
+
 </RelativeLayout>
