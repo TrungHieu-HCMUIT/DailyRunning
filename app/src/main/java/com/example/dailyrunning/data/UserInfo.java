@@ -1,29 +1,41 @@
 package com.example.dailyrunning.data;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class UserInfo {
+public class UserInfo implements Serializable {
     private String displayName;
     private String email;
     private int point;
     private int gender;
     private String userID;
-
+    private String password;
     private Date dob;
     private double height;
     private double weight;
     private String avatarURI;
 
-    public UserInfo(String displayName, String email, int point, int gender,
-                    Date dob, double height, double weight, String avatarURI) {
+    public UserInfo(String displayName, String email, int point,
+                    int gender, String userID, String password, Date dob, double height,
+                    double weight, String avatarURI) {
         this.displayName = displayName;
         this.email = email;
         this.point = point;
         this.gender = gender;
+        this.userID = userID;
+        this.password = password;
         this.dob = dob;
         this.height = height;
         this.weight = weight;
         this.avatarURI = avatarURI;
+    }
+
+    public UserInfo(String displayName, String email, int gender, String userID, String password) {
+        this.displayName = displayName;
+        this.email = email;
+        this.gender = gender;
+        this.userID = userID;
+        this.password = password;
     }
 
     public String getDisplayName() {
@@ -88,5 +100,13 @@ public class UserInfo {
 
     public void setAvatarURI(String avatarURI) {
         this.avatarURI = avatarURI;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

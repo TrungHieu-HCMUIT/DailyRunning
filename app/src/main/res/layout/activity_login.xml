@@ -5,6 +5,41 @@
     android:orientation="vertical">
 
 
+    <EditText
+        android:id="@+id/email_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/email"
+        />
+    <EditText
+        android:id="@+id/password_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/password"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="login"
+            />
+        <Button
+            android:id="@+id/register_button"
+            android:layout_toRightOf="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:text="Register"/>
+
+    </RelativeLayout>
+
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
