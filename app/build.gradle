@@ -46,6 +46,8 @@ dependencies {
 
     //facebook auth
     implementation 'com.facebook.android:facebook-android-sdk:5.15.3'
+    //google auth
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
     //region firebase
     implementation platform('com.google.firebase:firebase-bom:26.7.0')
@@ -54,6 +56,9 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
     //firebase auth
     implementation 'com.google.firebase:firebase-auth:20.0.3'
+    //firebase database
+    implementation 'com.google.firebase:firebase-database:19.7.0'
+
     //endregion
     //region Viewmodel dependencies
     //viewmodel

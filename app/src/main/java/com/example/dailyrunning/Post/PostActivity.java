@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -20,15 +21,29 @@ import com.example.dailyrunning.Record.RecordActivity;
 import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.data.UserInfo;
 import com.example.dailyrunning.helper.UserViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+
+import java.io.Console;
 
 public class PostActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
     private UserInfo mCurrentUser;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mUserInfoRef;
+    private DatabaseReference mCurrentUserRef;
+
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     //Viewmodel to exchange data between fragment or activity
@@ -47,9 +62,10 @@ public class PostActivity extends AppCompatActivity {
         mFirebaseAuth=FirebaseAuth.getInstance();
         setUpAuthStateListener();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-
-
-
+        //init firebase database
+        mFirebaseDatabase=FirebaseDatabase.getInstance();
+        mUserInfoRef=mFirebaseDatabase.getReference().child("UserInfo");
+        setUpDatabase();
 
 
         // Binding views by its id
@@ -98,7 +114,6 @@ public class PostActivity extends AppCompatActivity {
             {
                 mCurrentUser=(UserInfo) data.getExtras().getSerializable("newUser");
 
-
                 Toast.makeText(this, "Welcome "+mCurrentUser.getEmail(), Toast.LENGTH_SHORT).show();
             }
             else if(resultCode==RESULT_CANCELED)
@@ -107,6 +122,7 @@ public class PostActivity extends AppCompatActivity {
                 finish();
             }
         }
+
     }
     private void setUpAuthStateListener()
     {
@@ -126,6 +142,18 @@ public class PostActivity extends AppCompatActivity {
         else
         {
             FirebaseUser firebaseUser=mFirebaseAuth.getCurrentUser();
+            mCurrentUserRef=mFirebaseDatabase.getReference().child("UserInfo").child(firebaseUser.getUid());
+
+            mCurrentUserRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    DataSnapshot taskRes=task.getResult();
+                    mCurrentUser=taskRes.getValue(UserInfo.class);
+                    if(mCurrentUser==null)
+                        return;
+                    Log.v("UserGreet","Email: "+mCurrentUser.getEmail()+"\nID= "+mCurrentUser.getUserID());
+                }
+            });
             if(firebaseUser!=null &&!firebaseUser.isEmailVerified())
             {
                 showEmailVerificationDialog();
@@ -136,9 +164,27 @@ public class PostActivity extends AppCompatActivity {
 
     }
 
+
+
     //endregion
 
+    //region firebase database
+    private void setUpDatabase()
+    {
+        mUserInfoRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //updateUI
 
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+    //endregion
 
 
 

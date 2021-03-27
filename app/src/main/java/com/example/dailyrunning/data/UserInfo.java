@@ -15,6 +15,8 @@ public class UserInfo implements Serializable {
     private double weight;
     private String avatarURI;
 
+    public UserInfo()
+    {}
     public UserInfo(String displayName, String email, int point,
                     int gender, String userID, String password, Date dob, double height,
                     double weight, String avatarURI) {
@@ -108,5 +110,13 @@ public class UserInfo implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }
