@@ -147,6 +147,8 @@ public class PostActivity extends AppCompatActivity {
             mCurrentUserRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if(!task.isSuccessful())
+                        return;
                     DataSnapshot taskRes=task.getResult();
                     mCurrentUser=taskRes.getValue(UserInfo.class);
                     if(mCurrentUser==null)

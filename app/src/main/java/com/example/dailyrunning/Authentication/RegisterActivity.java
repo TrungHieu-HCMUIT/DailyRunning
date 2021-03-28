@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +28,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private EditText mEmailEditText;
     private static final int RC_REGISTER = 2 ;
-
+    private static final String TAG=RegisterActivity.class.getName();
     private EditText mPasswordEditText;
     private Button mRegisterButton;
     private View.OnClickListener mButtonOnClickListener;
@@ -51,8 +53,13 @@ public class RegisterActivity extends AppCompatActivity {
         mButtonOnClickListener=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String emailString=mEmailEditText.getText().toString();
-                String passwordString=mPasswordEditText.getText().toString();
+                String emailString=mEmailEditText.getText().toString().trim();
+                String passwordString=mPasswordEditText.getText().toString().trim();
+                if(TextUtils.isEmpty(emailString)||TextUtils.isEmpty(passwordString))
+                {
+                    Toast.makeText(mContext, "Please enter email and password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 mFirebaseAuth.createUserWithEmailAndPassword(emailString,passwordString)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -68,6 +75,10 @@ public class RegisterActivity extends AppCompatActivity {
                             data.putExtra("newUser",newUser);
                             setResult(RESULT_OK,data);
                             finish();
+                        }
+                        else
+                        {
+                            Log.v(TAG,"Error: "+task.getException());
                         }
                     }
                 });
