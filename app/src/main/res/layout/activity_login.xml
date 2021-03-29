@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:text="DailyRunning"
         android:textColor="@color/black"
-        android:fontFamily="@font/fontSpring_blueVinyl"
+        android:fontFamily="@font/font_spring_blue_vinyl"
         android:layout_gravity="center"
         android:textSize="42sp"
         />
