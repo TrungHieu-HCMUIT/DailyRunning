@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitStart"
+        android:adjustViewBounds="true"
+        android:src="@drawable/login_banner"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DailyRunning"
+        android:textColor="@color/black"
+        android:fontFamily="@font/fontSpring_blueVinyl"
+        android:layout_gravity="center"
+        android:textSize="42sp"
+        />
     <EditText
         android:id="@+id/email_editText"
         android:layout_width="match_parent"

@@ -19,8 +19,8 @@ import com.example.dailyrunning.Find.FindFragment;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Record.RecordActivity;
 import com.example.dailyrunning.User.UserFragment;
-import com.example.dailyrunning.data.UserInfo;
-import com.example.dailyrunning.helper.UserViewModel;
+import com.example.dailyrunning.Model.UserInfo;
+import com.example.dailyrunning.Utils.UserViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -33,8 +33,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-
-import java.io.Console;
 
 public class PostActivity extends AppCompatActivity {
 

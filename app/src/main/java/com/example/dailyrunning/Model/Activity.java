@@ -1,4 +1,4 @@
-package com.example.dailyrunning.data;
+package com.example.dailyrunning.Model;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package com.example.dailyrunning.data;
+package com.example.dailyrunning.Model;
 
 public class Follow {
     private String followerID;
