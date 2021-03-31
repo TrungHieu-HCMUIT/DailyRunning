@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -65,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmailEditText;
     private EditText mPasswordEditText;
     private Button loginButton;
-    private Button registerButton;
+    private TextView registerButton;
     private Button loginWithGoogleButton;
     private Button loginWithFacebookButton;
     private com.facebook.login.widget.LoginButton realLoginWithFacebookButton;
@@ -86,6 +87,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 
+
         //region init firebase database
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mUserInfoRef=mFirebaseDatabase.getReference().child("UserInfo");
@@ -100,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         //region firebase
         mFirebaseAuth= FirebaseAuth.getInstance();
         loginButton=(Button) findViewById(R.id.login_button);
-        registerButton=(Button) findViewById(R.id.register_button);
+        registerButton=(TextView) findViewById(R.id.registerClickable_textView);
         registerButton.setOnClickListener(mRegisterOnClickListener);
         loginButton.setOnClickListener(mLoginOnClickListener);
         loginWithGoogleButton=(Button) findViewById(R.id.loginGmail);

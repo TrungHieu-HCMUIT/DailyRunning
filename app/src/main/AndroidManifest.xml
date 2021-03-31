@@ -20,7 +20,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Record.RecordActivity"></activity>
-        <activity android:name=".Authentication.LoginActivity"></activity>
+        <activity android:name=".Authentication.LoginActivity"
+
+            >
+            </activity>
         <activity android:name=".Authentication.RegisterActivity"></activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
