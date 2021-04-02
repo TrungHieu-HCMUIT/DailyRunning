@@ -1,4 +1,4 @@
-package com.example.dailyrunning.Post;
+package com.example.dailyrunning.Home.Find;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment;
 
 import com.example.dailyrunning.R;
 
-public class PostFragment extends Fragment {
+public class FindFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_post, null);
+        return inflater.inflate(R.layout.fragment_find, null);
     }
 }

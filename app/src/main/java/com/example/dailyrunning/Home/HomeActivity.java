@@ -1,4 +1,4 @@
-package com.example.dailyrunning.Post;
+package com.example.dailyrunning.Home;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.dailyrunning.Authentication.LoginActivity;
-import com.example.dailyrunning.Find.FindFragment;
+import com.example.dailyrunning.Home.Find.FindFragment;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Record.RecordActivity;
 import com.example.dailyrunning.User.UserFragment;
@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
-public class PostActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
     private UserInfo mCurrentUser;
@@ -44,17 +43,18 @@ public class PostActivity extends AppCompatActivity {
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+
     //Viewmodel to exchange data between fragment or activity
     private UserViewModel mUserViewModel;
-    private Context mContext = PostActivity.this;
+    private Context mContext = HomeActivity.this;
 
-    private static final String TAG = PostActivity.class.getSimpleName();
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
     private BottomNavigationViewEx bottomNavigationViewEx;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
+        setContentView(R.layout.activity_home);
 
         //init firebaseAuth
         mFirebaseAuth=FirebaseAuth.getInstance();
@@ -70,12 +70,10 @@ public class PostActivity extends AppCompatActivity {
         initWidgets();
 
         // Loading the default fragment (Post Fragment)
-        loadFragment(new PostFragment());
+        loadFragment(new HomeFragment());
 
         // Enable BottomNavigationViewEx
         setupBottomNavView();
-
-
 
     }
 
@@ -190,15 +188,19 @@ public class PostActivity extends AppCompatActivity {
 
     //region Bottom widget and Fragment
     private void initWidgets() {
-        bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottom_nav_view_ex);
+        bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewEx);
     }
 
     private void setupBottomNavView() {
-        // Set Bottom Navigation View  styles, animations
+        // Set Bottom Navigation View styles
+        bottomNavigationViewEx.setBackground(null);
+        bottomNavigationViewEx.getMenu().getItem(1).setEnabled(false);
+
+        // Set Bottom Navigation View animations
         bottomNavigationViewEx.enableAnimation(false);
         bottomNavigationViewEx.enableShiftingMode(false);
         bottomNavigationViewEx.enableItemShiftingMode(false);
-        bottomNavigationViewEx.setTextVisibility(true);
+        bottomNavigationViewEx.setTextVisibility(false);
 
         // Register OnNavigationItemSelectedListener to bottomNavigationViewEx
         bottomNavigationViewEx.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -207,17 +209,8 @@ public class PostActivity extends AppCompatActivity {
                 Fragment fragment = null;
 
                 switch (item.getItemId()) {
-                    case R.id.ic_post:
-                        fragment = new PostFragment();
-                        break;
-
-                    case R.id.ic_record:
-                        Intent record_activity_intent = new Intent(mContext, RecordActivity.class);
-                        mContext.startActivity(record_activity_intent);
-                        break;
-
-                    case R.id.ic_find:
-                        fragment = new FindFragment();
+                    case R.id.ic_home:
+                        fragment = new HomeFragment();
                         break;
 
                     case R.id.ic_user:

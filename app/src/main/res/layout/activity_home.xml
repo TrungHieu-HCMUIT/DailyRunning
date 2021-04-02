@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Post.PostActivity">
-
+    tools:context=".Home.HomeActivity">
 
 
     <RelativeLayout
@@ -13,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        // Bottom Navigation View ex
+        // BottomAppBar and BottomNavigationViewEx
 
         <include layout="@layout/layout_bottom_navigation_view" />
 

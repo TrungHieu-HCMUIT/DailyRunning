@@ -1,6 +1,7 @@
 package com.example.dailyrunning.User;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,17 +28,15 @@ public class UserFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View userView= inflater.inflate(R.layout.fragment_user, container,false);
+        View view = inflater.inflate(R.layout.fragment_user, null);
 
-
-        mFirebaseAuth=FirebaseAuth.getInstance();
-        TextView userTextView=(TextView) userView.findViewById(R.id.user_textView);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        TextView userTextView=(TextView) view.findViewById(R.id.user_textView);
 
         userTextView.setOnClickListener(v -> {
             mFirebaseAuth.signOut();
-
         });
-        mMedalRecycleView=userView.findViewById(R.id.medal_recycleView);
+        mMedalRecycleView = view.findViewById(R.id.medal_recycleView);
         mMedalRecycleView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL,false));
 
         List<Integer> medalIDs=new ArrayList<>();
@@ -60,9 +59,6 @@ public class UserFragment extends Fragment {
         MedalAdapter adapter=new MedalAdapter(medalIDs);
         mMedalRecycleView.setAdapter(adapter);
 
-        return userView;
+        return view;
     }
-
-
-
 }

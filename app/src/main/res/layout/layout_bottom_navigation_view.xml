@@ -4,19 +4,47 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/bottom_nav_view_ex"
-            android:background="@drawable/white_grey_top_border"
-            app:itemIconTint="@drawable/bottom_nav_view_item_color"
-            app:itemTextColor="@drawable/bottom_nav_view_item_color"
-            app:menu="@menu/bottom_navigation_menu">
+            android:layout_height="match_parent">
 
-        </com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx>
+            <com.google.android.material.bottomappbar.BottomAppBar
+                android:id="@+id/bottomAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                app:contentInsetEnd="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetStart="0dp"
+                app:fabCradleMargin="10dp"
+                app:fabCradleRoundedCornerRadius="10dp"
+                app:fabCradleVerticalOffset="10dp">
+
+                <com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx
+                    android:id="@+id/bottomNavViewEx"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    app:itemIconTint="@color/bottom_nav_item_selector"
+                    app:menu="@menu/bottom_navigation_menu" />
+
+            </com.google.android.material.bottomappbar.BottomAppBar>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/teal_700"
+                android:src="@drawable/ic_add"
+                app:fabCustomSize="65dp"
+                app:layout_anchor="@id/bottomAppBar" />
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
     </RelativeLayout>
 
 </merge>
+
