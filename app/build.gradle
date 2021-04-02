@@ -95,4 +95,15 @@ dependencies {
     // optional - Test helpers for LiveData
     testImplementation "androidx.arch.core:core-testing:$arch_version"
     //endregion
+
+    //region avatar view
+    implementation 'agency.tango.android:avatar-view:0.0.2'
+
+    //if you want to use Picasso for loading images
+    implementation 'agency.tango.android:avatar-view-picasso:0.0.2'
+
+    //if you want to use Glide for loading images
+    implementation 'agency.tango.android:avatar-view-glide:0.0.2'
+    //endregion
+
 }

@@ -1,8 +1,13 @@
-package com.example.dailyrunning.Authentication;
+    package com.example.dailyrunning.Authentication;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +44,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /*
 * Q7UH R5LF EJ6M NRXE YMG4 Y3Y3 ILF6 QDAN
@@ -78,6 +86,8 @@ public class LoginActivity extends AppCompatActivity {
     //facebook callback manager
     private CallbackManager mCallbackManager;
 
+    //timeout var
+    private AtomicBoolean loginTimeOut;
     private static final String EMAIL = "email";
 
 
@@ -86,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        loginTimeOut=new AtomicBoolean(false);
 
 
         //region init firebase database
@@ -192,15 +203,19 @@ public class LoginActivity extends AppCompatActivity {
         mGoogleSignInClient.revokeAccess();
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
+
     }
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        checkTimeOut();
+
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
+                            loginTimeOut.set(true);
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                             Intent data=new Intent();
@@ -211,6 +226,7 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                             //updateUI(user);
                         } else {
+                            loginTimeOut.set(false);
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             //updateUI(null);
@@ -223,14 +239,16 @@ public class LoginActivity extends AppCompatActivity {
     //region facebook auth
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
-
+        checkTimeOut();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                         if (task.isSuccessful()) {
+                             loginTimeOut.set(true);
+
+                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             Intent data=new Intent();
@@ -241,7 +259,9 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
                             //updateUI(user);
                         } else {
-                            // If sign in fails, display a message to the user.
+                             loginTimeOut.set(false);
+
+                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this , "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
@@ -280,6 +300,49 @@ public class LoginActivity extends AppCompatActivity {
     }
     //endregion
 
+    //region isNetworkAvailable
+    private void checkTimeOut() {
+        if (isNetworkAvailable()) {
+
+
+            Timer timer = new Timer();
+            Handler handler=new Handler();
+            Runnable timerTask = new Runnable() {
+                @Override
+                public void run() {
+                    timer.cancel();
+                    if (loginTimeOut.get() == false) { //  Timeout
+
+                        // Your timeout code goes here
+                        Log.i(TAG,"Connection timed out");
+                        new AlertDialog.Builder(mContext).setMessage("Connection timed out").create().show();
+
+                    }
+                }
+            };
+            // Setting timeout of 10 sec to the request
+            handler.postDelayed(timerTask, 10000);
+        } else {
+            // Internet not available
+            Log.i(TAG,"No internet available");
+        }
+    }
+
+    private boolean isNetworkAvailable() {
+        // Get a reference to the ConnectivityManager to check state of network connectivity
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // Get details on the currently active default data network
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        // If there is a network connection, fetch data
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        return false;
+    }
+
+    //endregion
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //FB login

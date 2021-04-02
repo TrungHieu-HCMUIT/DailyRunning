@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView
+    android:id="@+id/medal_item_imageView"
+    android:layout_marginRight="20dp"
+    android:layout_height="48dp"
+    android:layout_width="48dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/medal_item_background"
+    tools:src="@drawable/medal_1"
+    android:scaleType="fitCenter"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

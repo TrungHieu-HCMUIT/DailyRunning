@@ -9,18 +9,25 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Utils.MedalAdapter;
 import com.example.dailyrunning.Utils.UserViewModel;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserFragment extends Fragment {
     private UserViewModel mUserViewModel;
     private FirebaseAuth mFirebaseAuth;
+    private RecyclerView mMedalRecycleView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View userView= inflater.inflate(R.layout.fragment_user, null);
+        View userView= inflater.inflate(R.layout.fragment_user, container,false);
 
 
         mFirebaseAuth=FirebaseAuth.getInstance();
@@ -30,20 +37,28 @@ public class UserFragment extends Fragment {
             mFirebaseAuth.signOut();
 
         });
-      /*  //TODO: add auth here
-        //init userviewmodel
-        mUserViewModel=new ViewModelProvider(requireActivity()).get(UserViewModel.class);
-        //getFirebase auth
-        mUserViewModel.getFirebaseAuth().observe(getViewLifecycleOwner(),firebaseAuth -> {
-            mFirebaseAuth=firebaseAuth;
-        });
+        mMedalRecycleView=userView.findViewById(R.id.medal_recycleView);
+        mMedalRecycleView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL,false));
 
-        UserInfo currentUser=null;
-        mUserViewModel.getSelected().observe(getViewLifecycleOwner(),userInfo -> {
-            userTextView.setText(userInfo.getDisplayName());
-        });*/
+        List<Integer> medalIDs=new ArrayList<>();
+        medalIDs.add(R.drawable.medal_1);
+        medalIDs.add(R.drawable.medal_2);
+        medalIDs.add(R.drawable.medal_3);
+        medalIDs.add(R.drawable.medal_4);
+        medalIDs.add(R.drawable.medal_5);
+        medalIDs.add(R.drawable.medal_1);
+        medalIDs.add(R.drawable.medal_2);
+        medalIDs.add(R.drawable.medal_3);
+        medalIDs.add(R.drawable.medal_4);
+        medalIDs.add(R.drawable.medal_5);
+        medalIDs.add(R.drawable.medal_1);
+        medalIDs.add(R.drawable.medal_2);
+        medalIDs.add(R.drawable.medal_3);
+        medalIDs.add(R.drawable.medal_4);
+        medalIDs.add(R.drawable.medal_5);
 
-
+        MedalAdapter adapter=new MedalAdapter(medalIDs);
+        mMedalRecycleView.setAdapter(adapter);
 
         return userView;
     }

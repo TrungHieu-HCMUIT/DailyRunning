@@ -88,7 +88,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:backgroundTint="#9B9B9B"
-        android:drawableLeft="@drawable/ic_password"
+        android:drawableLeft="@drawable/ic_lock"
         android:drawablePadding="10dp"
         android:ems="10"
         android:fontFamily="@font/roboto_regular"
