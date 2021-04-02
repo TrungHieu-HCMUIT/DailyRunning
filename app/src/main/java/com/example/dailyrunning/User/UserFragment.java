@@ -28,7 +28,7 @@ public class UserFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user, null);
+        View view = inflater.inflate(R.layout.fragment_user, container, false);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         TextView userTextView=(TextView) view.findViewById(R.id.user_textView);
