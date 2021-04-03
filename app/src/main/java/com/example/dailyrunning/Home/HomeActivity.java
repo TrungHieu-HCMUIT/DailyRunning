@@ -10,14 +10,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.dailyrunning.Authentication.LoginActivity;
-import com.example.dailyrunning.Home.Find.FindFragment;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.Record.RecordActivity;
 import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.Model.UserInfo;
 import com.example.dailyrunning.Utils.UserViewModel;
@@ -49,6 +49,8 @@ public class HomeActivity extends AppCompatActivity {
     private Context mContext = HomeActivity.this;
 
     private static final String TAG = HomeActivity.class.getSimpleName();
+
+    private ImageView image;
 
     private BottomNavigationViewEx bottomNavigationViewEx;
     @Override
