@@ -28,9 +28,11 @@
                 android:id="@+id/avatarView2"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
-                android:src="@drawable/ic_launcher_background"
+                android:src="@mipmap/ic_launcher"
                 app:av_border_width="6dp"
                 app:av_text_size_percentage="35"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="6dp"
                 app:layout_constraintBottom_toBottomOf="@+id/view3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -198,6 +200,101 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="24dp"
+
+            >
+
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/circularProgressBar"
+                android:layout_width="165dp"
+                android:layout_height="165dp"
+                app:cpb_background_progressbar_color="@color/white"
+                app:cpb_background_progressbar_color_end="@color/white"
+                app:cpb_background_progressbar_color_start="@color/white"
+                app:cpb_background_progressbar_width="5dp"
+                app:cpb_progress="60"
+                app:cpb_progress_direction="to_right"
+                app:cpb_progress_max="100"
+                app:cpb_progressbar_color="#3f51b5"
+                app:cpb_progressbar_color_direction="left_to_right"
+                app:cpb_progressbar_color_end="#02C39A"
+                app:cpb_progressbar_color_start="#02C39A"
+                app:cpb_progressbar_width="5dp"
+                app:cpb_round_border="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="155dp"
+                android:layout_height="155dp"
+                android:src="?attr/dividerVertical"
+                app:civ_border_overlay="false"
+                app:civ_border_width="0dp"
+                app:civ_circle_background_color="#C5F1E8"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_foot" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/textView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/svn_avo"
+            android:text="7000 bước"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/svn_avo"
+            android:text="Thống kê"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.flyco.tablayout.SegmentTabLayout
+            android:id="@+id/tl_2"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="100dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            app:tl_indicator_anim_enable="true"
+            app:tl_indicator_bounce_enable="false"
+            app:tl_indicator_color="#009688"
+            app:tl_tab_padding="20dp" />
 
     </LinearLayout>
 </ScrollView>

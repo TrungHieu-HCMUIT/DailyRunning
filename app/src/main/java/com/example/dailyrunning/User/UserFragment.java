@@ -16,6 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.MedalAdapter;
 import com.example.dailyrunning.Utils.UserViewModel;
+import com.flyco.tablayout.SegmentTabLayout;
+import com.flyco.tablayout.SlidingTabLayout;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -25,18 +28,36 @@ public class UserFragment extends Fragment {
     private UserViewModel mUserViewModel;
     private FirebaseAuth mFirebaseAuth;
     private RecyclerView mMedalRecycleView;
+    private View rootView;
+    private SegmentTabLayout tab_layout;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
-
+        rootView=view;
         mFirebaseAuth = FirebaseAuth.getInstance();
         TextView userTextView=(TextView) view.findViewById(R.id.user_textView);
 
         userTextView.setOnClickListener(v -> {
             mFirebaseAuth.signOut();
         });
-        mMedalRecycleView = view.findViewById(R.id.medal_recycleView);
+
+        setUpMedalRecycleView();
+        setUpTabLayout();
+
+        return view;
+    }
+
+    private void setUpTabLayout()
+    {
+        tab_layout=rootView.findViewById(R.id.tl_2);
+        tab_layout.setTabData(new String[]{"Theo tuần","Theo tháng","Theo năm"});
+
+
+    }
+    private void setUpMedalRecycleView()
+    {
+        mMedalRecycleView = rootView.findViewById(R.id.medal_recycleView);
         mMedalRecycleView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL,false));
 
         List<Integer> medalIDs=new ArrayList<>();
@@ -58,7 +79,5 @@ public class UserFragment extends Fragment {
 
         MedalAdapter adapter=new MedalAdapter(medalIDs);
         mMedalRecycleView.setAdapter(adapter);
-
-        return view;
     }
 }
