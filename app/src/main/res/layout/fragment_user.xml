@@ -7,8 +7,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="200dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -287,14 +288,28 @@
             android:layout_width="wrap_content"
             android:layout_height="36dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="100dp"
+            android:layout_marginTop="20dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
+            app:tl_bar_color="#DEDEDE"
+            app:tl_bar_stroke_color="#FFFFFF"
+            app:tl_bar_stroke_width="0dp"
             app:tl_indicator_anim_enable="true"
             app:tl_indicator_bounce_enable="false"
-            app:tl_indicator_color="#009688"
-            app:tl_tab_padding="20dp" />
+            app:tl_indicator_color="#ECBA67"
+            app:tl_tab_padding="10dp"
+            app:tl_tab_space_equal="false"
+            app:tl_tab_width="100dp"
+            app:tl_textSelectColor="@color/black"
+            app:tl_textUnselectColor="@color/black"
+            app:tl_textsize="14sp">
+
+        </com.flyco.tablayout.SegmentTabLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/statistical_viewPager2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 </ScrollView>
