@@ -106,4 +106,7 @@ dependencies {
     implementation 'agency.tango.android:avatar-view-glide:0.0.2'
     //endregion
 
+    //tablayout
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+
 }
