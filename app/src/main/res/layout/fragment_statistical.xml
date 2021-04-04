@@ -9,12 +9,13 @@
     android:paddingEnd="16dp"
     android:paddingBottom="12dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cardCornerRadius="10dp"
-        tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="141dp">
+        app:strokeColor="#AFAFAF"
+        app:strokeWidth="0.8dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -89,5 +90,6 @@
                 android:text="21 Km"
                 android:textColor="@color/black" />
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
+
 </RelativeLayout>
