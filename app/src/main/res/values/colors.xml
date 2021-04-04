@@ -13,4 +13,7 @@
     <color name="color_palette_3">#00A896</color>
     <color name="color_palette_4">#02C39A</color>
     <color name="color_palette_5">#F0F3BD</color>
+
+    <!-- Text color -->
+    <color name="primary_text">#333333</color>
 </resources>
