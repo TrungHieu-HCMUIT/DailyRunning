@@ -1,6 +1,8 @@
 package com.example.dailyrunning.User;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,9 +24,12 @@ import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.taosif7.android.ringchartlib.RingChart;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class UserFragment extends Fragment  {
     private UserViewModel mUserViewModel;
@@ -33,6 +38,7 @@ public class UserFragment extends Fragment  {
     private View rootView;
     private SegmentTabLayout tab_layout;
     private ViewPager2 statisticalViewPager2;
+    private RingChart mRingChart;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,10 +51,19 @@ public class UserFragment extends Fragment  {
             mFirebaseAuth.signOut();
         });
 
+
+        setUpRingChart();
         setUpMedalRecycleView();
         setUpTabLayout();
 
         return view;
+    }
+
+    private void setUpRingChart()
+    {
+        mRingChart=rootView.findViewById(R.id.chart_concentric);
+        mRingChart.stopAnimateLoading(0.6f);
+        mRingChart.showLabels(false);
     }
 
     private void setUpTabLayout()

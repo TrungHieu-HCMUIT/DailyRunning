@@ -305,12 +305,10 @@ public class LoginActivity extends AppCompatActivity {
         if (isNetworkAvailable()) {
 
 
-            Timer timer = new Timer();
             Handler handler=new Handler();
             Runnable timerTask = new Runnable() {
                 @Override
                 public void run() {
-                    timer.cancel();
                     if (loginTimeOut.get() == false) { //  Timeout
 
                         // Your timeout code goes here

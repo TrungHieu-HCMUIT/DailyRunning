@@ -99,8 +99,8 @@ dependencies {
     // circle image view for avatar
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    //circle progressbar
-    implementation 'com.mikhaellopez:circularprogressbar:3.0.3'
+    //ring chart
+    implementation 'com.github.Taosif7:RingChartLib:1.0.0'
 
 
 
