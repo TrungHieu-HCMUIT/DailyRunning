@@ -99,11 +99,15 @@ dependencies {
 
     // circle image view for avatar
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-
+    
     // glide for loading global image
     implementation 'com.github.bumptech.glide:glide:4.12.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
-    //tablayout
+    // tablayout
     implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    
+    // ring chart
+    implementation 'com.github.Taosif7:RingChartLib:1.0.0'
+
 }
