@@ -65,6 +65,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        // Handle swipe gesture
         viewPager2.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
