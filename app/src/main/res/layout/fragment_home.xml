@@ -168,7 +168,7 @@
         app:tl_textsize="14sp" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager2"
+        android:id="@+id/homeScreenViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
