@@ -32,9 +32,9 @@
                 android:id="@+id/topToolBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:layout_marginBottom="12dp"
                 android:background="@android:color/transparent"
                 android:elevation="0dp"
-                android:layout_marginBottom="12dp"
                 app:layout_collapseMode="pin"
                 app:menu="@menu/top_app_bar_menu"
                 app:title="Good morning, Trung Hieu" />
@@ -43,117 +43,117 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/recycleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+    <!--    <androidx.core.widget.NestedScrollView-->
+    <!--        android:id="@+id/recycleView"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">-->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="match_parent"-->
+    <!--            android:orientation="vertical">-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:gravity="center"
-                android:text="Test"
-                android:textSize="36dp" />
+    <!--            <TextView-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:layout_margin="24dp"-->
+    <!--                android:gravity="center"-->
+    <!--                android:text="Test"-->
+    <!--                android:textSize="36dp" />-->
 
-        </LinearLayout>
+    <!--        </LinearLayout>-->
 
-    </androidx.core.widget.NestedScrollView>
+    <!--    </androidx.core.widget.NestedScrollView>-->
 
     <com.flyco.tablayout.SegmentTabLayout
         android:id="@+id/tabLayout"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
-        app:layout_anchor="@id/topAppBar"
-        app:layout_anchorGravity="center_horizontal|bottom"
         android:layout_marginLeft="55dp"
         android:layout_marginRight="55dp"
+        app:layout_anchor="@id/topAppBar"
+        app:layout_anchorGravity="center_horizontal|bottom"
         app:tl_bar_color="#DEDEDE"
         app:tl_bar_stroke_color="#FFFFFF"
         app:tl_bar_stroke_width="0dp"
@@ -166,5 +166,11 @@
         app:tl_textSelectColor="@color/black"
         app:tl_textUnselectColor="@color/black"
         app:tl_textsize="14sp" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
