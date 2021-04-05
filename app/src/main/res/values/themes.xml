@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.DailyRunning" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/color_palette_1</item>
+        <item name="colorPrimary">@color/darker_grey</item>
         <item name="colorPrimaryVariant">@color/color_palette_2</item>
         <item name="colorOnPrimary">@color/color_palette_5</item>
         <!-- Secondary brand color. -->

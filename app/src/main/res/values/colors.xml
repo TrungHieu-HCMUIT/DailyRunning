@@ -8,9 +8,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#868686</color>
+    <color name="darker_grey">#9B9B9B</color>
+    <color name="lighter_grey">#F5F5F5</color>
     <color name="color_palette_1">#05668D</color>
     <color name="color_palette_2">#028090</color>
     <color name="color_palette_3">#00A896</color>
     <color name="color_palette_4">#02C39A</color>
     <color name="color_palette_5">#F0F3BD</color>
+
+    <!-- Text color -->
+    <color name="primary_text">#333333</color>
 </resources>
