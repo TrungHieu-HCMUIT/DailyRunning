@@ -9,13 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dailyrunning.R;
+import com.flyco.tablayout.SegmentTabLayout;
 
 public class HomeFollowingFragment extends Fragment {
+
+    private SegmentTabLayout tabLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_following, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_following, container, false);
+
+        tabLayout = (SegmentTabLayout) view.findViewById(R.id.tabLayout);
+
+        return view;
     }
 }

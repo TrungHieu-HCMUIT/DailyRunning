@@ -12,7 +12,7 @@ public class HomeScreenAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        Fragment fragment;
+        Fragment fragment = null;
         if (position == 0) {
             fragment = new HomeFollowingFragment();
         }
@@ -24,6 +24,6 @@ public class HomeScreenAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return 2;
     }
 }
