@@ -110,4 +110,12 @@ dependencies {
     // ring chart
     implementation 'com.github.Taosif7:RingChartLib:1.0.0'
 
+    //Maps SDK for Android
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    //Location SDK for Android
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    //Google Maps Android API
+    implementation 'com.google.maps.android:android-maps-utils:2.2.2'
+
 }
+apply plugin: 'com.google.gms.google-services'
