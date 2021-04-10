@@ -13,11 +13,14 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.dailyrunning.Authentication.LoginActivity;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Record.MapsActivity;
 import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.Model.UserInfo;
 import com.example.dailyrunning.Utils.UserViewModel;
@@ -77,6 +80,14 @@ public class HomeActivity extends AppCompatActivity {
         // Enable BottomNavigationViewEx
         setupBottomNavView();
 
+        Button newrecord =(Button) findViewById(R.id.newRecord);
+        newrecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapsActivity.class);
+                startActivityForResult(intent, 0);
+            }
+        });
     }
 
     //region firebaseAuth
