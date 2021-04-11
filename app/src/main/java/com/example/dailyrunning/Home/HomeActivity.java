@@ -27,6 +27,7 @@ import com.example.dailyrunning.Utils.UserViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -80,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
         // Enable BottomNavigationViewEx
         setupBottomNavView();
 
-        Button newrecord =(Button) findViewById(R.id.newRecord);
+        FloatingActionButton newrecord =(FloatingActionButton) findViewById(R.id.newRecord);
         newrecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
