@@ -21,7 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Record.RecordActivity"></activity>
         <activity android:name=".Authentication.LoginActivity"
 
             >
@@ -50,7 +49,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".Record.ListOfRunning"></activity>
+        <activity android:name=".Record.IndividualRunningActivity"></activity>
+        <activity android:name=".Record.FinishActivity"></activity>
     </application>
 
 </manifest>
