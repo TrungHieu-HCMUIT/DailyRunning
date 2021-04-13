@@ -120,6 +120,8 @@ public class HomeActivity extends AppCompatActivity {
             {
                 mCurrentUser=(UserInfo) data.getExtras().getSerializable("newUser");
 
+                //update ui
+
                 Toast.makeText(this, "Welcome "+mCurrentUser.getEmail(), Toast.LENGTH_SHORT).show();
             }
             else if(resultCode==RESULT_CANCELED)

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -42,7 +42,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class UserFragment extends Fragment {
     private static final int RC_PHOTO_PICKER = 101;
-    private static final String EMAIL_PROVIDER_ID="password";
+    private static final String EMAIL_PROVIDER_ID = "password";
     private FirebaseAuth mFirebaseAuth;
     private RecyclerView mMedalRecycleView;
     private View rootView;
@@ -50,10 +50,11 @@ public class UserFragment extends Fragment {
     private ViewPager2 statisticalViewPager2;
     private RingChart mRingChart;
     private CircleImageView avatarView;
-    private TextView userTextView;
+    private TextView userDisplayNameTextView;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mAvatarStorageReference;
     private FirebaseUser mCurrentUser;
+    private Fragment mContext = UserFragment.this;
 
 
     @Nullable
@@ -62,35 +63,41 @@ public class UserFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_user, container, false);
         rootView = view;
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseStorage=FirebaseStorage.getInstance();
-        mAvatarStorageReference=mFirebaseStorage.getReference().child("avatar_photos");
-        mCurrentUser=mFirebaseAuth.getCurrentUser();
+        mFirebaseStorage = FirebaseStorage.getInstance();
+        mAvatarStorageReference = mFirebaseStorage.getReference().child("avatar_photos");
+        mCurrentUser = mFirebaseAuth.getCurrentUser();
         findView();
-
-        userTextView.setOnClickListener(v -> {
+        userDisplayNameTextView.setOnClickListener(v -> {
             mFirebaseAuth.signOut();
         });
 
         setUpUpdateAvatar();
-
         setUpRingChart();
         setUpMedalRecycleView();
         setUpTabLayout();
 
+        updateUI();
+
         return view;
+    }
+
+    private void updateUI() {
+
+        userDisplayNameTextView.setText(mCurrentUser.getDisplayName().equals("")?mCurrentUser.getEmail():mCurrentUser.getDisplayName());
+        Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
     }
 
     private void setUpUpdateAvatar() {
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mCurrentUser.getProviderId().equals(EMAIL_PROVIDER_ID)) { //người dùng đăng nhập bằng email mới set avatar được
+                UserInfo userInfo = mCurrentUser.getProviderData().get(1);
+                if (userInfo.getProviderId().equals(EMAIL_PROVIDER_ID)) { //người dùng đăng nhập bằng email mới set avatar được
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/jpeg");
+                    intent.setType("image/*");
                     intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
                     startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
-                }
-                else // nếu không thì lấy avatar link với tài khoản facebook hoặc google của người dùng
+                } else // nếu không thì lấy avatar link với tài khoản facebook hoặc google của người dùng
                 {
 
                 }
@@ -100,8 +107,8 @@ public class UserFragment extends Fragment {
 
 
     private void findView() {
-        userTextView = (TextView) rootView.findViewById(R.id.user_textView);
-        avatarView=rootView.findViewById(R.id.avatarView);
+        userDisplayNameTextView = (TextView) rootView.findViewById(R.id.name_textView);
+        avatarView = rootView.findViewById(R.id.avatarView);
         mRingChart = rootView.findViewById(R.id.chart_concentric);
         tab_layout = rootView.findViewById(R.id.tl_2);
         statisticalViewPager2 = rootView.findViewById(R.id.statistical_viewPager2);
@@ -194,23 +201,46 @@ public class UserFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-        if (requestCode==RC_PHOTO_PICKER && resultCode==RESULT_OK)
-        {
+        //region update avatar
+        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             Uri selectedImageUri = data.getData();
-            StorageReference photoRef=mAvatarStorageReference.child(selectedImageUri.getLastPathSegment());
-            photoRef.putFile(selectedImageUri).addOnSuccessListener( new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            StorageReference photoRef = mAvatarStorageReference.child(selectedImageUri.getLastPathSegment());
+            photoRef.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Uri userAvatarUri= taskSnapshot.getUploadSessionUri();
-                    UserProfileChangeRequest profileUpdates  =new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
-                    mCurrentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
+                        public void onSuccess(Uri uri) {
+                            Uri userAvatarUri = uri;
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
+                            mCurrentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
+                                    /*Glide.with(mContext)
+                                            .asBitmap()
+                                            .load(mCurrentUser.getPhotoUrl())
+                                            .into(new CustomTarget<Bitmap>() {
+                                                @Override
+                                                public void onResourceReady(@NonNull Bitmap resource, @Nullable com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
+                                                    avatarView.setImageBitmap(resource);
+
+                                                }
+
+                                                @Override
+                                                public void onLoadCleared(@Nullable Drawable placeholder) {
+                                                }
+                                            });*/
+                                }
+                            });
                         }
                     });
+
                 }
             });
+
         }
+        //endregion
     }
 }

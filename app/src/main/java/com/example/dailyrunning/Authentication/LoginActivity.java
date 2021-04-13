@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Model.UserInfo;
+import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.Utils.UserViewModel;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -376,6 +377,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //endregion
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //FB login
