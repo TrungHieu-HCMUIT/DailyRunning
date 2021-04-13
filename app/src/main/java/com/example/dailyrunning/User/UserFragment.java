@@ -1,9 +1,8 @@
 package com.example.dailyrunning.User;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,21 +17,15 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.MedalAdapter;
-import com.example.dailyrunning.Utils.UserViewModel;
 import com.flyco.tablayout.SegmentTabLayout;
-import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.taosif7.android.ringchartlib.RingChart;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class UserFragment extends Fragment  {
-    private UserViewModel mUserViewModel;
     private FirebaseAuth mFirebaseAuth;
     private RecyclerView mMedalRecycleView;
     private View rootView;
@@ -62,8 +55,24 @@ public class UserFragment extends Fragment  {
     private void setUpRingChart()
     {
         mRingChart=rootView.findViewById(R.id.chart_concentric);
-        mRingChart.stopAnimateLoading(0.6f);
         mRingChart.showLabels(false);
+        mRingChart.startAnimateLoading();
+
+
+        new CountDownTimer(3000,1000){
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                mRingChart.stopAnimateLoading(0.6f);
+
+            }
+        }.start();
+
     }
 
     private void setUpTabLayout()
