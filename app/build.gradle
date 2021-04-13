@@ -59,7 +59,7 @@ dependencies {
     //firebase ui
     implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
     //firebase auth
-    implementation 'com.google.firebase:firebase-auth:20.0.3'
+    implementation 'com.google.firebase:firebase-auth:20.0.4'
     //firebase database
     implementation 'com.google.firebase:firebase-database:19.7.0'
 
