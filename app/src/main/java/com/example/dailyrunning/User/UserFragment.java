@@ -17,11 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.MedalAdapter;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -98,7 +101,7 @@ public class UserFragment extends Fragment {
 
     private void findView() {
         userTextView = (TextView) rootView.findViewById(R.id.user_textView);
-
+        avatarView=rootView.findViewById(R.id.avatarView);
         mRingChart = rootView.findViewById(R.id.chart_concentric);
         tab_layout = rootView.findViewById(R.id.tl_2);
         statisticalViewPager2 = rootView.findViewById(R.id.statistical_viewPager2);
@@ -199,8 +202,13 @@ public class UserFragment extends Fragment {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Uri userAvatarUri= taskSnapshot.getUploadSessionUri();
-                    UserProfileChangeRequest newProfile =new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
-
+                    UserProfileChangeRequest profileUpdates  =new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
+                    mCurrentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
+                        }
+                    });
                 }
             });
         }

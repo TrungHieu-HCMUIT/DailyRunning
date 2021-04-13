@@ -3,6 +3,7 @@
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -38,6 +39,9 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
@@ -166,8 +170,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    //region showDialog message
+
+    private void showDialog(String title,String message)
+    {
+        new androidx.appcompat.app.AlertDialog.Builder(mContext)
+                .setTitle(title)
+                .setMessage(message)
+
+
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+    //endreion
 
     //region signInWithEmailAndPassword
+
     private void signInWithEmailAndPassword(String email,String password)
     {
         mFirebaseAuth.signInWithEmailAndPassword(email,password)
@@ -182,6 +205,18 @@ public class LoginActivity extends AppCompatActivity {
                 data.putExtra("newUser",currentUser);
                 setResult(RESULT_OK,data);
                 finish();
+            }
+            else
+            {
+                Log.v("Wrongpass",task.getException().toString());
+                if(task.getException() instanceof FirebaseAuthInvalidCredentialsException)
+                {
+                    showDialog("Lỗi đăng nhập","Sai mật khẩu");
+                }
+                else if(task.getException() instanceof FirebaseAuthInvalidUserException)
+                {
+                    showDialog("Lỗi đăng nhập","Không tồn tại người dùng này");
+                }
             }
         }
     });
