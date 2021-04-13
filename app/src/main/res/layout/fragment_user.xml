@@ -29,7 +29,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/avatarView2"
+                android:id="@+id/avatarView"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
                 android:src="@mipmap/ic_launcher"
@@ -74,7 +74,7 @@
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatarView2" />
+                app:layout_constraintTop_toBottomOf="@+id/avatarView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

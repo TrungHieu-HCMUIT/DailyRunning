@@ -10,11 +10,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,10 +29,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 public class HomeActivity extends AppCompatActivity {
@@ -145,14 +141,14 @@ public class HomeActivity extends AppCompatActivity {
     }
     private void checkAuthenticationState()
     {
-        if(mFirebaseAuth.getCurrentUser()==null)
+        FirebaseUser mCurrentUser =mFirebaseAuth.getCurrentUser();
+        if(mCurrentUser ==null)
         {
             startActivityForResult(new Intent(this, LoginActivity.class),RC_SIGN_IN);
         }
         else
         {
-            FirebaseUser firebaseUser=mFirebaseAuth.getCurrentUser();
-            mCurrentUserRef=mFirebaseDatabase.getReference().child("UserInfo").child(firebaseUser.getUid());
+            mCurrentUserRef=mFirebaseDatabase.getReference().child("UserInfo").child(mCurrentUser.getUid());
 
             mCurrentUserRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
@@ -160,13 +156,13 @@ public class HomeActivity extends AppCompatActivity {
                     if(!task.isSuccessful())
                         return;
                     DataSnapshot taskRes=task.getResult();
-                    mCurrentUser=taskRes.getValue(UserInfo.class);
-                    if(mCurrentUser==null)
+                    HomeActivity.this.mCurrentUser =taskRes.getValue(UserInfo.class);
+                    if(HomeActivity.this.mCurrentUser ==null)
                         return;
-                    Log.v("UserGreet","Email: "+mCurrentUser.getEmail()+"\nID= "+mCurrentUser.getUserID());
+                    Log.v("UserGreet","Email: "+ HomeActivity.this.mCurrentUser.getEmail()+"\nID= "+ HomeActivity.this.mCurrentUser.getUserID());
                 }
             });
-            if(firebaseUser!=null &&!firebaseUser.isEmailVerified())
+            if(!mCurrentUser.isEmailVerified())
             {
                 showEmailVerificationDialog();
             }
@@ -183,18 +179,7 @@ public class HomeActivity extends AppCompatActivity {
     //region firebase database
     private void setUpDatabase()
     {
-        mUserInfoRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //updateUI
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
     //endregion
 
