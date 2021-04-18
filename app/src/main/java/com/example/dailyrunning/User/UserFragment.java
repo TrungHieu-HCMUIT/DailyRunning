@@ -216,22 +216,7 @@ public class UserFragment extends Fragment {
                             mCurrentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-
                                     Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
-                                    /*Glide.with(mContext)
-                                            .asBitmap()
-                                            .load(mCurrentUser.getPhotoUrl())
-                                            .into(new CustomTarget<Bitmap>() {
-                                                @Override
-                                                public void onResourceReady(@NonNull Bitmap resource, @Nullable com.bumptech.glide.request.transition.Transition<? super Bitmap> transition) {
-                                                    avatarView.setImageBitmap(resource);
-
-                                                }
-
-                                                @Override
-                                                public void onLoadCleared(@Nullable Drawable placeholder) {
-                                                }
-                                            });*/
                                 }
                             });
                         }

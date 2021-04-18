@@ -389,7 +389,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode==RESULT_OK) {
                 UserInfo newUser = (UserInfo) data.getExtras().getSerializable("newUser");
                 mUserInfoRef.child(newUser.getUserID()).setValue(newUser);
-               signInWithEmailAndPassword(newUser.getEmail(),newUser.getPassword());
+                signInWithEmailAndPassword(newUser.getEmail(),newUser.getPassword());
             }
         }
         if (requestCode == RC_SIGN_IN_GOOGLE) {
