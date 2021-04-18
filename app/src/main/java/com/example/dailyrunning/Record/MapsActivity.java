@@ -31,12 +31,14 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.database.DatabaseReference;
@@ -185,13 +187,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     while (!isInterrupted()) {
                         Thread.sleep(1000);
                         runOnUiThread(new Runnable() {
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void run() {
                                 if (mBound) {
                                     long elapsedTime = stopWatchService.getElapsedTime();
                                     String formattedTime = DateUtils.formatElapsedTime(elapsedTime);
                                     textView.setText(formattedTime);
-                                    String Sum = String.format("%.2f", getDistance()/100.0);
+                                    @SuppressLint("DefaultLocale") String Sum = String.format("%.2f", getDistance()/100.0);
                                     textlength.setText(Sum);
                                     textCalories.setText(getCalories(getDistance(),(int)elapsedTime)+"");
                                 }
@@ -268,11 +271,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
         //enable positioning button
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        // disable this because after the POI marker popup this tool will be added automatically
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-
-
+        //getCurrentLocation
+        mMap.setMyLocationEnabled(true);
+        if (mMap != null) {
+            mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                @Override
+                public void onMyLocationChange(Location location) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(19));
+                }
+            });}
+            // disable this because after the POI marker popup this tool will be added automatically
+            mMap.getUiSettings().setMapToolbarEnabled(false);
     }
+
 
 
 
