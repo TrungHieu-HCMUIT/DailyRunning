@@ -12,6 +12,7 @@
         android:layout_width="107dp"
         tools:backgroundTint="#F5F5F5"
         app:cardCornerRadius="10dp"
+
         android:layout_height="150dp">
         <RelativeLayout
             android:layout_width="match_parent"
@@ -34,7 +35,7 @@
                 android:text="Tên nhà cung cấp"
 
                 android:textColor="#666666"
-                android:textSize="6sp"
+                android:textSize="8sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/gift_detail_textView"
@@ -44,7 +45,7 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="1dp"
                 android:textColor="#333333"
-                android:textSize="6sp"
+                android:textSize="8sp"
                 android:text="Chi tiết ưu đãi"
                 android:layout_below="@id/provider_name_textView"/>
 
