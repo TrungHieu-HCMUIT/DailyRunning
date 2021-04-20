@@ -3,21 +3,23 @@ package com.example.dailyrunning.User;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
+import android.os.CountDownTimer;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.dailyrunning.Model.GiftInfo;
@@ -45,8 +47,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 
-public class UserFragment extends Fragment {
-   /* private static final int RC_PHOTO_PICKER = 101;
+
+public class UserMainFragment extends Fragment {
+
+    private static final int RC_PHOTO_PICKER = 101;
     private static final String EMAIL_PROVIDER_ID = "password";
     private FirebaseAuth mFirebaseAuth;
     private RecyclerView mMedalRecyclerView;
@@ -59,19 +63,20 @@ public class UserFragment extends Fragment {
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mAvatarStorageReference;
     private FirebaseUser mCurrentUser;
-    private Fragment mContext = UserFragment.this;
+    private Fragment mContext = UserMainFragment.this;
     private RecyclerView mGiftRecyclerView;
     private Button mSeeAllGiftButton;
-
+    private NavController mNavController;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
+        View view = inflater.inflate(R.layout.fragment_user_main, container, false);
         rootView = view;
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
         mAvatarStorageReference = mFirebaseStorage.getReference().child("avatar_photos");
         mCurrentUser = mFirebaseAuth.getCurrentUser();
+
         findView();
         userDisplayNameTextView.setOnClickListener(v -> {
             mFirebaseAuth.signOut();
@@ -88,11 +93,18 @@ public class UserFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mNavController=Navigation.findNavController(view);
+
+    }
+
     private void setUpViewAllGiftButton() {
         mSeeAllGiftButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mNavController.navigate(R.id.action_userMainFragment_to_giftFragment2);
             }
         });
     }
@@ -264,14 +276,5 @@ public class UserFragment extends Fragment {
 
         }
         //endregion
-    }*/
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView=inflater.inflate(R.layout.fragment_user,container,false);
-        return rootView;
     }
-
-
 }

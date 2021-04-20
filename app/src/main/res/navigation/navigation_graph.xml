@@ -1,3 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/navigation_graph" />
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/userMainFragment">
+    <fragment
+        android:id="@+id/userMainFragment"
+        android:name="com.example.dailyrunning.User.UserMainFragment"
+        android:label="UserMainFragment" >
+        <action
+            android:id="@+id/action_userMainFragment_to_giftFragment2"
+            app:destination="@id/giftFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/giftFragment"
+        android:name="com.example.dailyrunning.User.GiftFragment"
+        android:label="fragment_gift"
+        tools:layout="@layout/fragment_gift" />
+</navigation>
