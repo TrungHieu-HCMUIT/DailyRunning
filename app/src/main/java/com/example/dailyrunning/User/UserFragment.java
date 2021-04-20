@@ -7,6 +7,7 @@ import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -58,6 +59,7 @@ public class UserFragment extends Fragment {
     private FirebaseUser mCurrentUser;
     private Fragment mContext = UserFragment.this;
     private RecyclerView mGiftRecyclerView;
+    private Button mSeeAllGiftButton;
 
     @Nullable
     @Override
@@ -78,9 +80,14 @@ public class UserFragment extends Fragment {
         setUpMedalRecyclerView();
         setUpTabLayout();
         setUpGiftRecyclerView();
+        setUpViewAllGiftButton();
         updateUI();
 
         return view;
+    }
+
+    private void setUpViewAllGiftButton() {
+
     }
 
     private void setUpGiftRecyclerView() {
@@ -136,6 +143,7 @@ public class UserFragment extends Fragment {
         statisticalViewPager2 = rootView.findViewById(R.id.statistical_viewPager2);
         mMedalRecyclerView = rootView.findViewById(R.id.medal_recycleView);
         mGiftRecyclerView=rootView.findViewById(R.id.gift_recyclerView);
+        mSeeAllGiftButton =rootView.findViewById(R.id.see_all_button);
     }
 
 

@@ -345,7 +345,7 @@
                 android:id="@+id/doiQua_texView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/view_all_button"
+                android:layout_below="@id/see_all_button"
                 android:layout_alignParentTop="true"
                 android:layout_centerVertical="false"
                 android:layout_marginLeft="24dp"
@@ -356,7 +356,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/view_all_button"
+                android:id="@+id/see_all_button"
                 android:layout_width="100dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
@@ -368,13 +368,12 @@
                 android:paddingTop="2dp"
                 android:paddingRight="8dp"
                 android:paddingBottom="2dp"
-                android:text="Button"
                 android:textColor=" #ECBA67"
                 android:textSize="8dp"
                 android:textStyle="bold"
                 app:cornerRadius="18dp"
                 app:rippleColor=" #ECBA67"
-                tools:text="XEM TẤT CẢ" />
+                android:text="XEM TẤT CẢ" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/gift_recyclerView"
