@@ -9,7 +9,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +25,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.Objects;
 
@@ -40,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText mPasswordEditText;
     private TextInputLayout mPasswordTextInputLayout;
     private Button mRegisterButton;
-    private View.OnClickListener mButtonOnClickListener;
+    private View.OnClickListener mRegisterButtonOnClickListener;
     private FirebaseAuth mFirebaseAuth;
     private Context mContext=RegisterActivity.this;
     private TextInputLayout mDisplayNameTextInputLayout;
@@ -59,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
         textChangeCheck();
 
         setupOnClickListener();
-        mRegisterButton.setOnClickListener(mButtonOnClickListener);
+        mRegisterButton.setOnClickListener(mRegisterButtonOnClickListener);
 
     }
 
@@ -155,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
     private void setupOnClickListener() {
-        mButtonOnClickListener=new View.OnClickListener() {
+        mRegisterButtonOnClickListener =new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String emailString= Objects.requireNonNull(mEmailEditText.getText()).toString().trim();
@@ -179,6 +179,10 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseUser firebaseUser=mAuthResult.getUser();
                             //TODO wait for complete ui then add gender,dob,...;
                             UserInfo newUser=new UserInfo(displayNameString,firebaseUser.getEmail(),0,firebaseUser.getUid(),passwordString);
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(displayNameString).build();
+                            firebaseUser.updateProfile(profileUpdates);
+
+
                             data.putExtra("newUser",newUser);
                             setResult(RESULT_OK,data);
                             finish();
@@ -196,6 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 setResult(RESULT_CANCELED);
+                finish();
             }
         });
     }

@@ -17,7 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.example.dailyrunning.Model.GiftInfo;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Utils.GiftAdapter;
 import com.example.dailyrunning.Utils.MedalAdapter;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -44,7 +46,7 @@ public class UserFragment extends Fragment {
     private static final int RC_PHOTO_PICKER = 101;
     private static final String EMAIL_PROVIDER_ID = "password";
     private FirebaseAuth mFirebaseAuth;
-    private RecyclerView mMedalRecycleView;
+    private RecyclerView mMedalRecyclerView;
     private View rootView;
     private SegmentTabLayout tab_layout;
     private ViewPager2 statisticalViewPager2;
@@ -55,7 +57,7 @@ public class UserFragment extends Fragment {
     private StorageReference mAvatarStorageReference;
     private FirebaseUser mCurrentUser;
     private Fragment mContext = UserFragment.this;
-
+    private RecyclerView mGiftRecyclerView;
 
     @Nullable
     @Override
@@ -73,15 +75,35 @@ public class UserFragment extends Fragment {
 
         setUpUpdateAvatar();
         setUpRingChart();
-        setUpMedalRecycleView();
+        setUpMedalRecyclerView();
         setUpTabLayout();
-
+        setUpGiftRecyclerView();
         updateUI();
 
         return view;
     }
 
+    private void setUpGiftRecyclerView() {
+        mGiftRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+
+        List<GiftInfo> gifts = new ArrayList<>();
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
+
+
+        GiftAdapter adapter = new GiftAdapter(gifts);
+        mGiftRecyclerView.setAdapter(adapter);
+    }
+
     private void updateUI() {
+
 
         userDisplayNameTextView.setText(mCurrentUser.getDisplayName().equals("")?mCurrentUser.getEmail():mCurrentUser.getDisplayName());
         Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
@@ -112,8 +134,8 @@ public class UserFragment extends Fragment {
         mRingChart = rootView.findViewById(R.id.chart_concentric);
         tab_layout = rootView.findViewById(R.id.tl_2);
         statisticalViewPager2 = rootView.findViewById(R.id.statistical_viewPager2);
-        mMedalRecycleView = rootView.findViewById(R.id.medal_recycleView);
-
+        mMedalRecyclerView = rootView.findViewById(R.id.medal_recycleView);
+        mGiftRecyclerView=rootView.findViewById(R.id.gift_recyclerView);
     }
 
 
@@ -174,8 +196,8 @@ public class UserFragment extends Fragment {
 
     }
 
-    private void setUpMedalRecycleView() {
-        mMedalRecycleView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
+    private void setUpMedalRecyclerView() {
+        mMedalRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
 
         List<Integer> medalIDs = new ArrayList<>();
         medalIDs.add(R.drawable.medal_1);
@@ -195,7 +217,7 @@ public class UserFragment extends Fragment {
         medalIDs.add(R.drawable.medal_5);
 
         MedalAdapter adapter = new MedalAdapter(medalIDs);
-        mMedalRecycleView.setAdapter(adapter);
+        mMedalRecyclerView.setAdapter(adapter);
     }
 
     @Override
