@@ -5,6 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,7 +38,6 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 public class HomeActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
-    private UserInfo mCurrentUser;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mUserInfoRef;
     private DatabaseReference mCurrentUserRef;
@@ -47,7 +48,6 @@ public class HomeActivity extends AppCompatActivity {
     //Viewmodel to exchange data between fragment or activity
     private UserViewModel mUserViewModel;
     private Context mContext = HomeActivity.this;
-
     private static final String TAG = HomeActivity.class.getSimpleName();
 
     private ImageView image;
@@ -67,6 +67,11 @@ public class HomeActivity extends AppCompatActivity {
         mUserInfoRef=mFirebaseDatabase.getReference().child("UserInfo");
         setUpDatabase();
 
+
+        //init userviewmodel
+        mUserViewModel=new ViewModelProvider(this).get(UserViewModel.class);
+
+        //
 
         // Binding views by its id
         initWidgets();
@@ -100,7 +105,6 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 })
 
-
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -118,11 +122,11 @@ public class HomeActivity extends AppCompatActivity {
         {
             if(resultCode==RESULT_OK)
             {
-                mCurrentUser=(UserInfo) data.getExtras().getSerializable("newUser");
+                mUserViewModel.currentUser.setValue((UserInfo) data.getExtras().getSerializable("newUser"));
 
                 //update ui
 
-                Toast.makeText(this, "Welcome "+mCurrentUser.getEmail(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Welcome "+mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
             }
             else if(resultCode==RESULT_CANCELED)
             {
@@ -158,10 +162,9 @@ public class HomeActivity extends AppCompatActivity {
                     if(!task.isSuccessful())
                         return;
                     DataSnapshot taskRes=task.getResult();
-                    HomeActivity.this.mCurrentUser =taskRes.getValue(UserInfo.class);
-                    if(HomeActivity.this.mCurrentUser ==null)
+                    mUserViewModel.currentUser.setValue(taskRes.getValue(UserInfo.class));
+                    if(mUserViewModel.currentUser.getValue()==null)
                         return;
-                    Log.v("UserGreet","Email: "+ HomeActivity.this.mCurrentUser.getEmail()+"\nID= "+ HomeActivity.this.mCurrentUser.getUserID());
                 }
             });
             if(!mCurrentUser.isEmailVerified())

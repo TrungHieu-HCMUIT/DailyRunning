@@ -9,5 +9,4 @@ public class HomeViewModel extends ViewModel {
     public Parcelable followingRecyclerViewState;
     public Integer tabPosition;
     public Boolean isExpanded;
-    public HomeScreenAdapter mHomeScreenAdapter;
 }
