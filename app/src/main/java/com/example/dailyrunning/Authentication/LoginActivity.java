@@ -1,7 +1,6 @@
     package com.example.dailyrunning.Authentication;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,7 +21,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Model.UserInfo;
-import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.Utils.UserViewModel;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -40,7 +38,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,8 +46,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /*

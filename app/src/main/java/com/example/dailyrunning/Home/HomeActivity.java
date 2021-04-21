@@ -5,14 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,8 +22,8 @@ import android.widget.Toast;
 import com.example.dailyrunning.Authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Record.MapsActivity;
-import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.Model.UserInfo;
+import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.Utils.UserViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
     private UserViewModel mUserViewModel;
     private Context mContext = HomeActivity.this;
     private static final String TAG = HomeActivity.class.getSimpleName();
-
+    private NavController mNavController;
     private ImageView image;
 
     private BottomNavigationViewEx bottomNavigationViewEx;
@@ -76,21 +77,16 @@ public class HomeActivity extends AppCompatActivity {
         // Binding views by its id
         initWidgets();
 
-        // Loading the default fragment (Post Fragment)
-        loadFragment(new HomeFragment());
+
 
         // Enable BottomNavigationViewEx
         setupBottomNavView();
 
-        FloatingActionButton newrecord =(FloatingActionButton) findViewById(R.id.newRecord);
-        newrecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MapsActivity.class);
-                startActivityForResult(intent, 0);
-            }
-        });
+
+
+
     }
+
 
     //region firebaseAuth
     private void showEmailVerificationDialog() {
@@ -192,10 +188,16 @@ public class HomeActivity extends AppCompatActivity {
 
     //region Bottom widget and Fragment
     private void initWidgets() {
-        bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewEx);
+        bottomNavigationViewEx = findViewById(R.id.bottomNavViewEx);
+        mNavController= Navigation.findNavController(this,R.id.fragment_container);
     }
 
     private void setupBottomNavView() {
+        //region Setup with navigationUI
+        NavigationUI.setupWithNavController(bottomNavigationViewEx,mNavController);
+        //endregion
+
+
         // Set Bottom Navigation View styles
         bottomNavigationViewEx.setBackground(null);
         bottomNavigationViewEx.getMenu().getItem(1).setEnabled(false);
@@ -207,7 +209,7 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationViewEx.setTextVisibility(false);
 
         // Register OnNavigationItemSelectedListener to bottomNavigationViewEx
-        bottomNavigationViewEx.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        /*bottomNavigationViewEx.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment fragment = null;
@@ -224,10 +226,18 @@ public class HomeActivity extends AppCompatActivity {
 
                 return loadFragment(fragment);
             }
+        });*/
+        FloatingActionButton newrecord =(FloatingActionButton) findViewById(R.id.newRecord);
+        newrecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapsActivity.class);
+                startActivityForResult(intent, 0);
+            }
         });
     }
 
-    private boolean loadFragment(Fragment fragment) {
+  /*  private boolean loadFragment(Fragment fragment) {
         // Switching fragment
         if (fragment != null) {
             getSupportFragmentManager()
@@ -238,6 +248,6 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return false;
-    }
+    }*/
     //endregion
 }
