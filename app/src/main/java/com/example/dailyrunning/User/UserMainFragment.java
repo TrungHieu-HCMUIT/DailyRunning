@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -19,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +28,7 @@ import com.example.dailyrunning.Model.GiftInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.GiftAdapter;
 import com.example.dailyrunning.Utils.MedalAdapter;
+import com.example.dailyrunning.Utils.UserViewModel;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -67,6 +70,8 @@ public class UserMainFragment extends Fragment {
     private RecyclerView mGiftRecyclerView;
     private Button mSeeAllGiftButton;
     private NavController mNavController;
+    private UserViewModel mUserViewModel;
+    private ScrollView mScrollView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,7 +81,9 @@ public class UserMainFragment extends Fragment {
         mFirebaseStorage = FirebaseStorage.getInstance();
         mAvatarStorageReference = mFirebaseStorage.getReference().child("avatar_photos");
         mCurrentUser = mFirebaseAuth.getCurrentUser();
-
+        //init viewmodel
+        mUserViewModel=new ViewModelProvider(getActivity()).get(UserViewModel.class);
+                //
         findView();
         userDisplayNameTextView.setOnClickListener(v -> {
             mFirebaseAuth.signOut();
@@ -93,10 +100,28 @@ public class UserMainFragment extends Fragment {
         return view;
     }
 
+    private void restoreState() {
+        if(mUserViewModel.mMedalRecyclerViewState!=null)
+            mMedalRecyclerView.getLayoutManager().onRestoreInstanceState(mUserViewModel.mMedalRecyclerViewState);
+        if(mUserViewModel.mGiftRecyclerViewState!=null)
+            mGiftRecyclerView.getLayoutManager().onRestoreInstanceState(mUserViewModel.mGiftRecyclerViewState);
+        if(mUserViewModel.mScrollViewPosition!=null)
+        {
+            mScrollView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mScrollView.scrollTo(0, mUserViewModel.mScrollViewPosition);
+                }
+            },1);
+        }
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mNavController=Navigation.findNavController(view);
+        restoreState();
+
 
     }
 
@@ -163,6 +188,7 @@ public class UserMainFragment extends Fragment {
         mMedalRecyclerView = rootView.findViewById(R.id.medal_recycleView);
         mGiftRecyclerView=rootView.findViewById(R.id.gift_recyclerView);
         mSeeAllGiftButton =rootView.findViewById(R.id.see_all_button);
+        mScrollView=rootView.findViewById(R.id.scroll_view);
     }
 
 
@@ -276,5 +302,13 @@ public class UserMainFragment extends Fragment {
 
         }
         //endregion
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mUserViewModel.mGiftRecyclerViewState=mGiftRecyclerView.getLayoutManager().onSaveInstanceState();
+        mUserViewModel.mMedalRecyclerViewState=mMedalRecyclerView.getLayoutManager().onSaveInstanceState();
+        mUserViewModel.mScrollViewPosition=mScrollView.getScrollY();
     }
 }
