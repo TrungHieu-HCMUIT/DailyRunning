@@ -22,14 +22,15 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.List;
 
-public class GiftAdapter  extends RecyclerView.Adapter<GiftAdapter.ViewHolder>{
-    public class ViewHolder extends RecyclerView.ViewHolder {
+public class AllGiftAdapter  extends RecyclerView.Adapter<AllGiftAdapter.ViewHolder>{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public ImageView mGiftImageView;
         public TextView mProviderNameTextView;
         public TextView mGiftDetailTextView;
-        public Button mPointButton;
+        public TextView mPointTextView;
+
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -39,16 +40,16 @@ public class GiftAdapter  extends RecyclerView.Adapter<GiftAdapter.ViewHolder>{
             super(itemView);
 
             mGiftImageView=itemView.findViewById(R.id.gift_imageView);
-            mProviderNameTextView=itemView.findViewById(R.id.provider_name_textView);
+            mProviderNameTextView=itemView.findViewById(R.id.provider_textView);
             mGiftDetailTextView=itemView.findViewById(R.id.gift_detail_textView);
-            mPointButton=itemView.findViewById(R.id.point_button);
+            mPointTextView=itemView.findViewById(R.id.point_textView);
 
 
         }
     }
-    private List<GiftInfo> mGifts;
-    private StorageReference mGiftImageReference;
-    public GiftAdapter(List<GiftInfo> mGifts)
+    private final List<GiftInfo> mGifts;
+    private final StorageReference mGiftImageReference;
+    public AllGiftAdapter(List<GiftInfo> mGifts)
     {
         this.mGifts=mGifts;
         mGiftImageReference=FirebaseStorage.getInstance().getReference().child("gift_images");
@@ -56,19 +57,19 @@ public class GiftAdapter  extends RecyclerView.Adapter<GiftAdapter.ViewHolder>{
 
     @NonNull
     @Override
-    public GiftAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AllGiftAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View giftView = inflater.inflate(R.layout.gift_item_user, parent, false);
+        View giftView = inflater.inflate(R.layout.gift_item_all_gift, parent, false);
 
         // Return a new holder instance
         return new ViewHolder(giftView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GiftAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AllGiftAdapter.ViewHolder holder, int position) {
         GiftInfo currentGift=mGifts.get(position);
         mGiftImageReference.child("place_holder_picture.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -78,7 +79,7 @@ public class GiftAdapter  extends RecyclerView.Adapter<GiftAdapter.ViewHolder>{
         });
         holder.mGiftDetailTextView.setText(currentGift.getGiftDetail());
         holder.mProviderNameTextView.setText(currentGift.getProviderName());
-        holder.mPointButton.setText(String.valueOf(currentGift.getPoint()));
+        holder.mPointTextView.setText(String.valueOf(currentGift.getPoint()));
 
     }
 
