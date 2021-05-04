@@ -1,23 +1,29 @@
 package com.example.dailyrunning.Model;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Activity {
     private String activityID;
-    private String userID;
-    private Date dateCreated;
+    private String dateCreated;
     private double distance;
-    private Date duration;
-    private String pictureURI;
-    private double pace;
+    private long duration;
+    private ArrayList<LatLng> latLngArrayList;
+    private int calories;
+    private String describe;
+    private int pace;
 
-    public Activity(String activityID, String userID, Date dateCreated, double distance, Date duration, String pictureURI, double pace) {
+    public Activity(String activityID, String dateCreated, double distance, long duration, ArrayList latLngArrayList, int calories, String describe, int pace) {
         this.activityID = activityID;
-        this.userID = userID;
         this.dateCreated = dateCreated;
         this.distance = distance;
         this.duration = duration;
-        this.pictureURI = pictureURI;
+        this.latLngArrayList = latLngArrayList;
+        this.calories = calories;
+        this.describe = describe;
         this.pace = pace;
     }
 
@@ -29,19 +35,11 @@ public class Activity {
         this.activityID = activityID;
     }
 
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
-    public Date getDateCreated() {
+    public String getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
     }
 
@@ -53,29 +51,36 @@ public class Activity {
         this.distance = distance;
     }
 
-    public Date getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(Date duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 
-    public String getPictureURI() {
-        return pictureURI;
+    public ArrayList<LatLng> getLatLngArrayList() {
+        return latLngArrayList;
     }
 
-    public void setPictureURI(String pictureURI) {
-        this.pictureURI = pictureURI;
+    public void setLatLngArrayList(ArrayList<LatLng> latLngArrayList) {
+        this.latLngArrayList = latLngArrayList;
     }
 
-    public double getPace() {
-        return pace;
+    public int getCalories() {
+        return calories;
     }
 
-    public void setPace(double pace) {
-        this.pace = pace;
+    public void setCalories(int calories) {
+        this.calories = calories;
     }
 
+    public String getDescribe() { return describe; }
+
+    public void setDescribe(String describe) { this.describe = describe; }
+
+    public int getPace() { return pace; }
+
+    public void setPace(int pace) { this.pace = pace; }
 
 }
