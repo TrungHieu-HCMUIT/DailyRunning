@@ -26,7 +26,6 @@ import java.util.ArrayList;
 public class FinishActivity extends AppCompatActivity {
     private final String INTENT_DISTANCEKEY = "distance";
     private final String INTENT_TIMEKEY = "time";
-    private  String INTENT_CALORIESKEY = "calories";
     private String INTENT_DATECREATED= "datecreated";
     private String INTENT_LATLNGARRLIST= "latlngarrlist";
     EditText describeText;
@@ -47,7 +46,6 @@ public class FinishActivity extends AppCompatActivity {
         Intent intent = getIntent();
         double completedDist = intent.getExtras().getDouble(INTENT_DISTANCEKEY);
         long completedTime = intent.getExtras().getLong(INTENT_TIMEKEY);
-        int calories = intent.getExtras().getInt(INTENT_CALORIESKEY);
         list=intent.getExtras().getParcelableArrayList(INTENT_LATLNGARRLIST);
         String formattedDate=intent.getExtras().getString(INTENT_DATECREATED);
         String paceString=getPace(completedDist,completedTime);
@@ -79,7 +77,6 @@ public class FinishActivity extends AppCompatActivity {
                         completedDist,
                         completedTime,
                         list,
-                        calories,
                         describeText.getText().toString(),
                         pace
                 );

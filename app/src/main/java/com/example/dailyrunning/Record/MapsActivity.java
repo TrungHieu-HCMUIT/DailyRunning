@@ -62,7 +62,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private String INTENT_LATLNGARRLIST= "latlngarrlist";
     private String INTENT_DISTANCEKEY ="distance";
     private  String INTENT_TIMEKEY = "time";
-    private  String INTENT_CALORIESKEY = "calories";
     private String INTENT_DATECREATED= "datecreated";
     // variable for Google Map API
     private GoogleMap mMap;
@@ -90,7 +89,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Intent startWatchIntent;
     Intent stopWatchIntent;
     LinearLayout layout,layout1,layout2;
-    DatabaseReference exampleRun;
     Calendar c;
     String formattedDate = "";
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
@@ -172,7 +170,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 double computedDistance = getDistance();
                 long elapsedTime = stopWatchService.getElapsedTime();
-                int calories=getCalories(computedDistance,(int)elapsedTime);
                 stopService(stopWatchIntent);
                 unbindService(mConnection);
                 mBound = false;
@@ -180,7 +177,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Intent intentToFinish = new Intent(getApplicationContext(), com.example.dailyrunning.Record.FinishActivity.class);
                 intentToFinish.putExtra(INTENT_DISTANCEKEY,computedDistance);
                 intentToFinish.putExtra(INTENT_TIMEKEY,elapsedTime);
-                intentToFinish.putExtra(INTENT_CALORIESKEY,calories);
                 intentToFinish.putExtra(INTENT_LATLNGARRLIST,list);
                 intentToFinish.putExtra(INTENT_DATECREATED,formattedDate);
                 startActivity(intentToFinish);
@@ -331,10 +327,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         return totalDistance;
 
-    }
-    public int getCalories(double dis, int t) {
-        int c = 0;
-        c = (int) ((dis + t) * 0.25);
-        return c;
     }
 }

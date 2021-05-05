@@ -12,17 +12,15 @@ public class Activity {
     private double distance;
     private long duration;
     private ArrayList<LatLng> latLngArrayList;
-    private int calories;
     private String describe;
     private int pace;
 
-    public Activity(String activityID, String dateCreated, double distance, long duration, ArrayList latLngArrayList, int calories, String describe, int pace) {
+    public Activity(String activityID, String dateCreated, double distance, long duration, ArrayList latLngArrayList, String describe, int pace) {
         this.activityID = activityID;
         this.dateCreated = dateCreated;
         this.distance = distance;
         this.duration = duration;
         this.latLngArrayList = latLngArrayList;
-        this.calories = calories;
         this.describe = describe;
         this.pace = pace;
     }
@@ -65,14 +63,6 @@ public class Activity {
 
     public void setLatLngArrayList(ArrayList<LatLng> latLngArrayList) {
         this.latLngArrayList = latLngArrayList;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
-    public void setCalories(int calories) {
-        this.calories = calories;
     }
 
     public String getDescribe() { return describe; }
