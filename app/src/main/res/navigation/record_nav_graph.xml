@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/musicMainFragment">
+
+    <fragment
+        android:id="@+id/musicMainFragment"
+        android:name="com.example.dailyrunning.Record.Spotify.MusicMainFragment"
+        android:label="MusicMainFragment" >
+        <action
+            android:id="@+id/action_musicMainFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_musicMainFragment_to_playlistViewFragment"
+            app:destination="@id/playlistViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.example.dailyrunning.Record.Spotify.PlayerFragment"
+        android:label="fragment_player"
+        tools:layout="@layout/fragment_player" />
+    <fragment
+        android:id="@+id/playlistViewFragment"
+        android:name="com.example.dailyrunning.Record.Spotify.PlaylistViewFragment"
+        android:label="fragment_playlist_view"
+        tools:layout="@layout/fragment_playlist_view" />
+</navigation>

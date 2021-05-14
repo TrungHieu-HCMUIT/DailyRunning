@@ -27,6 +27,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Record.Spotify.SpotifyActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -48,6 +49,8 @@ import com.google.maps.android.SphericalUtil;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import kaaes.spotify.webapi.android.SpotifyService;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
@@ -207,6 +210,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         };
 
         t.start();
+
+        //region spotify
+        findViewById(R.id.music_button).setOnClickListener(v->{
+            Intent musicIntent=new Intent(this, SpotifyActivity.class);
+            startActivity(musicIntent);
+        });
+        //endregion
 
     }
 
