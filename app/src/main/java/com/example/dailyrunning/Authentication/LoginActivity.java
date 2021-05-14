@@ -273,31 +273,28 @@ public class LoginActivity extends AppCompatActivity {
         checkTimeOut();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mFirebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                         if (task.isSuccessful()) {
-                             loginTimeOut.set(true);
+                .addOnCompleteListener(this, task -> {
+                     if (task.isSuccessful()) {
+                         loginTimeOut.set(true);
 
-                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            Intent data=new Intent();
-                            UserInfo currentUser=new UserInfo(user.getDisplayName(),user.getEmail(),0,user.getUid(),null);
-                            mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
-                            data.putExtra("newUser",currentUser);
-                            setResult(RESULT_OK,data);
-                            finish();
-                            //updateUI(user);
-                        } else {
-                             loginTimeOut.set(false);
+                         // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential:success");
+                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                        Intent data=new Intent();
+                        UserInfo currentUser=new UserInfo(user.getDisplayName(),user.getEmail(),0,user.getUid(),null);
+                        mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
+                        data.putExtra("newUser",currentUser);
+                        setResult(RESULT_OK,data);
+                        finish();
+                        //updateUI(user);
+                    } else {
+                         loginTimeOut.set(false);
 
-                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this , "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
+                         // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        Toast.makeText(LoginActivity.this , "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                        //updateUI(null);
                     }
                 });
     }
