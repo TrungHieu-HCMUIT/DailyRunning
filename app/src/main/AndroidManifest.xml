@@ -71,6 +71,11 @@
     </application>
     <queries>
         <package android:name="com.spotify.music" />
+
+    </queries>
+    <queries>
+        <package android:name="com.facebook.katana" />
+
     </queries>
 
 </manifest>
