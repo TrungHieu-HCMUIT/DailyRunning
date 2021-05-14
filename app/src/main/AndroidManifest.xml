@@ -69,5 +69,8 @@
 
         <activity android:name=".Record.FinishActivity"></activity>
     </application>
+    <queries>
+        <package android:name="com.spotify.music" />
+    </queries>
 
 </manifest>

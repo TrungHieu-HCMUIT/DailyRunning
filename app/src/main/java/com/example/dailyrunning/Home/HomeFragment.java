@@ -5,23 +5,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.dailyrunning.Model.UserInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.UserViewModel;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 
 public class HomeFragment extends Fragment {
@@ -62,6 +57,7 @@ public class HomeFragment extends Fragment {
         mUserViewModel.currentUser.observe(getActivity(),
                 userInfo -> {
                     mTopToolBar.setTitle("Good morning, " + userInfo.getDisplayName());
+                    Log.v("Home Fragment","user updated "+mTopToolBar.getTitle()+"\n"+userInfo.getDisplayName());
                     //TODO: update post for new user
                 });
     }
@@ -80,12 +76,12 @@ public class HomeFragment extends Fragment {
         if (mHomeViewModel.tabPosition != null) {
 
             tabLayout.setCurrentTab(mHomeViewModel.tabPosition);
-            int deohieukieugi = mHomeViewModel.tabPosition;
+            int temp = mHomeViewModel.tabPosition;
             viewPager2.postDelayed(new Runnable() {
 
                 @Override
                 public void run() {
-                    viewPager2.setCurrentItem(deohieukieugi);
+                    viewPager2.setCurrentItem(temp);
                 }
             }, 10);
             Log.v("Restore state", String.valueOf(viewPager2.getCurrentItem()) + " " + mHomeViewModel.tabPosition);

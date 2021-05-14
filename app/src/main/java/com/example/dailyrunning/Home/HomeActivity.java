@@ -152,16 +152,13 @@ public class HomeActivity extends AppCompatActivity {
         {
             mCurrentUserRef=mFirebaseDatabase.getReference().child("UserInfo").child(mCurrentUser.getUid());
 
-            mCurrentUserRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if(!task.isSuccessful())
-                        return;
-                    DataSnapshot taskRes=task.getResult();
-                    mUserViewModel.currentUser.setValue(taskRes.getValue(UserInfo.class));
-                    if(mUserViewModel.currentUser.getValue()==null)
-                        return;
-                }
+            mCurrentUserRef.get().addOnCompleteListener(task -> {
+                if(!task.isSuccessful())
+                    return;
+                DataSnapshot taskRes=task.getResult();
+                mUserViewModel.currentUser.setValue(taskRes.getValue(UserInfo.class));
+                if(mUserViewModel.currentUser.getValue()==null)
+                    return;
             });
             if(!mCurrentUser.isEmailVerified())
             {
