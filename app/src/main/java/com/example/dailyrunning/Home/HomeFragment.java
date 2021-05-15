@@ -37,6 +37,10 @@ public class HomeFragment extends Fragment {
         mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mTopToolBar = rootView.findViewById(R.id.topToolBar);
+        mTopToolBar.setTitle("");
+
+        updateUIWhenUserChanged();
+
 
         tabLayout = (SegmentTabLayout) rootView.findViewById(R.id.tabLayout);
         tabLayout.setTabData(mTitles);
