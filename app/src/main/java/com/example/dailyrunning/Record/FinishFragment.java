@@ -3,18 +3,19 @@ package com.example.dailyrunning.Record;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
 import android.text.format.DateUtils;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.dailyrunning.Model.Activity;
 import com.example.dailyrunning.R;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class FinishActivity extends AppCompatActivity {
+
+public class FinishFragment extends Fragment {
+
     private final String INTENT_DISTANCEKEY = "distance";
     private final String INTENT_TIMEKEY = "time";
     private String INTENT_DATECREATED= "datecreated";
@@ -37,25 +40,27 @@ public class FinishActivity extends AppCompatActivity {
     TextView timeTextView;
     TextView paceTextView;
     int pace;
+    private View rootView;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_finish);
-        setTitle(R.string.runCompleted);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.fragment_finish, container, false);
+        //setTitle(R.string.runCompleted);
 
-        Intent intent = getIntent();
-        double completedDist = intent.getExtras().getDouble(INTENT_DISTANCEKEY);
-        long completedTime = intent.getExtras().getLong(INTENT_TIMEKEY);
-        list=intent.getExtras().getParcelableArrayList(INTENT_LATLNGARRLIST);
-        String formattedDate=intent.getExtras().getString(INTENT_DATECREATED);
+        Bundle resultFromRecordFragment = getArguments();
+        double completedDist = resultFromRecordFragment.getDouble(INTENT_DISTANCEKEY);
+        long completedTime = resultFromRecordFragment.getLong(INTENT_TIMEKEY);
+        list=resultFromRecordFragment.getParcelableArrayList(INTENT_LATLNGARRLIST);
+        String formattedDate=resultFromRecordFragment.getString(INTENT_DATECREATED);
         String paceString=getPace(completedDist,completedTime);
 
-        describeText = (EditText) findViewById(R.id.describe_editText);
-        buttonSave = (Button) findViewById(R.id.btnSave);
-        buttonBack=(Button) findViewById(R.id.btnBack) ;
-        distanceTextView= (TextView) findViewById(R.id.km);
-        timeTextView = (TextView) findViewById(R.id.time);
-        paceTextView= (TextView) findViewById(R.id.pace);
+        describeText = rootView.findViewById(R.id.describe_editText);
+        buttonSave = rootView.findViewById(R.id.btnSave);
+        buttonBack= rootView.findViewById(R.id.btnBack);
+        distanceTextView= rootView.findViewById(R.id.km);
+        timeTextView = rootView.findViewById(R.id.time);
+        paceTextView= rootView.findViewById(R.id.pace);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -69,8 +74,6 @@ public class FinishActivity extends AppCompatActivity {
 
         buttonSave.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intentToMap = new Intent(getApplicationContext(),MapsActivity.class);
-                startActivity(intentToMap);
                 String id = rt.push().getKey();
                 Activity activity = new Activity(id,
                         formattedDate,
@@ -81,30 +84,22 @@ public class FinishActivity extends AppCompatActivity {
                         pace
                 );
                 exampleRun.setValue(activity);
-                setINTENT();
-
+                getActivity().finish();
             }
         });
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FinishActivity.super.onBackPressed();
+                getActivity().onBackPressed();
             }
         });
-
+        return rootView;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
 
-    public void setINTENT()
-    {
-        Intent intentToMap = new Intent(getApplicationContext(), com.example.dailyrunning.Home.HomeActivity.class);
-        startActivity(intentToMap);
-    }
+
+
     public String formatDistance(double pDistance) {
         if (pDistance / 1000 >= 1) {
             @SuppressLint("DefaultLocale") String distanceStr = String.format("%.2f", (pDistance / 1000));

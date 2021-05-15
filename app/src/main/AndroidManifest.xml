@@ -65,7 +65,6 @@
 
         <activity android:name=".Record.IndividualRunningActivity"></activity>
 
-        <activity android:name=".Record.FinishActivity"></activity>
     </application>
     <queries>
         <package android:name="com.spotify.music" />

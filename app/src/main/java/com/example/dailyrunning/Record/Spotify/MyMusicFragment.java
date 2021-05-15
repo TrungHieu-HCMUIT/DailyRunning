@@ -109,8 +109,10 @@ public class MyMusicFragment extends Fragment {
         }
         else
         {
-            mMyPlaylistRecyclerView.setAdapter(mRestoreStateViewModel.mPlaylistAdapter.getValue());
-            mRecentlyPlayedRecyclerView.setAdapter(mRestoreStateViewModel.mRecentlyPlayedTrackAdapter.getValue());
+            playlistAdapter=mRestoreStateViewModel.mPlaylistAdapter.getValue();
+            trackAdapter=mRestoreStateViewModel.mRecentlyPlayedTrackAdapter.getValue();
+            mMyPlaylistRecyclerView.setAdapter(playlistAdapter);
+            mRecentlyPlayedRecyclerView.setAdapter(trackAdapter);
             playlistAdapter.filter("");
             trackAdapter.filter("");
             return true;

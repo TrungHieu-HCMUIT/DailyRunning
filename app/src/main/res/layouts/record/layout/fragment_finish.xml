@@ -197,6 +197,7 @@
         android:layout_gravity="center"
         android:gravity="center_horizontal|top"
         />
+
     <Button
         android:layout_width="150dp"
         android:layout_height="50dp"
@@ -209,8 +210,8 @@
         android:textSize="18sp"
         android:textColor="@color/black"
         android:backgroundTint="#DEDEDE"
-        app:cornerRadius="18dp"
-        ></Button>
+        app:cornerRadius="18dp" />
+
     <Button
         android:layout_width="150dp"
         android:layout_height="50dp"
@@ -223,7 +224,6 @@
         android:textSize="18sp"
         android:textColor="@color/black"
         android:backgroundTint="@color/color_palette_3"
-        app:cornerRadius="18dp"
-        ></Button>
+        app:cornerRadius="18dp" />
 
 </LinearLayout>
