@@ -16,8 +16,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.text.format.DateUtils;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,7 +26,6 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.example.dailyrunning.Model.Activity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Record.Spotify.SpotifyActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,28 +39,23 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.maps.android.SphericalUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
-    private String INTENT_LATLNGARRLIST= "latlngarrlist";
-    private String INTENT_DISTANCEKEY ="distance";
-    private  String INTENT_TIMEKEY = "time";
-    private String INTENT_DATECREATED= "datecreated";
+    private String INTENT_LATLNGARRLIST = "latlngarrlist";
+    private String INTENT_DISTANCEKEY = "distance";
+    private String INTENT_TIMEKEY = "time";
+    private String INTENT_DATECREATED = "datecreated";
     // variable for Google Map API
     private GoogleMap mMap;
     private CameraPosition mCameraPosition;
@@ -78,9 +70,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean mLocationPermissionGranted;
     ArrayList<LatLng> list = new ArrayList<LatLng>();
 
-    private Context mContext=this;
+    private MaterialCardView mBottomControlCardView;
+    private Context mContext = this;
     private TextView textlength = null;
-    private TextView textView=null;
+    private TextView textView = null;
     private TextView textCalories = null;
     FloatingActionButton startButton;
     ImageButton endButton;
@@ -90,7 +83,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     boolean mBound = false;
     Intent startWatchIntent;
     Intent stopWatchIntent;
-    LinearLayout layout,layout1,layout2;
     Calendar c;
     String formattedDate = "";
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
@@ -102,18 +94,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_record);
         setTitle(getString(R.string.currentRunning));
 
-        //create the view elements
-        textView = (TextView) findViewById(R.id.data_time);
-        startButton = (FloatingActionButton) findViewById(R.id.start);
-        endButton = (ImageButton) findViewById(R.id.btnEnd);
-        textlength = (TextView) findViewById(R.id.data_distance);
-        layout =(LinearLayout) findViewById(R.id.staticPostLayout);
-        layout1 =(LinearLayout) findViewById(R.id.staticPostLayout1);
-        layout2 =(LinearLayout) findViewById(R.id.staticPostLayout2);
-        pauseButton=(ImageButton) findViewById(R.id.btnPause) ;
-        countinueButton = (ImageButton) findViewById(R.id.btnCountinue);
-        startWatchIntent = new Intent(this, StopWatchService.class);
-        stopWatchIntent = new Intent(this, StopWatchService.class);
+        initView();
+
         c = Calendar.getInstance();
 
 
@@ -129,9 +111,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mLocationRequest.setFastestInterval(100);
         // request High accuracy location based on the need of this app
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-         /* when the start button is pressed, start the stopwatch service
-          * and bind to that service.
-           * */
+        /* when the start button is pressed, start the stopwatch service
+         * and bind to that service.
+         * */
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startService(startWatchIntent);
@@ -140,11 +122,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // when the walk has started, take note of the current time.
 
                 formattedDate = df.format(c.getTime());
-                startButton.setVisibility(View.INVISIBLE);
-                layout.setVisibility(View.VISIBLE);
-                layout1.setVisibility(View.VISIBLE);
-                layout2.setVisibility(View.VISIBLE);
-                pauseButton.setVisibility(View.VISIBLE);
+                startButton.setVisibility(View.GONE);
+                mBottomControlCardView.setVisibility(View.VISIBLE);
                 requestLocationUpdates(list);
 
             }
@@ -154,7 +133,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mBound = false;
                 countinueButton.setVisibility(View.VISIBLE);
                 endButton.setVisibility(View.VISIBLE);
-                pauseButton.setVisibility(View.INVISIBLE);
+                pauseButton.setVisibility(View.GONE);
 
             }
         });
@@ -162,9 +141,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         countinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBound=true;
-                countinueButton.setVisibility(View.INVISIBLE);
-                endButton.setVisibility(View.INVISIBLE);
+                mBound = true;
+                countinueButton.setVisibility(View.GONE);
+                endButton.setVisibility(View.GONE);
                 pauseButton.setVisibility(View.VISIBLE);
             }
         });
@@ -178,10 +157,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mBound = false;
                 }
                 Intent intentToFinish = new Intent(getApplicationContext(), com.example.dailyrunning.Record.FinishActivity.class);
-                intentToFinish.putExtra(INTENT_DISTANCEKEY,computedDistance);
-                intentToFinish.putExtra(INTENT_TIMEKEY,elapsedTime);
-                intentToFinish.putExtra(INTENT_LATLNGARRLIST,list);
-                intentToFinish.putExtra(INTENT_DATECREATED,formattedDate);
+                intentToFinish.putExtra(INTENT_DISTANCEKEY, computedDistance);
+                intentToFinish.putExtra(INTENT_TIMEKEY, elapsedTime);
+                intentToFinish.putExtra(INTENT_LATLNGARRLIST, list);
+                intentToFinish.putExtra(INTENT_DATECREATED, formattedDate);
                 startActivity(intentToFinish);
             }
         });
@@ -205,7 +184,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     long elapsedTime = stopWatchService.getElapsedTime();
                                     String formattedTime = DateUtils.formatElapsedTime(elapsedTime);
                                     textView.setText(formattedTime);
-                                    @SuppressLint("DefaultLocale") String Sum = String.format("%.2f", getDistance()/100.0);
+                                    @SuppressLint("DefaultLocale") String Sum = String.format("%.2f", getDistance() / 100.0);
                                     textlength.setText(Sum);
                                 }
                             }
@@ -218,11 +197,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         t.start();
 
         //region spotify
-        findViewById(R.id.logo_typo).setOnClickListener(v->{
-            Intent spotifyIntent=new Intent(mContext, SpotifyActivity.class);
+        findViewById(R.id.logo_typo).setOnClickListener(v -> {
+            Intent spotifyIntent = new Intent(mContext, SpotifyActivity.class);
             startActivity(spotifyIntent);
         });
         //endregion
+    }
+
+    private void initView() {
+        //create the view elements
+        textView = (TextView) findViewById(R.id.data_time);
+        startButton = (FloatingActionButton) findViewById(R.id.start);
+        endButton = (ImageButton) findViewById(R.id.btnEnd);
+        textlength = (TextView) findViewById(R.id.data_distance);
+
+        pauseButton = (ImageButton) findViewById(R.id.btnPause);
+        countinueButton = (ImageButton) findViewById(R.id.btnCountinue);
+        mBottomControlCardView = findViewById(R.id.bottom_control_centre_card_view);
+        startWatchIntent = new Intent(this, StopWatchService.class);
+        stopWatchIntent = new Intent(this, StopWatchService.class);
     }
 
     @SuppressLint("MissingPermission")
@@ -230,11 +223,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mFusedLocationClient.requestLocationUpdates(mLocationRequest, new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                onLocationChanged(locationResult.getLastLocation(),tList);
+                onLocationChanged(locationResult.getLastLocation(), tList);
             }
         }, null);
     }
-    private void onLocationChanged(Location location,ArrayList<LatLng> tList) {
+
+    private void onLocationChanged(Location location, ArrayList<LatLng> tList) {
         tList.add(new LatLng(location.getLatitude(), location.getLongitude()));
 
         Polyline line = mMap.addPolyline(new PolylineOptions()
@@ -290,12 +284,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
                     mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
                 }
-            });}
-            // disable this because after the POI marker popup this tool will be added automatically
-            mMap.getUiSettings().setMapToolbarEnabled(false);
+            });
+        }
+        // disable this because after the POI marker popup this tool will be added automatically
+        mMap.getUiSettings().setMapToolbarEnabled(false);
     }
-
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -314,11 +307,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
     }
+
     /**
-     *Loop through the arrayList of latlng
+     * Loop through the arrayList of latlng
      * and compute the distance between each latlng
      *
-     * @return  total distance covered in meters
+     * @return total distance covered in meters
      */
     private double getDistance() {
 
