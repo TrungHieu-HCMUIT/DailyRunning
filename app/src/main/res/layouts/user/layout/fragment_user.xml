@@ -28,8 +28,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ImageButton
+                android:id="@+id/setting_imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="8dp"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:background="@null"
+                android:clickable="true"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_setting" />
+
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/avatarView2"
+                android:id="@+id/avatarView"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
                 android:src="@mipmap/ic_launcher"
@@ -74,12 +87,12 @@
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/avatarView2" />
+                app:layout_constraintTop_toBottomOf="@+id/avatarView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/user_textView"
+            android:id="@+id/name_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -165,6 +178,25 @@
 
             </LinearLayout>
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_running_point" />
+
+        <TextView
+            android:id="@+id/running_point_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="3dp"
+            android:fontFamily="@font/svn_avo_bold"
+            android:text="999"
+            android:textColor="#333333"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/textView8"
@@ -299,7 +331,62 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/statistical_viewPager2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+        </androidx.viewpager2.widget.ViewPager2>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+
+            <TextView
+                android:id="@+id/doiQua_texView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/see_all_button"
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="false"
+                android:layout_marginLeft="24dp"
+                android:fontFamily="@font/svn_avo"
+                android:text="Đổi quà"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/see_all_button"
+                android:layout_width="75dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp"
+
+                android:backgroundTint="#F0F0F0"
+                android:fontFamily="@font/roboto_regular"
+                android:padding="0dp"
+                android:paddingLeft="8dp"
+                android:paddingTop="2dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="2dp"
+                android:text="XEM TẤT CẢ"
+                android:textColor=" #ECBA67"
+                android:textSize="8dp"
+                android:textStyle="bold"
+                app:cornerRadius="18dp"
+                app:rippleColor=" #ECBA67" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/gift_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/doiQua_texView"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="15dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 </ScrollView>

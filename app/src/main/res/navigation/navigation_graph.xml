@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.dailyrunning.Home.HomeFragment"
+        android:label="HomeFragment" >
+        <action
+            android:id="@+id/action_homeFragment_to_findFragment"
+            app:destination="@id/findFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/findFragment"
+        android:name="com.example.dailyrunning.Home.Find.FindFragment"
+        android:label="FindFragment" />
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.example.dailyrunning.User.UserFragment"
+        android:label="UserFragment" >
+        <action
+            android:id="@+id/action_userFragment_to_giftFragment"
+            app:destination="@id/giftFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/giftFragment"
+        android:name="com.example.dailyrunning.User.GiftFragment"
+        android:label="fragment_gift"
+        tools:layout="@layout/fragment_gift" />
+</navigation>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginRight="23dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="107dp"
+        tools:backgroundTint="#F5F5F5"
+        app:cardCornerRadius="10dp"
+
+        android:layout_height="150dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/gift_imageView"
+                android:layout_width="match_parent"
+                android:layout_height="107dp"
+                android:src="@drawable/place_holder_picture"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:id="@+id/provider_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gift_imageView"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Tên nhà cung cấp"
+
+                android:textColor="#666666"
+                android:textSize="8sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/gift_detail_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="1dp"
+                android:textColor="#333333"
+                android:textSize="8sp"
+                android:text="Chi tiết ưu đãi"
+                android:layout_below="@id/provider_name_textView"/>
+
+            <Button
+                android:id="@+id/point_button"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:layout_below="@id/gift_imageView"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="9dp"
+                android:fontFamily="@font/roboto_regular"
+                android:padding="0dp"
+                android:backgroundTint="#FFE7BF"
+                android:paddingBottom="0dp"
+                android:clickable="false"
+                android:text="20"
+                android:textColor="#D68D15"
+                android:textSize="8sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/running_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="6sp"
+                android:text="RUNNING"
+                android:layout_alignParentEnd="true"
+                android:textColor="#333333"
+                android:textStyle="bold"
+                android:layout_marginEnd="7dp"
+                android:layout_marginTop="-5dp"
+                android:layout_below="@id/point_button"/>
+
+        </RelativeLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

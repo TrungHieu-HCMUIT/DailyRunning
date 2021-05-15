@@ -1,8 +1,8 @@
     package com.example.dailyrunning.Authentication;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -38,14 +38,14 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /*
@@ -166,8 +166,27 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    //region showDialog message
+
+    private void showDialog(String title,String message)
+    {
+        new androidx.appcompat.app.AlertDialog.Builder(mContext)
+                .setTitle(title)
+                .setMessage(message)
+
+
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
+    //endreion
 
     //region signInWithEmailAndPassword
+
     private void signInWithEmailAndPassword(String email,String password)
     {
         mFirebaseAuth.signInWithEmailAndPassword(email,password)
@@ -182,6 +201,18 @@ public class LoginActivity extends AppCompatActivity {
                 data.putExtra("newUser",currentUser);
                 setResult(RESULT_OK,data);
                 finish();
+            }
+            else
+            {
+                Log.v("Wrongpass",task.getException().toString());
+                if(task.getException() instanceof FirebaseAuthInvalidCredentialsException)
+                {
+                    showDialog("Lỗi đăng nhập","Sai mật khẩu");
+                }
+                else if(task.getException() instanceof FirebaseAuthInvalidUserException)
+                {
+                    showDialog("Lỗi đăng nhập","Không tồn tại người dùng này");
+                }
             }
         }
     });
@@ -242,31 +273,28 @@ public class LoginActivity extends AppCompatActivity {
         checkTimeOut();
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mFirebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                         if (task.isSuccessful()) {
-                             loginTimeOut.set(true);
+                .addOnCompleteListener(this, task -> {
+                     if (task.isSuccessful()) {
+                         loginTimeOut.set(true);
 
-                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            Intent data=new Intent();
-                            UserInfo currentUser=new UserInfo(user.getDisplayName(),user.getEmail(),0,user.getUid(),null);
-                            mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
-                            data.putExtra("newUser",currentUser);
-                            setResult(RESULT_OK,data);
-                            finish();
-                            //updateUI(user);
-                        } else {
-                             loginTimeOut.set(false);
+                         // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithCredential:success");
+                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                        Intent data=new Intent();
+                        UserInfo currentUser=new UserInfo(user.getDisplayName(),user.getEmail(),0,user.getUid(),null);
+                        mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
+                        data.putExtra("newUser",currentUser);
+                        setResult(RESULT_OK,data);
+                        finish();
+                        //updateUI(user);
+                    } else {
+                         loginTimeOut.set(false);
 
-                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginActivity.this , "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
-                        }
+                         // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        Toast.makeText(LoginActivity.this , "Authentication failed.",
+                                Toast.LENGTH_SHORT).show();
+                        //updateUI(null);
                     }
                 });
     }
@@ -341,6 +369,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //endregion
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //FB login
@@ -351,7 +381,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode==RESULT_OK) {
                 UserInfo newUser = (UserInfo) data.getExtras().getSerializable("newUser");
                 mUserInfoRef.child(newUser.getUserID()).setValue(newUser);
-               signInWithEmailAndPassword(newUser.getEmail(),newUser.getPassword());
+                signInWithEmailAndPassword(newUser.getEmail(),newUser.getPassword());
             }
         }
         if (requestCode == RC_SIGN_IN_GOOGLE) {

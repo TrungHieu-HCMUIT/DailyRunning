@@ -2,11 +2,16 @@ package com.example.dailyrunning.Home;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.google.android.material.appbar.AppBarLayout;
+
 public class HomeScreenAdapter extends FragmentStateAdapter {
-    public HomeScreenAdapter(@NonNull Fragment fragment) {
-        super(fragment);
+    public HomeScreenAdapter(@NonNull FragmentManager fragmentManager, Lifecycle lifecycle) {
+        super(fragmentManager,lifecycle);
+
     }
 
     @NonNull

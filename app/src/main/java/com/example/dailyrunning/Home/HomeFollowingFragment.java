@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -24,7 +25,7 @@ public class HomeFollowingFragment extends Fragment {
     private ArrayList<PostDataTest> postList = new ArrayList<>();
     private RecyclerView recyclerView;
     private PostViewAdapter postViewAdapter;
-
+    private HomeViewModel mHomeViewModel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,6 +40,12 @@ public class HomeFollowingFragment extends Fragment {
         populateData();
         postViewAdapter = new PostViewAdapter(context, postList);
         recyclerView.setAdapter(postViewAdapter);
+        mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        if (mHomeViewModel.followingRecyclerViewState!=null)
+        {
+            recyclerView.getLayoutManager().onRestoreInstanceState(mHomeViewModel.followingRecyclerViewState);
+            mHomeViewModel.followingRecyclerViewState=null;
+        }
     }
 
     private void populateData() {
@@ -55,4 +62,14 @@ public class HomeFollowingFragment extends Fragment {
         postList.add(new PostDataTest("https://instagram.fsgn5-7.fna.fbcdn.net/v/t51.2885-15/e35/s320x320/84331842_583887932165319_8118326077425487737_n.jpg?tp=1&_nc_ht=instagram.fsgn5-7.fna.fbcdn.net&_nc_cat=103&_nc_ohc=8RvTW_J8K30AX8sMiy7&edm=ABfd0MgAAAAA&ccb=7-4&oh=22ad398506d4489d445e4755f8d7a9ce&oe=608F071E&_nc_sid=7bff83", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
         postList.add(new PostDataTest("https://instagram.fsgn5-2.fna.fbcdn.net/v/t51.2885-15/e35/c0.180.1440.1440a/s320x320/83318224_175955883637145_5807612225577421478_n.jpg?tp=1&_nc_ht=instagram.fsgn5-2.fna.fbcdn.net&_nc_cat=105&_nc_ohc=vNxxf2331PEAX_7boVB&edm=ABfd0MgAAAAA&ccb=7-4&oh=a594b68be928ffb0f18867dc5e2a35ff&oe=608F6C11&_nc_sid=7bff83", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
     }
+
+    //region savestate
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mHomeViewModel.followingRecyclerViewState=recyclerView.getLayoutManager().onSaveInstanceState();
+    }
+
+    //endregion
 }

@@ -5,24 +5,30 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.dailyrunning.Authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Record.MapsActivity;
-import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.Model.UserInfo;
+import com.example.dailyrunning.User.UserFragment;
 import com.example.dailyrunning.Utils.UserViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -31,16 +37,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class HomeActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
-    private UserInfo mCurrentUser;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mUserInfoRef;
     private DatabaseReference mCurrentUserRef;
@@ -51,9 +57,8 @@ public class HomeActivity extends AppCompatActivity {
     //Viewmodel to exchange data between fragment or activity
     private UserViewModel mUserViewModel;
     private Context mContext = HomeActivity.this;
-
     private static final String TAG = HomeActivity.class.getSimpleName();
-
+    private NavController mNavController;
     private ImageView image;
 
     private BottomNavigationViewEx bottomNavigationViewEx;
@@ -62,6 +67,23 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
+
+        // Add code to print out the key hash
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.example.dailyrunning",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }
         //init firebaseAuth
         mFirebaseAuth=FirebaseAuth.getInstance();
         setUpAuthStateListener();
@@ -72,24 +94,24 @@ public class HomeActivity extends AppCompatActivity {
         setUpDatabase();
 
 
+        //init userviewmodel
+        mUserViewModel=new ViewModelProvider(this).get(UserViewModel.class);
+
+        //
+
         // Binding views by its id
         initWidgets();
 
-        // Loading the default fragment (Post Fragment)
-        loadFragment(new HomeFragment());
+
 
         // Enable BottomNavigationViewEx
         setupBottomNavView();
 
-        FloatingActionButton newrecord =(FloatingActionButton) findViewById(R.id.newRecord);
-        newrecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MapsActivity.class);
-                startActivityForResult(intent, 0);
-            }
-        });
+
+
+
     }
+
 
     //region firebaseAuth
     private void showEmailVerificationDialog() {
@@ -103,7 +125,6 @@ public class HomeActivity extends AppCompatActivity {
                         mFirebaseAuth.getCurrentUser().sendEmailVerification();
                     }
                 })
-
 
                 .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
@@ -122,9 +143,11 @@ public class HomeActivity extends AppCompatActivity {
         {
             if(resultCode==RESULT_OK)
             {
-                mCurrentUser=(UserInfo) data.getExtras().getSerializable("newUser");
+                mUserViewModel.currentUser.setValue((UserInfo) data.getExtras().getSerializable("newUser"));
 
-                Toast.makeText(this, "Welcome "+mCurrentUser.getEmail(), Toast.LENGTH_SHORT).show();
+                //update ui
+
+                Toast.makeText(this, "Welcome "+mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
             }
             else if(resultCode==RESULT_CANCELED)
             {
@@ -145,28 +168,24 @@ public class HomeActivity extends AppCompatActivity {
     }
     private void checkAuthenticationState()
     {
-        if(mFirebaseAuth.getCurrentUser()==null)
+        FirebaseUser mCurrentUser =mFirebaseAuth.getCurrentUser();
+        if(mCurrentUser ==null)
         {
             startActivityForResult(new Intent(this, LoginActivity.class),RC_SIGN_IN);
         }
         else
         {
-            FirebaseUser firebaseUser=mFirebaseAuth.getCurrentUser();
-            mCurrentUserRef=mFirebaseDatabase.getReference().child("UserInfo").child(firebaseUser.getUid());
+            mCurrentUserRef=mFirebaseDatabase.getReference().child("UserInfo").child(mCurrentUser.getUid());
 
-            mCurrentUserRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if(!task.isSuccessful())
-                        return;
-                    DataSnapshot taskRes=task.getResult();
-                    mCurrentUser=taskRes.getValue(UserInfo.class);
-                    if(mCurrentUser==null)
-                        return;
-                    Log.v("UserGreet","Email: "+mCurrentUser.getEmail()+"\nID= "+mCurrentUser.getUserID());
-                }
+            mCurrentUserRef.get().addOnCompleteListener(task -> {
+                if(!task.isSuccessful())
+                    return;
+                DataSnapshot taskRes=task.getResult();
+                mUserViewModel.currentUser.setValue(taskRes.getValue(UserInfo.class));
+                if(mUserViewModel.currentUser.getValue()==null)
+                    return;
             });
-            if(firebaseUser!=null &&!firebaseUser.isEmailVerified())
+            if(!mCurrentUser.isEmailVerified())
             {
                 showEmailVerificationDialog();
             }
@@ -183,18 +202,7 @@ public class HomeActivity extends AppCompatActivity {
     //region firebase database
     private void setUpDatabase()
     {
-        mUserInfoRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //updateUI
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
     //endregion
 
@@ -202,10 +210,16 @@ public class HomeActivity extends AppCompatActivity {
 
     //region Bottom widget and Fragment
     private void initWidgets() {
-        bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewEx);
+        bottomNavigationViewEx = findViewById(R.id.bottomNavViewEx);
+        mNavController= Navigation.findNavController(this,R.id.fragment_container);
     }
 
     private void setupBottomNavView() {
+        //region Setup with navigationUI
+        NavigationUI.setupWithNavController(bottomNavigationViewEx,mNavController);
+        //endregion
+
+
         // Set Bottom Navigation View styles
         bottomNavigationViewEx.setBackground(null);
         bottomNavigationViewEx.getMenu().getItem(1).setEnabled(false);
@@ -217,7 +231,7 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationViewEx.setTextVisibility(false);
 
         // Register OnNavigationItemSelectedListener to bottomNavigationViewEx
-        bottomNavigationViewEx.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        /*bottomNavigationViewEx.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment fragment = null;
@@ -234,10 +248,18 @@ public class HomeActivity extends AppCompatActivity {
 
                 return loadFragment(fragment);
             }
+        });*/
+        FloatingActionButton newrecord =(FloatingActionButton) findViewById(R.id.newRecord);
+        newrecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapsActivity.class);
+                startActivityForResult(intent, 0);
+            }
         });
     }
 
-    private boolean loadFragment(Fragment fragment) {
+  /*  private boolean loadFragment(Fragment fragment) {
         // Switching fragment
         if (fragment != null) {
             getSupportFragmentManager()
@@ -246,7 +268,8 @@ public class HomeActivity extends AppCompatActivity {
                     .commit();
             return true;
         }
+
         return false;
-    }
+    }*/
     //endregion
 }

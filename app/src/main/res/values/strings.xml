@@ -20,5 +20,7 @@
     <string name="runCompleted">Run Completed</string>
     <string name="back">Back</string>
     <string name="luuhoatdong">Lưu hoạt động</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
