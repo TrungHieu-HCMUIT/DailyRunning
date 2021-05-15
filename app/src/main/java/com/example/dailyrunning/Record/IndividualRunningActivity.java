@@ -54,8 +54,6 @@ public class IndividualRunningActivity extends AppCompatActivity implements OnMa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_post);
-        setTitle("Details of walk:");
-
 
         Intent intent = getIntent();
         String dateTimeRecv = intent.getExtras().getString(INTENT_DATETIMEKEY);

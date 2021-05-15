@@ -171,17 +171,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double computedDistance = getDistance();
                 long elapsedTime = stopWatchService.getElapsedTime();
                 stopService(stopWatchIntent);
-                unbindService(mConnection);
-                mBound = false;
-
+                if (mBound) {
+                    unbindService(mConnection);
+                    mBound = false;
+                }
                 Intent intentToFinish = new Intent(getApplicationContext(), com.example.dailyrunning.Record.FinishActivity.class);
                 intentToFinish.putExtra(INTENT_DISTANCEKEY,computedDistance);
                 intentToFinish.putExtra(INTENT_TIMEKEY,elapsedTime);
                 intentToFinish.putExtra(INTENT_LATLNGARRLIST,list);
                 intentToFinish.putExtra(INTENT_DATECREATED,formattedDate);
                 startActivity(intentToFinish);
-
-
             }
         });
 
@@ -238,10 +237,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     protected void onDestroy() {
         super.onDestroy();
-        if (mBound) {
-            unbindService(mConnection);
-            mBound = false;
-        }
+
     }
 
     private ServiceConnection mConnection = new ServiceConnection() {
@@ -278,8 +274,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //mMap.getUiSettings().setZoomControlsEnabled(true);
         //enable positioning button
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        //getCurrentLocation
-        mMap.setMyLocationEnabled(true);
         if (mMap != null) {
             mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
                 @Override

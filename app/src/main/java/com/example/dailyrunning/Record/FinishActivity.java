@@ -81,6 +81,8 @@ public class FinishActivity extends AppCompatActivity {
                         pace
                 );
                 exampleRun.setValue(activity);
+                setINTENT();
+
             }
         });
 
@@ -93,7 +95,16 @@ public class FinishActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
+    public void setINTENT()
+    {
+        Intent intentToMap = new Intent(getApplicationContext(), com.example.dailyrunning.Home.HomeActivity.class);
+        startActivity(intentToMap);
+    }
     public String formatDistance(double pDistance) {
         if (pDistance / 1000 >= 1) {
             @SuppressLint("DefaultLocale") String distanceStr = String.format("%.2f", (pDistance / 1000));
