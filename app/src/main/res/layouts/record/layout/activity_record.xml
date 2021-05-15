@@ -114,6 +114,7 @@
             android:layout_marginTop="620dp"
             android:gravity="center"
             android:orientation="horizontal">
+
             <ImageButton
                 android:layout_width="80dp"
                 android:layout_height="80dp"
@@ -122,21 +123,22 @@
                 android:layout_gravity="center"
                 android:background="@drawable/ic_baseline_stop_circle_24"
 
-                ></ImageButton>
+                />
+
             <ImageButton
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:id="@+id/btnPause"
                 android:visibility="invisible"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_baseline_pause_circle_filled_24"></ImageButton>
+                android:background="@drawable/ic_baseline_pause_circle_filled_24" />
             <ImageButton
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:id="@+id/btnCountinue"
                 android:visibility="invisible"
                 android:background="@drawable/ic_baseline_play_circle_filled_24"
-                ></ImageButton>
+                />
         </LinearLayout>
 
     </FrameLayout>
