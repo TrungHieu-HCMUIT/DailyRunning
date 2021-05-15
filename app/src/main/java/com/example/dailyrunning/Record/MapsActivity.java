@@ -30,6 +30,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.dailyrunning.Model.Activity;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Record.Spotify.SpotifyActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -77,6 +78,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean mLocationPermissionGranted;
     ArrayList<LatLng> list = new ArrayList<LatLng>();
 
+    private Context mContext=this;
     private TextView textlength = null;
     private TextView textView=null;
     private TextView textCalories = null;
@@ -214,6 +216,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
         t.start();
+
+        //region spotify
+        findViewById(R.id.logo_typo).setOnClickListener(v->{
+            Intent spotifyIntent=new Intent(mContext, SpotifyActivity.class);
+            startActivity(spotifyIntent);
+        });
+        //endregion
     }
 
     @SuppressLint("MissingPermission")
