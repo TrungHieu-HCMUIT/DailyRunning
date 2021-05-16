@@ -34,7 +34,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="8dp"
-                android:foreground="?attr/selectableItemBackgroundBorderless"
+
+                android:foreground="?android:attr/selectableItemBackground"
+
                 android:background="@null"
                 android:clickable="true"
                 app:layout_constraintRight_toRightOf="parent"
@@ -68,7 +70,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/user_banner" />
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/change_avatar_image_button"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:background="@drawable/ic_user_camera_background"
@@ -390,3 +392,4 @@
 
     </LinearLayout>
 </ScrollView>
+

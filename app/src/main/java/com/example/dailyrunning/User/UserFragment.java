@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +84,7 @@ public class UserFragment extends Fragment {
     private NavController mNavController;
     private UserViewModel mUserViewModel;
     private ScrollView mScrollView;
+    private ImageButton mChangeAvatarImageButton;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -204,7 +206,7 @@ public class UserFragment extends Fragment {
     }
 
     private void setUpUpdateAvatar() {
-        avatarView.setOnClickListener(new View.OnClickListener() {
+        mChangeAvatarImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 UserInfo userInfo = mCurrentUser.getProviderData().get(1);
@@ -239,6 +241,7 @@ public class UserFragment extends Fragment {
         mGiftRecyclerView=rootView.findViewById(R.id.gift_recyclerView);
         mSeeAllGiftButton =rootView.findViewById(R.id.see_all_button);
         mScrollView=rootView.findViewById(R.id.scroll_view);
+        mChangeAvatarImageButton=rootView.findViewById(R.id.change_avatar_image_button);
     }
 
 

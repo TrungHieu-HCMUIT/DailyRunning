@@ -1,6 +1,8 @@
 package com.example.dailyrunning.Record.Spotify;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -181,6 +183,26 @@ public class MyMusicFragment extends Fragment {
             trackAdapter.filter("");
             playlistAdapter.filter("");
             mSearchTextInputLayout.getEditText().setText("");
+        });
+        mSearchTextInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().length()==0)
+                {
+                    trackAdapter.filter("");
+                    playlistAdapter.filter("");
+                }
+            }
         });
 
 

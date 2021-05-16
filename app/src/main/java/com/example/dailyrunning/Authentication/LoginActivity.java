@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
             if(task.isSuccessful()) {
                 //TODO: create userinfo instance and return it back postActitivy
                 FirebaseUser firebaseUser= task.getResult().getUser();
-                UserInfo currentUser=new UserInfo("testAcc",firebaseUser.getEmail(),0,firebaseUser.getUid(),null);
+                UserInfo currentUser=new UserInfo(firebaseUser.getDisplayName(),firebaseUser.getEmail(),0,firebaseUser.getUid());
                 Intent data=new Intent();
                 data.putExtra("newUser",currentUser);
                 setResult(RESULT_OK,data);
@@ -250,7 +250,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                             Intent data=new Intent();
-                            UserInfo currentUser=new UserInfo(firebaseUser.getDisplayName(),firebaseUser.getEmail(),0,firebaseUser.getUid(),null);
+                            UserInfo currentUser=new UserInfo(firebaseUser.getDisplayName(),firebaseUser.getEmail(),0,firebaseUser.getUid());
                             mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
                             data.putExtra("newUser",currentUser);
                             setResult(RESULT_OK,data);
@@ -281,7 +281,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
                         Intent data=new Intent();
-                        UserInfo currentUser=new UserInfo(user.getDisplayName(),user.getEmail(),0,user.getUid(),null);
+                        UserInfo currentUser=new UserInfo(user.getDisplayName(),user.getEmail(),0,user.getUid());
                         mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
                         data.putExtra("newUser",currentUser);
                         setResult(RESULT_OK,data);
@@ -381,7 +381,7 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode==RESULT_OK) {
                 UserInfo newUser = (UserInfo) data.getExtras().getSerializable("newUser");
                 mUserInfoRef.child(newUser.getUserID()).setValue(newUser);
-                signInWithEmailAndPassword(newUser.getEmail(),newUser.getPassword());
+                mEmailEditText.setText(newUser.getEmail());
             }
         }
         if (requestCode == RC_SIGN_IN_GOOGLE) {

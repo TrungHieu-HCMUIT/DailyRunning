@@ -106,6 +106,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     private ImageButton mFoldButton;
     private LinearLayout mBottomControlCentreLinearLayout;
     private SpotifyViewModel mSpotifyViewModel;
+    private ImageButton mSpotifyImageButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -172,11 +173,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         };
         t.start();
 
-        //region spotify
-        rootView.findViewById(R.id.logo_typo).setOnClickListener(v -> {
-            mNavController.navigate(R.id.action_recordFragment_to_spotifyFragment);
-        });
-        //endregion
+
     }
 
     private void checkBottomPlayerState() {
@@ -271,6 +268,9 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
             }
 
         });
+        mSpotifyImageButton.setOnClickListener(v->{
+            mNavController.navigate(R.id.action_recordFragment_to_spotifyFragment);
+        });
     }
 
     private void initView() {
@@ -287,6 +287,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         stopWatchIntent = new Intent(getActivity(), StopWatchService.class);
         mBottomControlCentreLinearLayout=rootView.findViewById(R.id.bottom_control_centre_linear_layout);
         mSpotifyViewModel=new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
+        mSpotifyImageButton=rootView.findViewById(R.id.music_image_button);
     }
 
     @SuppressLint("MissingPermission")

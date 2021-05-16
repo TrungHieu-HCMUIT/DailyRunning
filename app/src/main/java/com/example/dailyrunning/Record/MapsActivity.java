@@ -183,7 +183,7 @@ public class MapsActivity extends FragmentActivity {
     @Override
     public void onStop() {
         super.onStop();
-        if (mSpotifyAppRemote.isConnected())
+        if (mSpotifyAppRemote!=null&&mSpotifyAppRemote.isConnected())
             SpotifyAppRemote.disconnect(mSpotifyAppRemote);
 
     }

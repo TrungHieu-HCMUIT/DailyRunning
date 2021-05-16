@@ -111,9 +111,8 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
                 String emailString=mEmailEditText.getText().toString().trim();
-                if (!(emailString.matches(emailPattern)))
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailString).matches())
                 {
                     // or
                     mEmailTextInputLayout.setError("Email không hợp lệ");
@@ -178,7 +177,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Intent data=new Intent();
                             FirebaseUser firebaseUser=mAuthResult.getUser();
                             //TODO wait for complete ui then add gender,dob,...;
-                            UserInfo newUser=new UserInfo(displayNameString,firebaseUser.getEmail(),0,firebaseUser.getUid(),passwordString);
+                            UserInfo newUser=new UserInfo(displayNameString,firebaseUser.getEmail(),0,firebaseUser.getUid());
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(displayNameString).build();
                             firebaseUser.updateProfile(profileUpdates);
 
