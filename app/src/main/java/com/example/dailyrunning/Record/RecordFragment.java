@@ -1,6 +1,8 @@
 package com.example.dailyrunning.Record;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,6 +10,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -28,7 +31,9 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -94,6 +99,8 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
     private View rootView;
     private NavController mNavController;
+    private ImageButton mFoldButton;
+    private LinearLayout mBottomControlCentreLinearLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,7 +108,6 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_record, container, false);
         mNavController = Navigation.findNavController(getActivity(), R.id.record_fragment_container);
-
 
         return rootView;
     }
@@ -127,6 +133,48 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         mLocationRequest.setFastestInterval(100);
         // request High accuracy location based on the need of this app
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        setUpOnClick();
+
+        /**
+         * Every one second: display the time that has passed since the walk has started.
+         */
+        Thread t = new Thread() {
+
+            @Override
+            public void run() {
+                try {
+                    while (!isInterrupted()) {
+                        Thread.sleep(1000);
+                        if (getActivity() != null)
+                            getActivity().runOnUiThread(new Runnable() {
+                                @SuppressLint("SetTextI18n")
+                                @Override
+                                public void run() {
+                                    if (mBound) {
+                                        long elapsedTime = stopWatchService.getElapsedTime();
+                                        String formattedTime = DateUtils.formatElapsedTime(elapsedTime);
+                                        textView.setText(formattedTime);
+                                        @SuppressLint("DefaultLocale") String Sum = String.format("%.2f", getDistance() / 100.0);
+                                        textlength.setText(Sum);
+                                    }
+                                }
+                            });
+                    }
+                } catch (InterruptedException e) {
+                }
+            }
+        };
+        t.start();
+
+        //region spotify
+        rootView.findViewById(R.id.logo_typo).setOnClickListener(v -> {
+            mNavController.navigate(R.id.action_recordFragment_to_spotifyFragment);
+        });
+        //endregion
+    }
+
+    private void setUpOnClick() {
         /* when the start button is pressed, start the stopwatch service
          * and bind to that service.
          * */
@@ -180,44 +228,28 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
                 mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
             }
         });
+        mFoldButton.setOnClickListener(v->{
+            if(mFoldButton.getTag().toString().equals("up"))
+            {
 
+                mBottomControlCentreLinearLayout.setVisibility(View.VISIBLE);
 
-        /**
-         * Every one second: display the time that has passed since the walk has started.
-         */
-        Thread t = new Thread() {
-
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        if (getActivity() != null)
-                            getActivity().runOnUiThread(new Runnable() {
-                                @SuppressLint("SetTextI18n")
-                                @Override
-                                public void run() {
-                                    if (mBound) {
-                                        long elapsedTime = stopWatchService.getElapsedTime();
-                                        String formattedTime = DateUtils.formatElapsedTime(elapsedTime);
-                                        textView.setText(formattedTime);
-                                        @SuppressLint("DefaultLocale") String Sum = String.format("%.2f", getDistance() / 100.0);
-                                        textlength.setText(Sum);
-                                    }
-                                }
-                            });
-                    }
-                } catch (InterruptedException e) {
-                }
+                mFoldButton.setTag("down");
+                mFoldButton.setImageResource(R.drawable.ic_up_arrow);
             }
-        };
-        t.start();
+            else if(mFoldButton.getTag().toString().equals("down"))
+            {
 
-        //region spotify
-        rootView.findViewById(R.id.logo_typo).setOnClickListener(v -> {
-            mNavController.navigate(R.id.action_recordFragment_to_spotifyFragment);
+                mBottomControlCentreLinearLayout.setVisibility(View.GONE);
+
+
+
+
+                mFoldButton.setTag("up");
+                mFoldButton.setImageResource(R.drawable.ic_down_arrow);
+            }
+
         });
-        //endregion
     }
 
     private void initView() {
@@ -226,12 +258,13 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         startButton = rootView.findViewById(R.id.start);
         endButton = rootView.findViewById(R.id.btnEnd);
         textlength = rootView.findViewById(R.id.data_distance);
-
+        mFoldButton=rootView.findViewById(R.id.fold_image_button);
         pauseButton = rootView.findViewById(R.id.btnPause);
         countinueButton = rootView.findViewById(R.id.btnCountinue);
         mBottomControlCardView = rootView.findViewById(R.id.bottom_control_centre_card_view);
         startWatchIntent = new Intent(getActivity(), StopWatchService.class);
         stopWatchIntent = new Intent(getActivity(), StopWatchService.class);
+        mBottomControlCentreLinearLayout=rootView.findViewById(R.id.bottom_control_centre_linear_layout);
     }
 
     @SuppressLint("MissingPermission")
@@ -341,6 +374,10 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unbindService(mConnection);
+        if (mBound) {
+            getActivity().unbindService(mConnection);
+            mBound = false;
+        }
     }
+
 }
