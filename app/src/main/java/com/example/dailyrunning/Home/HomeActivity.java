@@ -91,7 +91,6 @@ public class HomeActivity extends AppCompatActivity {
         //init firebase database
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mUserInfoRef=mFirebaseDatabase.getReference().child("UserInfo");
-        setUpDatabase();
 
 
         //init userviewmodel
@@ -185,7 +184,7 @@ public class HomeActivity extends AppCompatActivity {
                 if(mUserViewModel.currentUser.getValue()==null)
                     return;
             });
-            if(!mCurrentUser.isEmailVerified())
+            if(!mCurrentUser.isEmailVerified()&&mCurrentUser.getProviderId().equals("password"))
             {
                 showEmailVerificationDialog();
             }
@@ -199,12 +198,6 @@ public class HomeActivity extends AppCompatActivity {
 
     //endregion
 
-    //region firebase database
-    private void setUpDatabase()
-    {
-
-    }
-    //endregion
 
 
 
@@ -230,25 +223,6 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationViewEx.enableItemShiftingMode(false);
         bottomNavigationViewEx.setTextVisibility(false);
 
-        // Register OnNavigationItemSelectedListener to bottomNavigationViewEx
-        /*bottomNavigationViewEx.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment = null;
-
-                switch (item.getItemId()) {
-                    case R.id.ic_home:
-                        fragment = new HomeFragment();
-                        break;
-
-                    case R.id.ic_user:
-                        fragment = new UserFragment();
-                        break;
-                }
-
-                return loadFragment(fragment);
-            }
-        });*/
         FloatingActionButton newrecord =(FloatingActionButton) findViewById(R.id.newRecord);
         newrecord.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -259,17 +233,5 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-  /*  private boolean loadFragment(Fragment fragment) {
-        // Switching fragment
-        if (fragment != null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, fragment)
-                    .commit();
-            return true;
-        }
 
-        return false;
-    }*/
-    //endregion
 }

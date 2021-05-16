@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.dailyrunning.Model.GiftInfo;
@@ -28,6 +29,11 @@ import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.GiftAdapter;
 import com.example.dailyrunning.Utils.MedalAdapter;
 import com.example.dailyrunning.Utils.UserViewModel;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,6 +48,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.taosif7.android.ringchartlib.RingChart;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +63,9 @@ public class UserFragment extends Fragment {
 
     private static final int RC_PHOTO_PICKER = 101;
     private static final String EMAIL_PROVIDER_ID = "password";
+    private static final String GOOGLE_PROVIDER_ID = "google.com";
+    private static final String FACEBOOK_PROVIDER_ID = "facebook.com";
+
     private FirebaseAuth mFirebaseAuth;
     private RecyclerView mMedalRecyclerView;
     private View rootView;
@@ -83,9 +95,10 @@ public class UserFragment extends Fragment {
         //init viewmodel
         mUserViewModel=new ViewModelProvider(getActivity()).get(UserViewModel.class);
                 //
-        findView();
+        initView();
         userDisplayNameTextView.setOnClickListener(v -> {
             mFirebaseAuth.signOut();
+            LoginManager.getInstance().logOut();
         });
 
         setUpUpdateAvatar();
@@ -156,7 +169,38 @@ public class UserFragment extends Fragment {
 
 
         userDisplayNameTextView.setText(mCurrentUser.getDisplayName().equals("")?mCurrentUser.getEmail():mCurrentUser.getDisplayName());
-        Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
+        loadAvatar();
+    }
+    private void loadAvatar()
+    {
+        UserInfo userInfo = mCurrentUser.getProviderData().get(1);
+        switch (userInfo.getProviderId()) {
+            case EMAIL_PROVIDER_ID:
+            case GOOGLE_PROVIDER_ID:
+                Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
+                break;
+            case FACEBOOK_PROVIDER_ID:
+                GraphRequest request = GraphRequest.newGraphPathRequest(
+                        AccessToken.getCurrentAccessToken(),
+                        "/"+userInfo.getUid()+"/picture?redirect=0&type=normal",
+                        new GraphRequest.Callback() {
+                            @Override
+                            public void onCompleted(GraphResponse response) {
+                                JSONObject res=response.getJSONObject();
+                                try {
+                                    String avatarUrl=res.getJSONObject("data").getString("url");
+                                    Glide.with(avatarView.getContext()).load(avatarUrl).into(avatarView);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                request.executeAsync();
+                break;
+
+        }
     }
 
     private void setUpUpdateAvatar() {
@@ -164,21 +208,28 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 UserInfo userInfo = mCurrentUser.getProviderData().get(1);
-                if (userInfo.getProviderId().equals(EMAIL_PROVIDER_ID)) { //người dùng đăng nhập bằng email mới set avatar được
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
-                    intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                    startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
-                } else // nếu không thì lấy avatar link với tài khoản facebook hoặc google của người dùng
-                {
+                switch (userInfo.getProviderId()) {
+                    case EMAIL_PROVIDER_ID:
+                        //người dùng đăng nhập bằng email mới set avatar được
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.setType("image/*");
+                        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                        startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
+                        break;
 
+                    case FACEBOOK_PROVIDER_ID:
+                        Toast.makeText(getContext(),"Không thể đổi avatar khi đăng nhập bằng Facebook",Toast.LENGTH_LONG).show();
+                            break;
+                    case GOOGLE_PROVIDER_ID:
+                        Toast.makeText(getContext(),"Không thể đổi avatar khi đăng nhập bằng Google",Toast.LENGTH_LONG).show();
+                        break;
                 }
             }
         });
     }
 
 
-    private void findView() {
+    private void initView() {
         userDisplayNameTextView = (TextView) rootView.findViewById(R.id.name_textView);
         avatarView = rootView.findViewById(R.id.avatarView);
         mRingChart = rootView.findViewById(R.id.chart_concentric);
