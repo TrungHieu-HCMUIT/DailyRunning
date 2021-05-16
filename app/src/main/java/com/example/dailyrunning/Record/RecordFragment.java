@@ -23,6 +23,8 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -38,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Record.Spotify.SpotifyViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -54,6 +57,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.SphericalUtil;
+import com.spotify.protocol.types.Track;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -101,6 +105,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     private NavController mNavController;
     private ImageButton mFoldButton;
     private LinearLayout mBottomControlCentreLinearLayout;
+    private SpotifyViewModel mSpotifyViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -175,7 +180,19 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void checkBottomPlayerState() {
-
+        Track currentTrack=mSpotifyViewModel.mCurrentTrack.getValue();
+        if(currentTrack!=null)
+        {
+            FragmentManager mFragmentManager=getChildFragmentManager();
+            Fragment bottomPlayer=mFragmentManager.findFragmentById(R.id.bottom_player_fragment);
+            mFragmentManager.beginTransaction().show(bottomPlayer).commit();
+        }
+        else
+        {
+            FragmentManager mFragmentManager=getChildFragmentManager();
+            Fragment bottomPlayer=mFragmentManager.findFragmentById(R.id.bottom_player_fragment);
+            mFragmentManager.beginTransaction().hide(bottomPlayer).commit();
+        }
     }
 
     private void setUpOnClick() {
@@ -269,6 +286,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         startWatchIntent = new Intent(getActivity(), StopWatchService.class);
         stopWatchIntent = new Intent(getActivity(), StopWatchService.class);
         mBottomControlCentreLinearLayout=rootView.findViewById(R.id.bottom_control_centre_linear_layout);
+        mSpotifyViewModel=new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
     }
 
     @SuppressLint("MissingPermission")
