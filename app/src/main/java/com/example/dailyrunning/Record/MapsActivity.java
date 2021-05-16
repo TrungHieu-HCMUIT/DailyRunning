@@ -10,6 +10,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class MapsActivity extends FragmentActivity  {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

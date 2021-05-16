@@ -6,7 +6,7 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_marginBottom="60dp"
+        android:layout_above="@+id/bottom_player_fragment"
         android:layout_height="match_parent">
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"

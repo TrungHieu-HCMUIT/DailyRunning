@@ -1,70 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context=".PlaylistViewFragment">
+    tools:context=".Record.Spotify.PlaylistViewFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/thumb_card_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:cardCornerRadius="10dp">
-
-        <ImageView
-            android:id="@+id/playlist_view_thumbnail_image_view"
-            android:layout_width="190dp"
-            android:layout_height="190dp"
-            android:src="@drawable/placeholder_image"
-            tools:scaleType="centerCrop" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <TextView
-        android:id="@+id/playlist_view_title_text_view"
-        style="@style/music_bold_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ellipsize="marquee"
-
-        android:marqueeRepeatLimit="marquee_forever"
-        android:maxWidth="280dp"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
-        tools:text="Title Title Title Title TitleTitleTitleTitleTitleTitle " />
-
-    <TextView
-        android:id="@+id/playlist_view_description_text_view"
-        style="@style/music_description_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ellipsize="marquee"
-
-        android:marqueeRepeatLimit="marquee_forever"
-        android:maxWidth="280dp"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
-        tools:text="Description Description Description " />
-
-    <Button
-        android:id="@+id/playlist_view_play_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Play"
-        android:layout_marginBottom="16dp"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/playlist_view_recycler_view"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginHorizontal="16dp"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_above="@id/bottom_player_fragment"
+        android:orientation="vertical">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/thumb_card_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="10dp">
 
+            <ImageView
+                android:id="@+id/playlist_view_thumbnail_image_view"
+                android:layout_width="190dp"
+                android:layout_height="190dp"
+                android:src="@drawable/placeholder_image"
+                tools:scaleType="centerCrop" />
+        </com.google.android.material.card.MaterialCardView>
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/playlist_view_title_text_view"
+            style="@style/music_bold_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="marquee"
+
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxWidth="280dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            tools:text="Title Title Title Title TitleTitleTitleTitleTitleTitle " />
+
+        <TextView
+            android:id="@+id/playlist_view_description_text_view"
+            style="@style/music_description_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="marquee"
+
+            android:marqueeRepeatLimit="marquee_forever"
+            android:maxWidth="280dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            tools:text="Description Description Description " />
+
+        <Button
+            android:id="@+id/playlist_view_play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Play"
+            android:layout_marginBottom="16dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playlist_view_recycler_view"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_marginHorizontal="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/bottom_player_fragment"
+        android:layout_width="match_parent"
+        tools:layout="@layout/fragment_bottom_player"
+        android:layout_height="wrap_content"
+        android:name="com.example.dailyrunning.Record.Spotify.BottomPlayerFragment"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

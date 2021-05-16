@@ -156,6 +156,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_above="@id/bottom_player_fragment"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="35dp"
             android:scaleType="centerInside"
@@ -164,7 +165,14 @@
             app:maxImageSize="134dp"
             tools:visibility="invisible" />
 
-
+        <fragment
+            android:id="@+id/bottom_player_fragment"
+            android:layout_width="match_parent"
+            tools:layout="@layout/fragment_bottom_player"
+            android:layout_height="wrap_content"
+            android:name="com.example.dailyrunning.Record.Spotify.BottomPlayerFragment"
+            android:layout_alignParentBottom="true"
+            />
     </RelativeLayout>
 
 </LinearLayout>

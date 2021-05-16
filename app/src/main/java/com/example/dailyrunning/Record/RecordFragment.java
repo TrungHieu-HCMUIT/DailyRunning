@@ -117,7 +117,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState);
 
         initView();
-
+        checkBottomPlayerState();
         c = Calendar.getInstance();
 
 
@@ -172,6 +172,10 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
             mNavController.navigate(R.id.action_recordFragment_to_spotifyFragment);
         });
         //endregion
+    }
+
+    private void checkBottomPlayerState() {
+
     }
 
     private void setUpOnClick() {
