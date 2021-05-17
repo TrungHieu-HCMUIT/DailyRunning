@@ -28,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.example.dailyrunning.Model.GiftInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.GiftAdapter;
+import com.example.dailyrunning.Utils.HomeViewModel;
 import com.example.dailyrunning.Utils.MedalAdapter;
 import com.example.dailyrunning.Utils.UserViewModel;
 import com.facebook.AccessToken;
@@ -88,6 +89,7 @@ public class UserFragment extends Fragment {
     private ScrollView mScrollView;
     private ImageButton mChangeAvatarImageButton;
     private Button mLogOutButton;
+    private HomeViewModel mHomeViewModel;
 
     @Nullable
     @Override
@@ -100,6 +102,7 @@ public class UserFragment extends Fragment {
         //mCurrentUser = mFirebaseAuth.getCurrentUser();
         //init viewmodel
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         //
         initView();
 
@@ -113,6 +116,7 @@ public class UserFragment extends Fragment {
         });
 
 
+        mHomeViewModel.mHomeActivity.getValue().showNavBar();
 
         return view;
     }

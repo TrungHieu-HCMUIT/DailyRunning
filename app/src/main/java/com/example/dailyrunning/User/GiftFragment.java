@@ -6,21 +6,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.example.dailyrunning.Model.GiftInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.AllGiftAdapter;
+import com.example.dailyrunning.Utils.HomeViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class GiftFragment extends Fragment {
@@ -29,6 +29,7 @@ public class GiftFragment extends Fragment {
     private AllGiftAdapter mAllGiftAdapter;
     private ImageButton backButton;
     View rootView;
+    private HomeViewModel mHomeViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,16 +42,19 @@ public class GiftFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rootView=view;
-        findView();
+        initView();
         setUpGiftRecyclerView();
+        mHomeViewModel.mHomeActivity.getValue().hideNavBar();
+
         backButton.setOnClickListener(v->{
             getActivity().onBackPressed();
         });
     }
 
-    private void findView() {
+    private void initView() {
         backButton=rootView.findViewById(R.id.back_button);
         mGiftRecyclerView=rootView.findViewById(R.id.gift_recyclerView);
+        mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
     }
 
     private void setUpGiftRecyclerView() {

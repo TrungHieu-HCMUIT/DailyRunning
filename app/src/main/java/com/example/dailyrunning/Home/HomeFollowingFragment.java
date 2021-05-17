@@ -13,9 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dailyrunning.Model.Post;
 import com.example.dailyrunning.Model.PostDataTest;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Utils.HomeViewModel;
 
 import java.util.ArrayList;
 

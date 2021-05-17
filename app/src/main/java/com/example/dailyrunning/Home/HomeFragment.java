@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Utils.HomeViewModel;
 import com.example.dailyrunning.Utils.UserViewModel;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -52,6 +53,7 @@ public class HomeFragment extends Fragment {
 
         setUpViewPager();
         updateUIWhenUserChanged();
+        mHomeViewModel.mHomeActivity.getValue().showNavBar();
         return rootView;
 
     }

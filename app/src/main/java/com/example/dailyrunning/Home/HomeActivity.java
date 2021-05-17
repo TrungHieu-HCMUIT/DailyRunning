@@ -1,10 +1,8 @@
 package com.example.dailyrunning.Home;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -13,13 +11,8 @@ import androidx.navigation.ui.NavigationUI;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -28,11 +21,8 @@ import com.example.dailyrunning.Authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Record.MapsActivity;
 import com.example.dailyrunning.Model.UserInfo;
-import com.example.dailyrunning.User.UserFragment;
+import com.example.dailyrunning.Utils.HomeViewModel;
 import com.example.dailyrunning.Utils.UserViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,9 +30,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -60,7 +47,7 @@ public class HomeActivity extends AppCompatActivity {
     private static final String TAG = HomeActivity.class.getSimpleName();
     private NavController mNavController;
     private ImageView image;
-
+    private HomeViewModel mHomeViewModel;
     private BottomNavigationViewEx bottomNavigationViewEx;
 
     @Override
@@ -69,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
 
-        // Add code to print out the key hash
+        /*// Add code to print out the key hash
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.example.dailyrunning",
@@ -83,7 +70,7 @@ public class HomeActivity extends AppCompatActivity {
 
         } catch (NoSuchAlgorithmException e) {
 
-        }
+        }*/
         //init firebaseAuth
         mFirebaseAuth = FirebaseAuth.getInstance();
         setUpAuthStateListener();
@@ -93,10 +80,11 @@ public class HomeActivity extends AppCompatActivity {
         mUserInfoRef = mFirebaseDatabase.getReference().child("UserInfo");
 
 
-        //init userviewmodel
+        //init viewmodel
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-
+        mHomeViewModel=new ViewModelProvider(this).get(HomeViewModel.class);
         //
+        mHomeViewModel.mHomeActivity.setValue(this);
 
         // Binding views by its id
         initWidgets();
@@ -108,6 +96,14 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    public void hideNavBar()
+    {
+        findViewById(R.id.bottom_nav_bar).setVisibility(View.GONE);
+    }
+    public void showNavBar()
+    {
+        findViewById(R.id.bottom_nav_bar).setVisibility(View.VISIBLE);
+    }
 
     //region firebaseAuth
     private void showEmailVerificationDialog() {

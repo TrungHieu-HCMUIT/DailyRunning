@@ -2,10 +2,10 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_height="100dp"
+        android:layout_gravity="bottom">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -45,7 +45,7 @@
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
-    </RelativeLayout>
+    </FrameLayout>
 
 </merge>
 

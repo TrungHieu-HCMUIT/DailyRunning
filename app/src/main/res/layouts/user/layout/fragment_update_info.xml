@@ -124,35 +124,22 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="25dp"
             android:orientation="horizontal">
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="10dp">
-
-                <RadioButton
-                    android:layout_width="145dp"
-                    android:layout_height="46dp"
-                    android:text="Nam" />
-            </com.google.android.material.card.MaterialCardView>
-
+            <RadioButton
+                android:id="@+id/male_radio_button"
+                android:layout_width="145dp"
+                android:layout_height="46dp"
+                android:background="@drawable/white_rounded_background"
+                android:text="Nam" />
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_weight="1" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                app:cardCornerRadius="10dp">
-
-                <RadioButton
-                    android:layout_width="145dp"
-                    android:layout_height="46dp"
-                    android:text="Nữ" />
-            </com.google.android.material.card.MaterialCardView>
+            <RadioButton
+                android:id="@+id/female_radio_button"
+                android:layout_width="145dp"
+                android:background="@drawable/white_rounded_background"
+                android:layout_height="46dp"
+                android:text="Nữ" />
         </RadioGroup>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -172,7 +159,6 @@
             app:boxCornerRadiusTopStart="18dp"
             app:boxStrokeColor="#00A896"
             app:counterEnabled="false"
-            app:endIconMode="clear_text"
             app:errorEnabled="true"
             app:helperTextEnabled="true"
             app:hintAnimationEnabled="true"
@@ -184,8 +170,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawablePadding="0dp"
+                android:textAlignment="center"
+                android:focusable="false"
                 android:ellipsize="end"
-                android:enabled="false"
+                android:paddingVertical="10dp"
+                android:textSize="20sp"
                 android:inputType="textPersonName"
                 android:maxLength="40"
                 android:maxLines="1"
@@ -200,85 +189,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="25dp"
             android:orientation="horizontal">
-
-          <!--  <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/update_height_text_input_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="141dp"
-                android:layout_height="wrap_content"
-                android:hint="Chiều cao (cm)"
-                app:boxBackgroundColor="@color/white"
-                app:boxCornerRadiusBottomEnd="18dp"
-                app:boxCornerRadiusBottomStart="18dp"
-
-                app:boxCornerRadiusTopEnd="18dp"
-                app:boxCornerRadiusTopStart="18dp"
-                app:boxStrokeColor="#00A896"
-                app:counterEnabled="false"
-                app:endIconMode="clear_text"
-                app:errorEnabled="true"
-                app:helperTextEnabled="true"
-                app:hintAnimationEnabled="true"
-                app:hintEnabled="true"
-                app:hintTextAppearance="@style/InputTextStyle"
-                app:hintTextColor="@color/primary_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="0dp"
-                    android:ellipsize="end"
-                    android:enabled="false"
-                    android:inputType="numberDecimal"
-                    android:maxLength="40"
-                    android:maxLines="1"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:textColorHint="#FFFFFF" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/update_weight_text_input_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="141dp"
-                android:layout_height="wrap_content"
-                android:hint="Cân nặng (kg)"
-                app:boxBackgroundColor="@color/white"
-                app:boxCornerRadiusBottomEnd="18dp"
-                app:boxCornerRadiusBottomStart="18dp"
-
-                app:boxCornerRadiusTopEnd="18dp"
-                app:boxCornerRadiusTopStart="18dp"
-                app:boxStrokeColor="#00A896"
-                app:counterEnabled="false"
-                app:endIconMode="clear_text"
-                app:errorEnabled="true"
-                app:helperTextEnabled="true"
-                app:hintAnimationEnabled="true"
-                app:hintEnabled="true"
-                app:hintTextAppearance="@style/InputTextStyle"
-                app:hintTextColor="@color/primary_text">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawablePadding="0dp"
-                    android:ellipsize="end"
-                    android:enabled="false"
-                    android:inputType="numberDecimal"
-                    android:maxLength="40"
-                    android:maxLines="1"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:textColorHint="#FFFFFF" />
-
-            </com.google.android.material.textfield.TextInputLayout>-->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="wrap_content"
                 app:cardElevation="20dp"
@@ -352,11 +262,12 @@
 
         </LinearLayout>
 
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="70dp"
             android:fontFamily="@font/font_spring_blue_vinyl"
             android:text="@string/app_name"
             android:textColor="#000000"
