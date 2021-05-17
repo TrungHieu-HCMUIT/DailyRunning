@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_recordFragment_to_spotifyFragment"
             app:destination="@id/spotifyFragment" />
+        <action
+            android:id="@+id/action_recordFragment_to_playerFragment2"
+            app:destination="@id/playerFragment2" />
     </fragment>
     <fragment
         android:id="@+id/finishFragment"
@@ -27,4 +30,8 @@
         android:name="com.example.dailyrunning.Record.Spotify.SpotifyFragment"
         android:label="fragment_spotify"
         tools:layout="@layout/fragment_spotify" />
+    <fragment
+        android:id="@+id/playerFragment2"
+        android:name="com.example.dailyrunning.Record.Spotify.PlayerFragment"
+        android:label="PlayerFragment" />
 </navigation>

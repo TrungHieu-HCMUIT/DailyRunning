@@ -26,7 +26,7 @@ public class DiscoverPlaylistAdapter extends RecyclerView.Adapter<DiscoverPlayli
     private NavController mNavController;
     DiscoverPlaylistAdapter(List<PlaylistSimple> data, DiscoverFragment callFragment) {
         playlists = data;
-        mNavController= Navigation.findNavController(callFragment.getActivity(),R.id.fragment);
+        mNavController= Navigation.findNavController(callFragment.getActivity(),R.id.spotify_fragment_container);
         mSpotifyViewModel=new ViewModelProvider(callFragment.getActivity()).get(SpotifyViewModel.class);
     }
 

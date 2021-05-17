@@ -33,7 +33,6 @@ public class DiscoverFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private DiscoverPlaylistAdapter mDiscoverPlaylistAdapter;
     public SpotifyViewModel mSpotifyViewModel;
-    private List<PlaylistSimple> defaultPlaylist;
     private RestoreStateViewModel mRestoreStateViewModel;
 
     @Override
@@ -52,20 +51,23 @@ public class DiscoverFragment extends Fragment {
         mRestoreStateViewModel = new ViewModelProvider(getActivity()).get(RestoreStateViewModel.class);
         mSpotifyViewModel = new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
         if (mRestoreStateViewModel.mDiscoverPlaylistAdapter.getValue() == null)
-            mSpotifyViewModel.spotifyService.observe(getActivity(), spotifyService -> {
-                spotifyService.getFeaturedPlaylists(new Callback<FeaturedPlaylists>() {
-                    @Override
-                    public void success(FeaturedPlaylists featuredPlaylists, Response response) {
-                        defaultPlaylist = featuredPlaylists.playlists.items;
-                        updateRecyclerView(defaultPlaylist);
-                    }
+            if (mRestoreStateViewModel.featuredPlaylist.getValue() != null)
+                updateRecyclerView(mRestoreStateViewModel.featuredPlaylist.getValue());
+            else
+                mSpotifyViewModel.spotifyService.observe(getActivity(), spotifyService -> {
+                    spotifyService.getFeaturedPlaylists(new Callback<FeaturedPlaylists>() {
+                        @Override
+                        public void success(FeaturedPlaylists featuredPlaylists, Response response) {
+                            mRestoreStateViewModel.featuredPlaylist.setValue(featuredPlaylists.playlists.items);
+                            updateRecyclerView(mRestoreStateViewModel.featuredPlaylist.getValue());
+                        }
 
-                    @Override
-                    public void failure(RetrofitError error) {
+                        @Override
+                        public void failure(RetrofitError error) {
 
-                    }
+                        }
+                    });
                 });
-            });
         else
             mRecyclerView.setAdapter(mRestoreStateViewModel.mDiscoverPlaylistAdapter.getValue());
         searchForPlaylist();
@@ -85,9 +87,8 @@ public class DiscoverFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.toString().length()==0)
-                {
-                    updateRecyclerView(defaultPlaylist);
+                if (s.toString().length() == 0) {
+                    updateRecyclerView(mRestoreStateViewModel.featuredPlaylist.getValue());
                     mRestoreStateViewModel.mDiscoverPlaylistAdapter.setValue(null);
                 }
             }
@@ -113,7 +114,7 @@ public class DiscoverFragment extends Fragment {
             return false;
         });
         mSearchTextInputLayout.setEndIconOnClickListener(v -> {
-            updateRecyclerView(defaultPlaylist);
+            updateRecyclerView(mRestoreStateViewModel.featuredPlaylist.getValue());
             mRestoreStateViewModel.mDiscoverPlaylistAdapter.setValue(null);
             mSearchTextInputLayout.getEditText().setText("");
         });

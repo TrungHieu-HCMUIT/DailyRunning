@@ -122,7 +122,7 @@ private Runnable timerRunnable;
             mCurrentTime.setText(TrackAdapter.getDuration(mPlaybackPosition));
 
             //region shuffle
-            if(mShuffleButton.getTag().toString().equals("on"))
+          /*  if(mShuffleButton.getTag().toString().equals("on"))
             {
                 mSpotifyViewModel.spotifyAppRemote.getValue().getPlayerApi().setShuffle(true);
                 ImageViewCompat.setImageTintList(mShuffleButton, ColorStateList.valueOf(Color.parseColor("#1DB954")));
@@ -133,11 +133,21 @@ private Runnable timerRunnable;
                 mSpotifyViewModel.spotifyAppRemote.getValue().getPlayerApi().setShuffle(false);
                 ImageViewCompat.setImageTintList(mShuffleButton, ColorStateList.valueOf(Color.parseColor("#333333")));
                 mShuffleButton.setTag("off");
+            }*/
+            if(playerState.playbackOptions.isShuffling)
+            {
+                ImageViewCompat.setImageTintList(mShuffleButton, ColorStateList.valueOf(Color.parseColor("#1DB954")));
+                mShuffleButton.setTag("on");
+            }
+            else if(!playerState.playbackOptions.isShuffling)
+            {
+                ImageViewCompat.setImageTintList(mShuffleButton, ColorStateList.valueOf(Color.parseColor("#333333")));
+                mShuffleButton.setTag("off");
             }
             //endregion
 
             //region repeat
-            if(mRepeatButton.getTag().toString().equals("off"))
+         /*   if(mRepeatButton.getTag().toString().equals("off"))
             {
                 mRepeatButton.setTag("all");
                 mSpotifyViewModel.spotifyAppRemote.getValue().getPlayerApi().setRepeat(Repeat.ALL);
@@ -154,6 +164,27 @@ private Runnable timerRunnable;
 
             }
             else if(mRepeatButton.getTag().toString().equals("one"))
+            {
+                mRepeatButton.setTag("off");
+                mSpotifyViewModel.spotifyAppRemote.getValue().getPlayerApi().setRepeat(Repeat.OFF);
+                mRepeatButton.setImageResource(R.drawable.ic_repeat);
+                ImageViewCompat.setImageTintList(mRepeatButton, ColorStateList.valueOf(Color.parseColor("#333333")));
+            }*/
+            if(playerState.playbackOptions.repeatMode==Repeat.ALL)
+            {
+                mRepeatButton.setTag("all");
+                mRepeatButton.setImageResource(R.drawable.ic_repeat);
+                ImageViewCompat.setImageTintList(mRepeatButton, ColorStateList.valueOf(Color.parseColor("#1DB954")));
+
+            }
+            else if(playerState.playbackOptions.repeatMode==Repeat.ONE)
+            {
+                mRepeatButton.setTag("one");
+                mRepeatButton.setImageResource(R.drawable.ic_icons8_repeat_one);
+                ImageViewCompat.setImageTintList(mRepeatButton, ColorStateList.valueOf(Color.parseColor("#1DB954")));
+
+            }
+            else if(playerState.playbackOptions.repeatMode==Repeat.OFF)
             {
                 mRepeatButton.setTag("off");
                 mSpotifyViewModel.spotifyAppRemote.getValue().getPlayerApi().setRepeat(Repeat.OFF);

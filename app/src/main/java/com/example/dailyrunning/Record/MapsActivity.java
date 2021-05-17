@@ -54,6 +54,7 @@ public class MapsActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
         mSpotifyViewModel = new ViewModelProvider(this).get(SpotifyViewModel.class);
+        mSpotifyViewModel.mMapsActivity.setValue(this);
     }
 
     public void startSpotifyService() {
@@ -92,6 +93,10 @@ public class MapsActivity extends FragmentActivity {
                 });
     }
 
+    public void callOnPostResume()
+    {
+        super.onPostResume();
+    }
     private void spotifyAuth() {
         AuthorizationRequest.Builder builder =
                 new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);

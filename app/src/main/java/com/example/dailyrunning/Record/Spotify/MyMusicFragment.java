@@ -61,6 +61,7 @@ public class MyMusicFragment extends Fragment {
     private View root;
     private RestoreStateViewModel mRestoreStateViewModel;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class MyMusicFragment extends Fragment {
         mRestoreStateViewModel= new ViewModelProvider(getActivity()).get(RestoreStateViewModel.class);
         root = inflater.inflate(R.layout.fragment_my_music, container, false);
         mSearchTextInputLayout = root.findViewById(R.id.search_text_input_layout);
-        mNavController = Navigation.findNavController(getActivity(), R.id.fragment);
+        mNavController = Navigation.findNavController(getActivity(), R.id.spotify_fragment_container);
 
         root.findViewById(R.id.recently_plays_text_view).setOnClickListener(vi -> {
             mNavController.navigate(R.id.action_musicMainFragment_to_playerFragment);
@@ -89,7 +90,7 @@ public class MyMusicFragment extends Fragment {
     }
     private void workWithPlaylistRecyclerView() {
 
-        playlistAdapter = new PlaylistAdapter(playlistSimples, getActivity());
+        playlistAdapter = new PlaylistAdapter(playlistSimples, this);
         mRestoreStateViewModel.mPlaylistAdapter.setValue(playlistAdapter);
         mMyPlaylistRecyclerView.setAdapter(playlistAdapter);
     }

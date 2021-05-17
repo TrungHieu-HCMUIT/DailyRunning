@@ -3,6 +3,7 @@ package com.example.dailyrunning.Record.Spotify;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.example.dailyrunning.Record.MapsActivity;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.spotify.protocol.types.PlayerState;
 import com.spotify.protocol.types.Track;
@@ -17,5 +18,6 @@ public class SpotifyViewModel extends ViewModel {
     public MutableLiveData<Track> mCurrentTrack = new MutableLiveData<>();
     public MutableLiveData<PlayerState> mPlayerState = new MutableLiveData<>();
     public MutableLiveData<UserPrivate> mCurrentUser = new MutableLiveData<>();
+    public MutableLiveData<MapsActivity> mMapsActivity = new MutableLiveData<>();
 
 }

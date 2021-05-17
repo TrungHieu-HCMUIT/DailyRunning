@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Record.MapsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +32,14 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     private List<PlaylistSimple> playlistInfos_copy;
     private SpotifyViewModel mSpotifyViewModel;
     private NavController mNavController;
+    private MyMusicFragment parentFragment;
 
-    public PlaylistAdapter(List<PlaylistSimple> data, Activity viewModelOwner) {
+    public PlaylistAdapter(List<PlaylistSimple> data, MyMusicFragment parentFragment) {
         playlistInfos = data;
         playlistInfos_copy = new ArrayList<>();
         playlistInfos_copy.addAll(data);
-        mNavController= Navigation.findNavController(viewModelOwner, R.id.fragment);
-        mSpotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) viewModelOwner).get(SpotifyViewModel.class);
+        this.parentFragment=parentFragment;
+        mSpotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) parentFragment.getActivity()).get(SpotifyViewModel.class);
     }
 
 
@@ -84,6 +87,9 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
         holder.view.setOnClickListener(v->{
             Bundle bundle=new Bundle();
             bundle.putParcelable("playlist",currentItem);
+           // mSpotifyViewModel.mMapsActivity.getValue().callOnPostResume();
+            mNavController= Navigation.findNavController(mSpotifyViewModel.mMapsActivity.getValue(), R.id.spotify_fragment_container);
+
             mNavController.navigate(R.id.action_musicMainFragment_to_playlistViewFragment,bundle);
         });
 

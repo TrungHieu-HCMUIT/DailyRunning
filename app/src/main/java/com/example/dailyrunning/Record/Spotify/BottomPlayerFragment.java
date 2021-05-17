@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Record.RecordFragment;
 import com.spotify.android.appremote.api.PlayerApi;
 
 
@@ -43,9 +44,21 @@ public class BottomPlayerFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_bottom_player, container, false);
         mSpotifyViewModel = new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
         mRestoreStateViewModel = new ViewModelProvider(getActivity()).get(RestoreStateViewModel.class);
+        Fragment parentFragment = this.getParentFragment();
         rootView.setOnClickListener(v -> {
-            mNavController = Navigation.findNavController(getActivity(), R.id.fragment);
-            mNavController.navigate(R.id.action_musicMainFragment_to_playerFragment);
+            if (parentFragment instanceof RecordFragment) {
+                mNavController = Navigation.findNavController(getActivity(), R.id.record_fragment_container);
+                mNavController.navigate(R.id.action_recordFragment_to_playerFragment2);
+            }
+            else if (parentFragment instanceof PlaylistViewFragment) {
+                mNavController = Navigation.findNavController(getActivity(), R.id.spotify_fragment_container);
+
+                mNavController.navigate(R.id.action_playlistViewFragment_to_playerFragment);
+            }
+            else if (parentFragment instanceof MusicMainFragment) {
+                mNavController = Navigation.findNavController(getActivity(), R.id.spotify_fragment_container);
+                mNavController.navigate(R.id.action_musicMainFragment_to_playerFragment);
+            }
         });
         findView();
         marqueeAnimationForTextView();
@@ -53,11 +66,11 @@ public class BottomPlayerFragment extends Fragment {
         return rootView;
     }
 
-    private void marqueeAnimationForTextView()
-    {
+    private void marqueeAnimationForTextView() {
         mTitleTextView.setSelected(true);
         mArtistTextView.setSelected(true);
     }
+
     private void findView() {
         mTitleTextView = rootView.findViewById(R.id.title_text_view);
         mArtistTextView = rootView.findViewById(R.id.artist_text_view);

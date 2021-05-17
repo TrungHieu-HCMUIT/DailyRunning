@@ -25,5 +25,9 @@
         android:id="@+id/playlistViewFragment"
         android:name="com.example.dailyrunning.Record.Spotify.PlaylistViewFragment"
         android:label="fragment_playlist_view"
-        tools:layout="@layout/fragment_playlist_view" />
+        tools:layout="@layout/fragment_playlist_view" >
+        <action
+            android:id="@+id/action_playlistViewFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
 </navigation>

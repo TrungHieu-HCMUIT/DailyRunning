@@ -60,7 +60,7 @@ public class MusicMainFragment extends Fragment {
                         tab.setText("Discover");
                 }
         ).attach();
-        checkBottomPlayerState();
+        //checkBottomPlayerState();
 
     }
 }
