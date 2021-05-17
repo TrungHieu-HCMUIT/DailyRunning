@@ -44,6 +44,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -77,7 +79,7 @@ public class UserFragment extends Fragment {
     private TextView userDisplayNameTextView;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mAvatarStorageReference;
-    private FirebaseUser mCurrentUser;
+    private com.example.dailyrunning.Model.UserInfo mCurrentUser;
     private Fragment mContext = UserFragment.this;
     private RecyclerView mGiftRecyclerView;
     private Button mSeeAllGiftButton;
@@ -85,6 +87,8 @@ public class UserFragment extends Fragment {
     private UserViewModel mUserViewModel;
     private ScrollView mScrollView;
     private ImageButton mChangeAvatarImageButton;
+    private Button mLogOutButton;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -93,104 +97,102 @@ public class UserFragment extends Fragment {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
         mAvatarStorageReference = mFirebaseStorage.getReference().child("avatar_photos");
-        mCurrentUser = mFirebaseAuth.getCurrentUser();
+        //mCurrentUser = mFirebaseAuth.getCurrentUser();
         //init viewmodel
-        mUserViewModel=new ViewModelProvider(getActivity()).get(UserViewModel.class);
-                //
+        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        //
         initView();
-        userDisplayNameTextView.setOnClickListener(v -> {
+
+        mLogOutButton.setOnClickListener(v -> {
             mFirebaseAuth.signOut();
             LoginManager.getInstance().logOut();
         });
 
-        setUpUpdateAvatar();
-        setUpRingChart();
-        setUpMedalRecyclerView();
-        setUpTabLayout();
-        setUpGiftRecyclerView();
-        setUpViewAllGiftButton();
-        updateUI();
+        mUserViewModel.currentUser.observe(getActivity(), currentUser -> {
+            mCurrentUser = currentUser;
+            updateUI();
+        });
+
+
 
         return view;
     }
 
     private void restoreState() {
-        if(mUserViewModel.mMedalRecyclerViewState!=null)
+        if (mUserViewModel.mMedalRecyclerViewState != null)
             mMedalRecyclerView.getLayoutManager().onRestoreInstanceState(mUserViewModel.mMedalRecyclerViewState);
-        if(mUserViewModel.mGiftRecyclerViewState!=null)
+        if (mUserViewModel.mGiftRecyclerViewState != null)
             mGiftRecyclerView.getLayoutManager().onRestoreInstanceState(mUserViewModel.mGiftRecyclerViewState);
-        if(mUserViewModel.mScrollViewPosition!=null)
-        {
-            mScrollView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mScrollView.scrollTo(0, mUserViewModel.mScrollViewPosition);
-                }
-            },1);
+        if (mUserViewModel.mScrollViewPosition != null) {
+            mScrollView.postDelayed(() -> mScrollView.scrollTo(0, mUserViewModel.mScrollViewPosition), 1);
         }
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mNavController=Navigation.findNavController(view);
+        mNavController = Navigation.findNavController(view);
         restoreState();
 
 
     }
 
     private void setUpViewAllGiftButton() {
-        mSeeAllGiftButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mNavController.navigate(R.id.action_userFragment_to_giftFragment);
-            }
-        });
+        mSeeAllGiftButton.setOnClickListener(v -> mNavController.navigate(R.id.action_userFragment_to_giftFragment));
     }
 
     private void setUpGiftRecyclerView() {
         mGiftRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
-
         List<GiftInfo> gifts = new ArrayList<>();
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        gifts.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-
-
         GiftAdapter adapter = new GiftAdapter(gifts);
         mGiftRecyclerView.setAdapter(adapter);
+
+
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        gifts.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
+        adapter.notifyDataSetChanged();
+
     }
 
     private void updateUI() {
 
 
-        userDisplayNameTextView.setText(mCurrentUser.getDisplayName().equals("")?mCurrentUser.getEmail():mCurrentUser.getDisplayName());
+        userDisplayNameTextView.setText(
+                mCurrentUser.getDisplayName().equals("") ? mCurrentUser.getEmail() : mCurrentUser.getDisplayName());
         loadAvatar();
+        setUpMedalRecyclerView();
+        setUpUpdateAvatar();
+        setUpRingChart();
+        setUpTabLayout();
+        setUpGiftRecyclerView();
+        setUpViewAllGiftButton();
+
     }
-    private void loadAvatar()
-    {
-        UserInfo userInfo = mCurrentUser.getProviderData().get(1);
+
+    private void loadAvatar() {
+        UserInfo userInfo = mFirebaseAuth.getCurrentUser().getProviderData().get(1);
         switch (userInfo.getProviderId()) {
             case EMAIL_PROVIDER_ID:
             case GOOGLE_PROVIDER_ID:
-                Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
+                Glide.with(avatarView.getContext()).load(userInfo.getPhotoUrl()).into(avatarView);
                 break;
             case FACEBOOK_PROVIDER_ID:
                 GraphRequest request = GraphRequest.newGraphPathRequest(
                         AccessToken.getCurrentAccessToken(),
-                        "/"+userInfo.getUid()+"/picture?redirect=0&type=normal",
+                        "/" + userInfo.getUid() + "/picture?redirect=0&type=normal",
                         new GraphRequest.Callback() {
                             @Override
                             public void onCompleted(GraphResponse response) {
-                                JSONObject res=response.getJSONObject();
+                                JSONObject res = response.getJSONObject();
                                 try {
-                                    String avatarUrl=res.getJSONObject("data").getString("url");
+                                    String avatarUrl = res.getJSONObject("data").getString("url");
                                     Glide.with(avatarView.getContext()).load(avatarUrl).into(avatarView);
 
                                 } catch (JSONException e) {
@@ -206,26 +208,23 @@ public class UserFragment extends Fragment {
     }
 
     private void setUpUpdateAvatar() {
-        mChangeAvatarImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UserInfo userInfo = mCurrentUser.getProviderData().get(1);
-                switch (userInfo.getProviderId()) {
-                    case EMAIL_PROVIDER_ID:
-                        //người dùng đăng nhập bằng email mới set avatar được
-                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                        intent.setType("image/*");
-                        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                        startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
-                        break;
+        mChangeAvatarImageButton.setOnClickListener(v -> {
+            UserInfo userInfo = mFirebaseAuth.getCurrentUser().getProviderData().get(1);
+            switch (userInfo.getProviderId()) {
+                case EMAIL_PROVIDER_ID:
+                    //người dùng đăng nhập bằng email mới set avatar được
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                    startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
+                    break;
 
-                    case FACEBOOK_PROVIDER_ID:
-                        Toast.makeText(getContext(),"Không thể đổi avatar khi đăng nhập bằng Facebook",Toast.LENGTH_LONG).show();
-                            break;
-                    case GOOGLE_PROVIDER_ID:
-                        Toast.makeText(getContext(),"Không thể đổi avatar khi đăng nhập bằng Google",Toast.LENGTH_LONG).show();
-                        break;
-                }
+                case FACEBOOK_PROVIDER_ID:
+                    Toast.makeText(getContext(), "Không thể đổi avatar khi đăng nhập bằng Facebook", Toast.LENGTH_LONG).show();
+                    break;
+                case GOOGLE_PROVIDER_ID:
+                    Toast.makeText(getContext(), "Không thể đổi avatar khi đăng nhập bằng Google", Toast.LENGTH_LONG).show();
+                    break;
             }
         });
     }
@@ -238,10 +237,11 @@ public class UserFragment extends Fragment {
         tab_layout = rootView.findViewById(R.id.tl_2);
         statisticalViewPager2 = rootView.findViewById(R.id.statistical_viewPager2);
         mMedalRecyclerView = rootView.findViewById(R.id.medal_recycleView);
-        mGiftRecyclerView=rootView.findViewById(R.id.gift_recyclerView);
-        mSeeAllGiftButton =rootView.findViewById(R.id.see_all_button);
-        mScrollView=rootView.findViewById(R.id.scroll_view);
-        mChangeAvatarImageButton=rootView.findViewById(R.id.change_avatar_image_button);
+        mGiftRecyclerView = rootView.findViewById(R.id.gift_recyclerView);
+        mSeeAllGiftButton = rootView.findViewById(R.id.see_all_button);
+        mScrollView = rootView.findViewById(R.id.scroll_view);
+        mChangeAvatarImageButton = rootView.findViewById(R.id.change_avatar_image_button);
+        mLogOutButton = rootView.findViewById(R.id.log_out_button);
     }
 
 
@@ -332,26 +332,18 @@ public class UserFragment extends Fragment {
         //region update avatar
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             Uri selectedImageUri = data.getData();
-            StorageReference photoRef = mAvatarStorageReference.child(selectedImageUri.getLastPathSegment());
-            photoRef.putFile(selectedImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    photoRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Uri userAvatarUri = uri;
-                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
-                            mCurrentUser.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Glide.with(avatarView.getContext()).load(mCurrentUser.getPhotoUrl()).into(avatarView);
-                                }
-                            });
-                        }
-                    });
+            FirebaseUser userInfo =mFirebaseAuth.getCurrentUser();
 
-                }
-            });
+            StorageReference photoRef = mAvatarStorageReference.child(selectedImageUri.getLastPathSegment());
+            photoRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl()
+                    .addOnSuccessListener(uri -> {
+                Uri userAvatarUri = uri;
+                DatabaseReference userRef= FirebaseDatabase.getInstance().getReference().child("UserInfo").child(mCurrentUser.getUserID());
+                userRef.child("avatarURI").setValue(userAvatarUri.toString());
+                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
+                userInfo.updateProfile(profileUpdates).addOnCompleteListener(task ->
+                        Glide.with(avatarView.getContext()).load(userInfo.getPhotoUrl()).into(avatarView));
+            }));
 
         }
         //endregion
@@ -360,8 +352,8 @@ public class UserFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mUserViewModel.mGiftRecyclerViewState=mGiftRecyclerView.getLayoutManager().onSaveInstanceState();
-        mUserViewModel.mMedalRecyclerViewState=mMedalRecyclerView.getLayoutManager().onSaveInstanceState();
-        mUserViewModel.mScrollViewPosition=mScrollView.getScrollY();
+        mUserViewModel.mGiftRecyclerViewState = mGiftRecyclerView.getLayoutManager().onSaveInstanceState();
+        mUserViewModel.mMedalRecyclerViewState = mMedalRecyclerView.getLayoutManager().onSaveInstanceState();
+        mUserViewModel.mScrollViewPosition = mScrollView.getScrollY();
     }
 }

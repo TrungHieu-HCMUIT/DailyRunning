@@ -1,7 +1,6 @@
 package com.example.dailyrunning.Record;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -29,8 +28,8 @@ public class FinishFragment extends Fragment {
 
     private final String INTENT_DISTANCEKEY = "distance";
     private final String INTENT_TIMEKEY = "time";
-    private String INTENT_DATECREATED= "datecreated";
-    private String INTENT_LATLNGARRLIST= "latlngarrlist";
+    private String INTENT_DATECREATED = "datecreated";
+    private String INTENT_LATLNGARRLIST = "latlngarrlist";
     EditText describeText;
     ArrayList<LatLng> list = new ArrayList<LatLng>();
     DatabaseReference exampleRun;
@@ -41,6 +40,7 @@ public class FinishFragment extends Fragment {
     TextView paceTextView;
     int pace;
     private View rootView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -51,41 +51,40 @@ public class FinishFragment extends Fragment {
         Bundle resultFromRecordFragment = getArguments();
         double completedDist = resultFromRecordFragment.getDouble(INTENT_DISTANCEKEY);
         long completedTime = resultFromRecordFragment.getLong(INTENT_TIMEKEY);
-        list=resultFromRecordFragment.getParcelableArrayList(INTENT_LATLNGARRLIST);
-        String formattedDate=resultFromRecordFragment.getString(INTENT_DATECREATED);
-        String paceString=getPace(completedDist,completedTime);
+        list = resultFromRecordFragment.getParcelableArrayList(INTENT_LATLNGARRLIST);
+        String formattedDate = resultFromRecordFragment.getString(INTENT_DATECREATED);
+        String paceString = getPace(completedDist, completedTime);
 
         describeText = rootView.findViewById(R.id.describe_editText);
         buttonSave = rootView.findViewById(R.id.btnSave);
-        buttonBack= rootView.findViewById(R.id.btnBack);
-        distanceTextView= rootView.findViewById(R.id.km);
+        buttonBack = rootView.findViewById(R.id.btnBack);
+        distanceTextView = rootView.findViewById(R.id.km);
         timeTextView = rootView.findViewById(R.id.time);
-        paceTextView= rootView.findViewById(R.id.pace);
+        paceTextView = rootView.findViewById(R.id.pace);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference rt = database.getReference().child("UserInfo").child(user.getUid()).child("list of run");
-        exampleRun = rt.push();
+        DatabaseReference activityRef = database.getReference().child("Activity");
+        String newActivityID = activityRef.push().getKey();
 
 
         distanceTextView.setText(formatDistance(completedDist));
         timeTextView.setText(formatDuration(completedTime));
         paceTextView.setText(paceString);
 
-        buttonSave.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                String id = rt.push().getKey();
-                Activity activity = new Activity(id,
-                        formattedDate,
-                        completedDist,
-                        completedTime,
-                        list,
-                        describeText.getText().toString(),
-                        pace
-                );
-                exampleRun.setValue(activity);
-                getActivity().finish();
-            }
+        buttonSave.setOnClickListener(v -> {
+            Activity activity = new Activity(newActivityID,
+                    user.getUid(),
+                    formattedDate,
+                    completedDist,
+                    completedTime,
+                    null,
+                    pace,
+                    describeText.getText().toString(),
+                    list
+            );
+            activityRef.child(newActivityID).setValue(activity);
+            getActivity().finish();
         });
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +95,6 @@ public class FinishFragment extends Fragment {
         });
         return rootView;
     }
-
-
 
 
     public String formatDistance(double pDistance) {
@@ -111,15 +108,15 @@ public class FinishFragment extends Fragment {
     }
 
     public String formatDuration(long pDuration) {
-        return DateUtils.formatElapsedTime(pDuration)+"s";
+        return DateUtils.formatElapsedTime(pDuration) + "s";
 
     }
 
     public String getPace(double length, long t) {
         pace = 0;
-        long time=t;
+        long time = t;
         pace = (int) (time / length);
-        return pace+"km/h";
+        return pace + "km/h";
     }
 
 }

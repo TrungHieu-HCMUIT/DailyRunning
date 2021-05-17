@@ -62,11 +62,11 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView image;
 
     private BottomNavigationViewEx bottomNavigationViewEx;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
 
 
         // Add code to print out the key hash
@@ -85,16 +85,16 @@ public class HomeActivity extends AppCompatActivity {
 
         }
         //init firebaseAuth
-        mFirebaseAuth=FirebaseAuth.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
         setUpAuthStateListener();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
         //init firebase database
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mUserInfoRef=mFirebaseDatabase.getReference().child("UserInfo");
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mUserInfoRef = mFirebaseDatabase.getReference().child("UserInfo");
 
 
         //init userviewmodel
-        mUserViewModel=new ViewModelProvider(this).get(UserViewModel.class);
+        mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
 
         //
 
@@ -102,11 +102,8 @@ public class HomeActivity extends AppCompatActivity {
         initWidgets();
 
 
-
         // Enable BottomNavigationViewEx
         setupBottomNavView();
-
-
 
 
     }
@@ -138,78 +135,65 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==RC_SIGN_IN)
-        {
-            if(resultCode==RESULT_OK)
-            {
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
                 mUserViewModel.currentUser.setValue((UserInfo) data.getExtras().getSerializable("newUser"));
 
                 //update ui
 
-                Toast.makeText(this, "Welcome "+mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
-            }
-            else if(resultCode==RESULT_CANCELED)
-            {
+                Toast.makeText(this, "Welcome " + mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
 
     }
-    private void setUpAuthStateListener()
-    {
-        mAuthStateListener=new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                checkAuthenticationState();
-            }
-        };
+
+    private void setUpAuthStateListener() {
+        mAuthStateListener = firebaseAuth -> checkAuthenticationState();
     }
-    private void checkAuthenticationState()
-    {
-        FirebaseUser mCurrentUser =mFirebaseAuth.getCurrentUser();
-        if(mCurrentUser ==null)
-        {
-            startActivityForResult(new Intent(this, LoginActivity.class),RC_SIGN_IN);
-        }
-        else
-        {
-            mCurrentUserRef=mFirebaseDatabase.getReference().child("UserInfo").child(mCurrentUser.getUid());
+
+    private void checkAuthenticationState() {
+        FirebaseUser mCurrentUser = mFirebaseAuth.getCurrentUser();
+        if (mCurrentUser == null) {
+            startActivityForResult(new Intent(this, LoginActivity.class), RC_SIGN_IN);
+        } else {
+            mCurrentUserRef = mFirebaseDatabase.getReference().child("UserInfo").child(mCurrentUser.getUid());
 
             mCurrentUserRef.get().addOnCompleteListener(task -> {
-                if(!task.isSuccessful())
+                if (!task.isSuccessful()) {
+                    Log.e(this.getClass().getName(), task.getException().toString());
                     return;
-                DataSnapshot taskRes=task.getResult();
+                }
+                DataSnapshot taskRes = task.getResult();
                 mUserViewModel.currentUser.setValue(taskRes.getValue(UserInfo.class));
-                if(mUserViewModel.currentUser.getValue()==null)
+                if (mUserViewModel.currentUser.getValue() == null) {
+                    Log.e(this.getClass().getName(), "current user is nulll");
                     return;
+                }
             });
-            if(!mCurrentUser.isEmailVerified()&&mCurrentUser.getProviderId().equals("password"))
-            {
+            if (!mCurrentUser.isEmailVerified() && mCurrentUser.getProviderId().equals("password")) {
                 showEmailVerificationDialog();
             }
         }
 
 
-
     }
-
 
 
     //endregion
 
 
-
-
     //region Bottom widget and Fragment
     private void initWidgets() {
         bottomNavigationViewEx = findViewById(R.id.bottomNavViewEx);
-        mNavController= Navigation.findNavController(this,R.id.fragment_container);
+        mNavController = Navigation.findNavController(this, R.id.fragment_container);
     }
 
     private void setupBottomNavView() {
         //region Setup with navigationUI
-        NavigationUI.setupWithNavController(bottomNavigationViewEx,mNavController);
+        NavigationUI.setupWithNavController(bottomNavigationViewEx, mNavController);
         //endregion
 
 
@@ -223,7 +207,7 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationViewEx.enableItemShiftingMode(false);
         bottomNavigationViewEx.setTextVisibility(false);
 
-        FloatingActionButton newrecord =(FloatingActionButton) findViewById(R.id.newRecord);
+        FloatingActionButton newrecord = (FloatingActionButton) findViewById(R.id.newRecord);
         newrecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

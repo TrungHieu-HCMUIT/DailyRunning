@@ -8,21 +8,29 @@ import java.util.Date;
 
 public class Activity {
     private String activityID;
+    private String userID;
     private String dateCreated;
     private double distance;
     private long duration;
-    private ArrayList<LatLng> latLngArrayList;
+    private String pictureURI;
+    private double pace;
     private String describe;
-    private int pace;
+    private ArrayList<LatLng> latLngArrayList;
 
-    public Activity(String activityID, String dateCreated, double distance, long duration, ArrayList latLngArrayList, String describe, int pace) {
+    public Activity() {
+    }
+
+    public Activity(String activityID, String userID, String dateCreated, double distance, long duration,
+                    String pictureURI, double pace, String describe, ArrayList<LatLng> latLngArrayList) {
         this.activityID = activityID;
+        this.userID = userID;
         this.dateCreated = dateCreated;
         this.distance = distance;
         this.duration = duration;
-        this.latLngArrayList = latLngArrayList;
-        this.describe = describe;
+        this.pictureURI = pictureURI;
         this.pace = pace;
+        this.describe = describe;
+        this.latLngArrayList = latLngArrayList;
     }
 
     public String getActivityID() {
@@ -65,12 +73,35 @@ public class Activity {
         this.latLngArrayList = latLngArrayList;
     }
 
-    public String getDescribe() { return describe; }
+    public String getDescribe() {
+        return describe;
+    }
 
-    public void setDescribe(String describe) { this.describe = describe; }
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
 
-    public int getPace() { return pace; }
+    public double getPace() {
+        return pace;
+    }
 
-    public void setPace(int pace) { this.pace = pace; }
+    public void setPace(int pace) {
+        this.pace = pace;
+    }
 
+    public String getPictureURI() {
+        return pictureURI;
+    }
+
+    public void setPictureURI(String pictureURI) {
+        this.pictureURI = pictureURI;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
+    }
 }

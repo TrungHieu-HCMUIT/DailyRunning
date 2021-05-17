@@ -390,6 +390,18 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/log_out_button"
+            android:layout_width="264dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/color_palette_3"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Đăng xuất"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:cornerRadius="18dp" />
     </LinearLayout>
 </ScrollView>
 
