@@ -23,10 +23,18 @@
         <action
             android:id="@+id/action_userFragment_to_giftFragment"
             app:destination="@id/giftFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_updateInfoFragment"
+            app:destination="@id/updateInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/giftFragment"
         android:name="com.example.dailyrunning.User.GiftFragment"
         android:label="fragment_gift"
         tools:layout="@layout/fragment_gift" />
+    <fragment
+        android:id="@+id/updateInfoFragment"
+        android:name="com.example.dailyrunning.User.UpdateInfoFragment"
+        android:label="fragment_update_info"
+        tools:layout="@layout/fragment_update_info" />
 </navigation>

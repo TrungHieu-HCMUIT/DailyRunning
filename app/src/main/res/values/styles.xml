@@ -5,19 +5,31 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/color_palette_3</item>
     </style>
+
     <style name="music_bold_text" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/black</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">16sp</item>
 
     </style>
+
     <style name="music_description_text" parent="TextAppearance.AppCompat">
         <item name="android:textColor">#A3A8AB</item>
         <item name="android:textSize">16sp</item>
 
     </style>
+
     <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
         <item name="android:progressTint">#04B6F6</item>
         <item name="android:colorControlActivated">#04B6F6</item>
+    </style>
+
+    <style name="NumberPickerStyle" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/transparent</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColorPrimary">#505050</item>
+
+
     </style>
 </resources>

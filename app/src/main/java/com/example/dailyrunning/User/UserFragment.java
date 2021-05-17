@@ -103,10 +103,9 @@ public class UserFragment extends Fragment {
         //
         initView();
 
-        mLogOutButton.setOnClickListener(v -> {
-            mFirebaseAuth.signOut();
-            LoginManager.getInstance().logOut();
-        });
+        onClickSetup();
+
+
 
         mUserViewModel.currentUser.observe(getActivity(), currentUser -> {
             mCurrentUser = currentUser;
@@ -116,6 +115,16 @@ public class UserFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void onClickSetup() {
+        mLogOutButton.setOnClickListener(v -> {
+            mFirebaseAuth.signOut();
+            LoginManager.getInstance().logOut();
+        });
+        rootView.findViewById(R.id.setting_imageButton).setOnClickListener(v->{
+            mNavController.navigate(R.id.action_userFragment_to_updateInfoFragment);
+        });
     }
 
     private void restoreState() {
