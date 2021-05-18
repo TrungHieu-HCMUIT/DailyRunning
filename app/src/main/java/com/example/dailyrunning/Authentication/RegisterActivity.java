@@ -149,6 +149,9 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(mContext, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return false;
         }
+        if (mDisplayNameTextInputLayout.getError()!=null || mEmailTextInputLayout.getError()!=null
+                ||mPasswordRetypeTextInputLayout.getError()!=null ||mPasswordTextInputLayout.getError()!=null)
+            return false;
 
 
         return true;
