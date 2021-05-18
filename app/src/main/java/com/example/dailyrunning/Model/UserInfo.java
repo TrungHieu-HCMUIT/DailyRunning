@@ -10,15 +10,15 @@ public class UserInfo implements Serializable {
     private int gender;
     private String userID;
     private Date dob;
-    private double height;
-    private double weight;
+    private int height;
+    private int weight;
     private String avatarURI;
 
     public UserInfo()
     {}
     public UserInfo(String displayName, String email, int point,
-                    int gender, String userID, Date dob, double height,
-                    double weight, String avatarURI) {
+                    int gender, String userID, Date dob, int height,
+                    int weight, String avatarURI) {
         this.displayName = displayName;
         this.email = email;
         this.point = point;
@@ -77,19 +77,19 @@ public class UserInfo implements Serializable {
         this.dob = dob;
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
-    public double getWeight() {
+    public int getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
     }
 

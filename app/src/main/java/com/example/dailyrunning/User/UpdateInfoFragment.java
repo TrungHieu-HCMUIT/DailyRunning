@@ -21,11 +21,20 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.example.dailyrunning.Model.UserInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.HomeViewModel;
 import com.example.dailyrunning.Utils.UserViewModel;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
@@ -46,6 +55,8 @@ public class UpdateInfoFragment extends Fragment {
     private Button mSaveButton;
     private CheckBox mMaleCheckBox;
     private CheckBox mFemaleCheckBox;
+    private DatabaseReference mUserInfoRef;
+    private SimpleDateFormat mDateFormat;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +70,7 @@ public class UpdateInfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rootView = view;
         initView();
+        mUserInfoRef= FirebaseDatabase.getInstance().getReference().child("UserInfo");
         mHomeViewModel.mHomeActivity.getValue().hideNavBar();
         setUp();
 
@@ -70,6 +82,23 @@ public class UpdateInfoFragment extends Fragment {
         setUpGenderCheckBox();
         setUpDatePicker();
         setUpTextInputLayout();
+        showCurrentUserInfo();
+
+    }
+
+    private void showCurrentUserInfo() {
+        UserInfo mCurrentUser=mUserViewModel.currentUser.getValue();
+        mEmailTextInputLayout.getEditText().setText(mCurrentUser.getEmail()==null?"":mCurrentUser.getEmail());
+        mNameTextInputLayout.getEditText().setText(mCurrentUser.getDisplayName());
+        if(mCurrentUser.getDob()!=null)
+        mDOBTextInputLayout.getEditText().setText(mDateFormat.format(mCurrentUser.getDob()));
+        mHeightPicker.setValue(mCurrentUser.getHeight());
+        mWeightPicker.setValue(mCurrentUser.getWeight());
+        if (mCurrentUser.getGender() == MALE) {
+            mMaleCheckBox.setChecked(true);
+        } else {
+            mFemaleCheckBox.setChecked(true);
+        }
 
     }
 
@@ -150,13 +179,32 @@ public class UpdateInfoFragment extends Fragment {
             int height = mHeightPicker.getValue();
             int weight = mWeightPicker.getValue();
             if (validateData(emailString, nameString, gender, dob, height, weight)) {
-
-            } else {
-
+                UserInfo mNewInfo=mUserViewModel.currentUser.getValue();
+                mNewInfo.setDisplayName(nameString);
+                mNewInfo.setEmail(emailString);
+                mNewInfo.setGender(gender);
+                try {
+                    mNewInfo.setDob(mDateFormat.parse(dob)  );
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                mNewInfo.setHeight(height);
+                mNewInfo.setWeight(weight);
+                mUserInfoRef.child(mNewInfo.getUserID()).setValue(mNewInfo).addOnSuccessListener(aVoid -> {
+                    mUserViewModel.currentUser.setValue(mNewInfo);
+                    updateFirebaseUser(mNewInfo);
+                });
             }
         });
 
 
+    }
+
+    private void updateFirebaseUser(UserInfo mNewInfo) {
+        FirebaseUser mUser= FirebaseAuth.getInstance().getCurrentUser();
+        mUser.updateEmail(mNewInfo.getEmail());
+        UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
+        mUser.updateProfile(mRequest);
     }
 
     private boolean validateData(String emailString, String nameString, Integer gender, String dob, int height, int weight) {
@@ -181,5 +229,6 @@ public class UpdateInfoFragment extends Fragment {
         mSaveButton = rootView.findViewById(R.id.save_button);
         mMaleCheckBox = rootView.findViewById(R.id.male_radio_button);
         mFemaleCheckBox = rootView.findViewById(R.id.female_radio_button);
+        mDateFormat=new SimpleDateFormat("dd/MM/yyyy");
     }
 }
