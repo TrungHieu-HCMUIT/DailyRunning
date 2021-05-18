@@ -73,6 +73,7 @@ public class FinishFragment extends Fragment {
         paceTextView.setText(paceString);
 
         buttonSave.setOnClickListener(v -> {
+
             Activity activity = new Activity(newActivityID,
                     user.getUid(),
                     formattedDate,

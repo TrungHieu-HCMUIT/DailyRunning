@@ -11,6 +11,12 @@
         <action
             android:id="@+id/action_homeFragment_to_findFragment"
             app:destination="@id/findFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mapViewFragment"
+            app:destination="@id/mapViewFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/findFragment"
@@ -37,4 +43,18 @@
         android:name="com.example.dailyrunning.User.UpdateInfoFragment"
         android:label="fragment_update_info"
         tools:layout="@layout/fragment_update_info" />
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.example.dailyrunning.Home.PostDetailFragment"
+        android:label="fragment_post_detail"
+        tools:layout="@layout/fragment_post_detail" >
+        <action
+            android:id="@+id/action_postDetailFragment_to_mapViewFragment"
+            app:destination="@id/mapViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapViewFragment"
+        android:name="com.example.dailyrunning.Home.MapViewFragment"
+        android:label="fragment_map_view"
+        tools:layout="@layout/fragment_map_view" />
 </navigation>
