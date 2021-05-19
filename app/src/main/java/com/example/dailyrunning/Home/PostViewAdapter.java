@@ -23,15 +23,15 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // TODO: Edit widgets here
-        private final ImageView userAvatar;
-        private final TextView userName;
-        private final TextView dateTime;
-        private final TextView content;
-        private final TextView distance;
-        private final TextView duration;
-        private final TextView pace;
-        private final TextView like;
-        private final TextView comment;
+        public ImageView userAvatar;
+        public TextView userName;
+        public TextView dateTime;
+        public TextView content;
+        public TextView distance;
+        public TextView duration;
+        public TextView pace;
+        public TextView like;
+        public TextView comment;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -46,42 +46,6 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             pace = (TextView) view.findViewById(R.id.tvPace);
             like = (TextView) view.findViewById(R.id.tvNumOfLike);
             comment = (TextView) view.findViewById(R.id.tvNumOfComment);
-        }
-
-        public ImageView getUserAvatar() {
-            return userAvatar;
-        }
-
-        public TextView getUserName() {
-            return userName;
-        }
-
-        public TextView getDateTime() {
-            return dateTime;
-        }
-
-        public TextView getContent() {
-            return content;
-        }
-
-        public TextView getDistance() {
-            return distance;
-        }
-
-        public TextView getDuration() {
-            return duration;
-        }
-
-        public TextView getPace() {
-            return pace;
-        }
-
-        public TextView getLike() {
-            return like;
-        }
-
-        public TextView getComment() {
-            return comment;
         }
     }
 
