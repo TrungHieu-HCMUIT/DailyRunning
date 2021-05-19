@@ -180,11 +180,10 @@ public class RegisterActivity extends AppCompatActivity {
                             Intent data=new Intent();
                             FirebaseUser firebaseUser=mAuthResult.getUser();
                             //TODO wait for complete ui then add gender,dob,...;
-                            UserInfo newUser=new UserInfo(displayNameString,firebaseUser.getEmail(),0,firebaseUser.getUid());
+                            UserInfo newUser = new UserInfo(displayNameString, firebaseUser.getEmail(), 0, 0,
+                                    firebaseUser.getUid(), null, 0, 0, LoginActivity.DEFAULT_AVATAR_URL);
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(displayNameString).build();
                             firebaseUser.updateProfile(profileUpdates);
-
-
                             data.putExtra("newUser",newUser);
                             setResult(RESULT_OK,data);
                             finish();

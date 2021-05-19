@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextUtils;
@@ -36,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class UpdateInfoFragment extends Fragment {
@@ -133,14 +136,28 @@ public class UpdateInfoFragment extends Fragment {
     private void setUpDatePicker() {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
+        if (mUserViewModel.currentUser.getValue().getDob()==null) {
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+        }
+        else
+        {
+            Date dob=mUserViewModel.currentUser.getValue().getDob();
+            c.setTime(dob);
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+        }
         mDOBTextInputLayout.getEditText().setOnClickListener(v -> {
             DatePickerDialog mDatePickerDialog = new DatePickerDialog(getContext(), (view, year, month, dayOfMonth) -> {
-                String dobString = String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month) + "/" + year;
+                mYear=year;
+                mMonth=month;
+                mDay=dayOfMonth;
+                String dobString = String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month+1) + "/" + year;
                 mDOBTextInputLayout.getEditText().setText(dobString);
             }, mYear, mMonth, mDay);
+
             mDatePickerDialog.show();
         });
     }
@@ -190,9 +207,16 @@ public class UpdateInfoFragment extends Fragment {
                 }
                 mNewInfo.setHeight(height);
                 mNewInfo.setWeight(weight);
-                mUserInfoRef.child(mNewInfo.getUserID()).setValue(mNewInfo).addOnSuccessListener(aVoid -> {
-                    mUserViewModel.currentUser.setValue(mNewInfo);
-                    updateFirebaseUser(mNewInfo);
+                mUserInfoRef.child(mNewInfo.getUserID()).setValue(mNewInfo).addOnCompleteListener(task->{
+                   if(task.isSuccessful())
+                   {
+                       mUserViewModel.currentUser.setValue(mNewInfo);
+                       updateFirebaseUser(mNewInfo);
+                   }
+                   else if(!task.isSuccessful())
+                   {
+                       Toast.makeText(getContext(),"Cập nhật thông tin thất bại",Toast.LENGTH_SHORT).show();
+                   }
                 });
             }
         });
@@ -205,6 +229,9 @@ public class UpdateInfoFragment extends Fragment {
         mUser.updateEmail(mNewInfo.getEmail());
         UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
         mUser.updateProfile(mRequest);
+        Toast.makeText(getContext(),"Cập nhật thông tin thành công",Toast.LENGTH_SHORT).show();
+        NavController mNavController= Navigation.findNavController(getActivity(),R.id.fragment_container);
+        mNavController.popBackStack();
     }
 
     private boolean validateData(String emailString, String nameString, Integer gender, String dob, int height, int weight) {

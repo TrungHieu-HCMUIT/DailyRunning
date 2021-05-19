@@ -30,12 +30,12 @@ public class UserInfo implements Serializable {
         this.avatarURI = avatarURI;
     }
 
-    public UserInfo(String displayName, String email, int gender, String userID) {
+   /* public UserInfo(String displayName, String email, int gender, String userID) {
         this.displayName = displayName;
         this.email = email;
         this.gender = gender;
         this.userID = userID;
-    }
+    }*/
 
     public String getDisplayName() {
         return displayName;

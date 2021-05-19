@@ -1,4 +1,4 @@
-    package com.example.dailyrunning.Authentication;
+package com.example.dailyrunning.Authentication;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Model.UserInfo;
 import com.example.dailyrunning.Utils.UserViewModel;
@@ -26,6 +27,8 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -42,8 +45,14 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -55,16 +64,17 @@ Nxhung2
  * */
 
 public class LoginActivity extends AppCompatActivity {
-    private static final int RC_REGISTER = 2 ;
+    private static final int RC_REGISTER = 2;
     private static final int RC_SIGN_IN = 1;
     private static final int RC_SIGN_IN_GOOGLE = 101;
     private static final String TAG = "LoginActivity";
-    private  GoogleSignInClient mGoogleSignInClient;
+    public static final String DEFAULT_AVATAR_URL = "https://firebasestorage.googleapis.com/v0/b/dailyrunning-6e8e9.appspot.com/o/avatar_photos%2Fsbcf-default-avatar%5B1%5D.png?alt=media&token=ec7c1fcd-9fc8-415f-b2ec-51ffb03867a3";
+    private GoogleSignInClient mGoogleSignInClient;
     private UserViewModel mUserViewModel;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private UserInfo mCurrentUser;
-    private Context mContext=LoginActivity.this;
+    private Context mContext = LoginActivity.this;
     private View.OnClickListener mLoginOnClickListener;
     private View.OnClickListener mRegisterOnClickListener;
     private View.OnClickListener mLoginWithGoogleListener;
@@ -96,31 +106,31 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        loginTimeOut=new AtomicBoolean(false);
+        loginTimeOut = new AtomicBoolean(false);
 
 
         //region init firebase database
-        mFirebaseDatabase=FirebaseDatabase.getInstance();
-        mUserInfoRef=mFirebaseDatabase.getReference().child("UserInfo");
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mUserInfoRef = mFirebaseDatabase.getReference().child("UserInfo");
         //endregion
         setUpGoogleAuth();
         setTitle("Login");
-        mEmailEditText =findViewById(R.id.email_editText);
-        mPasswordEditText=findViewById(R.id.password_editText);
+        mEmailEditText = findViewById(R.id.email_editText);
+        mPasswordEditText = findViewById(R.id.password_editText);
 
         setUpOnClickListener();
 
         //region firebase
-        mFirebaseAuth= FirebaseAuth.getInstance();
-        loginButton=(Button) findViewById(R.id.login_button);
-        registerButton=(TextView) findViewById(R.id.registerClickable_textView);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        loginButton = (Button) findViewById(R.id.login_button);
+        registerButton = (TextView) findViewById(R.id.registerClickable_textView);
         registerButton.setOnClickListener(mRegisterOnClickListener);
         loginButton.setOnClickListener(mLoginOnClickListener);
-        loginWithGoogleButton=(Button) findViewById(R.id.loginGmail);
+        loginWithGoogleButton = (Button) findViewById(R.id.loginGmail);
         loginWithGoogleButton.setOnClickListener(mLoginWithGoogleListener);
-        loginWithFacebookButton=findViewById(R.id.loginFacebook);
+        loginWithFacebookButton = findViewById(R.id.loginFacebook);
         loginWithFacebookButton.setOnClickListener(mLoginWithFacebookListener);
-        realLoginWithFacebookButton=findViewById(R.id.loginFacebookReal);
+        realLoginWithFacebookButton = findViewById(R.id.loginFacebookReal);
         realLoginWithFacebookButton.setPermissions(Arrays.asList(EMAIL));
         //init callbackmanager
         setUpFacebookAuth();
@@ -133,19 +143,19 @@ public class LoginActivity extends AppCompatActivity {
         mLoginOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              String emailString=  mEmailEditText.getText().toString();
-              String passwordString=mPasswordEditText.getText().toString();
-              signInWithEmailAndPassword(emailString,passwordString);
+                String emailString = mEmailEditText.getText().toString();
+                String passwordString = mPasswordEditText.getText().toString();
+                signInWithEmailAndPassword(emailString, passwordString);
             }
         };
 
-        mLoginWithFacebookListener=new View.OnClickListener() {
+        mLoginWithFacebookListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 realLoginWithFacebookButton.performClick();
             }
         };
-        mLoginWithGoogleListener=new View.OnClickListener() {
+        mLoginWithGoogleListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 signInGoogle();
@@ -158,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
         mRegisterOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(mContext,RegisterActivity.class),RC_REGISTER);
+                startActivityForResult(new Intent(mContext, RegisterActivity.class), RC_REGISTER);
             }
         };
         //endregion
@@ -168,8 +178,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //region showDialog message
 
-    private void showDialog(String title,String message)
-    {
+    private void showDialog(String title, String message) {
         new androidx.appcompat.app.AlertDialog.Builder(mContext)
                 .setTitle(title)
                 .setMessage(message)
@@ -187,48 +196,61 @@ public class LoginActivity extends AppCompatActivity {
 
     //region signInWithEmailAndPassword
 
-    private void signInWithEmailAndPassword(String email,String password)
-    {
-        mFirebaseAuth.signInWithEmailAndPassword(email,password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-        @Override
-        public void onComplete(@NonNull Task<AuthResult> task) {
-            if(task.isSuccessful()) {
-                //TODO: create userinfo instance and return it back postActitivy
-                FirebaseUser firebaseUser= task.getResult().getUser();
-                UserInfo currentUser=new UserInfo(firebaseUser.getDisplayName(),firebaseUser.getEmail(),0,firebaseUser.getUid());
-                Intent data=new Intent();
-                data.putExtra("newUser",currentUser);
-                setResult(RESULT_OK,data);
-                finish();
-            }
-            else
-            {
-                Log.v("Wrongpass",task.getException().toString());
-                if(task.getException() instanceof FirebaseAuthInvalidCredentialsException)
-                {
-                    showDialog("Lỗi đăng nhập","Sai mật khẩu");
-                }
-                else if(task.getException() instanceof FirebaseAuthInvalidUserException)
-                {
-                    showDialog("Lỗi đăng nhập","Không tồn tại người dùng này");
-                }
-            }
-        }
-    });
+    private void signInWithEmailAndPassword(String email, String password) {
+        mFirebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = task.getResult().getUser();
+                        mUserInfoRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.exists()) //user đăng nhập lần đầu
+                                {
+                                    Intent data = new Intent();
+                                    UserInfo currentUser = new UserInfo(user.getDisplayName(), user.getEmail(), 0, 0,
+                                            user.getUid(), null, 0, 0, DEFAULT_AVATAR_URL);
+                                    mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
+                                    data.putExtra("newUser", currentUser);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                } else //user đã đăng nhập trước đó
+                                {
+                                    Intent data = new Intent();
+                                    UserInfo currentUser = snapshot.getValue(UserInfo.class);
+                                    data.putExtra("newUser", currentUser);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                    } else {
+                        Log.v("Wrongpass", task.getException().toString());
+                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            showDialog("Lỗi đăng nhập", "Sai mật khẩu");
+                        } else if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                            showDialog("Lỗi đăng nhập", "Không tồn tại người dùng này");
+                        }
+                    }
+                });
     }
     //endregion
 
     //region google auth
-    private void setUpGoogleAuth()
-    {
+    private void setUpGoogleAuth() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
+                .requestEmail().requestProfile()
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
+
     private void signInGoogle() {
         mGoogleSignInClient.signOut();
         mGoogleSignInClient.revokeAccess();
@@ -236,32 +258,51 @@ public class LoginActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN_GOOGLE);
 
     }
+
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         checkTimeOut();
 
         mFirebaseAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            loginTimeOut.set(true);
-                            Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                            Intent data=new Intent();
-                            UserInfo currentUser=new UserInfo(firebaseUser.getDisplayName(),firebaseUser.getEmail(),0,firebaseUser.getUid());
-                            mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
-                            data.putExtra("newUser",currentUser);
-                            setResult(RESULT_OK,data);
-                            finish();
-                            //updateUI(user);
-                        } else {
-                            loginTimeOut.set(false);
-                            // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            //updateUI(null);
-                        }
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = task.getResult().getUser();
+                        mUserInfoRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                loginTimeOut.set(true);
+                                if (!snapshot.exists()) //user đăng nhập lần đầu
+                                {
+                                    Intent data = new Intent();
+                                    UserInfo currentUser = new UserInfo(user.getDisplayName(), user.getEmail(), 0, 0,
+                                            user.getUid(), null, 0, 0, user.getPhotoUrl().toString());
+                                    mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
+                                    data.putExtra("newUser", currentUser);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                } else //user đã đăng nhập trước đó
+                                {
+                                    Intent data = new Intent();
+                                    UserInfo currentUser = snapshot.getValue(UserInfo.class);
+                                    data.putExtra("newUser", currentUser);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                        // Sign in success, update UI with the signed-in user's information
+                        //updateUI(user);
+                    } else {
+                        loginTimeOut.set(false);
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithCredential:failure", task.getException());
+                        //updateUI(null);
                     }
                 });
     }
@@ -274,34 +315,69 @@ public class LoginActivity extends AppCompatActivity {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
-                     if (task.isSuccessful()) {
-                         loginTimeOut.set(true);
+                    if (task.isSuccessful()) {
+                        loginTimeOut.set(true);
 
-                         // Sign in success, update UI with the signed-in user's information
+                        // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        Intent data=new Intent();
-                        UserInfo currentUser=new UserInfo(user.getDisplayName(),user.getEmail(),0,user.getUid());
-                        mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
-                        data.putExtra("newUser",currentUser);
-                        setResult(RESULT_OK,data);
-                        finish();
-                        //updateUI(user);
-                    } else {
-                         loginTimeOut.set(false);
 
-                         // If sign in fails, display a message to the user.
+                        mUserInfoRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (!snapshot.exists()) //user đăng nhập lần đầu
+                                {
+                                    GraphRequest request = GraphRequest.newGraphPathRequest(
+                                            AccessToken.getCurrentAccessToken(),
+                                            "/" + user.getUid() + "/picture?redirect=0&type=normal",
+                                            response -> {
+                                                JSONObject res = response.getJSONObject();
+                                                try {
+                                                    String avatarUrl = res.getJSONObject("data").getString("url");
+                                                    Intent data = new Intent();
+                                                    UserInfo currentUser = new UserInfo(user.getDisplayName(), user.getEmail(), 0, 0,
+                                                            user.getUid(), null, 0, 0, avatarUrl);
+                                                    mUserInfoRef.child(currentUser.getUserID()).setValue(currentUser);
+                                                    data.putExtra("newUser", currentUser);
+                                                    setResult(RESULT_OK, data);
+                                                    finish();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            });
+
+                                    request.executeAsync();
+
+                                } else //user đã đăng nhập trước đó
+                                {
+                                    Intent data = new Intent();
+                                    UserInfo currentUser = snapshot.getValue(UserInfo.class);
+                                    data.putExtra("newUser", currentUser);
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
+                    } else {
+                        loginTimeOut.set(false);
+
+                        // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        Toast.makeText(LoginActivity.this , "Authentication failed.",
+                        Toast.makeText(LoginActivity.this, "Authentication failed, time out",
                                 Toast.LENGTH_SHORT).show();
                         //updateUI(null);
                     }
                 });
     }
 
-    private void setUpFacebookAuth()
-    {
-        mCallbackManager=CallbackManager.Factory.create();
+    private void setUpFacebookAuth() {
+        mCallbackManager = CallbackManager.Factory.create();
 
 
         // Callback registration
@@ -333,24 +409,21 @@ public class LoginActivity extends AppCompatActivity {
         if (isNetworkAvailable()) {
 
 
-            Handler handler=new Handler();
-            Runnable timerTask = new Runnable() {
-                @Override
-                public void run() {
-                    if (loginTimeOut.get() == false) { //  Timeout
+            Handler handler = new Handler();
+            Runnable timerTask = () -> {
+                if (!loginTimeOut.get()) { //  Timeout
 
-                        // Your timeout code goes here
-                        Log.i(TAG,"Connection timed out");
-                        new AlertDialog.Builder(mContext).setMessage("Connection timed out").create().show();
+                    // Your timeout code goes here
+                    Log.i(TAG, "Connection timed out");
+                    new AlertDialog.Builder(mContext).setMessage("Connection timed out").create().show();
 
-                    }
                 }
             };
             // Setting timeout of 10 sec to the request
             handler.postDelayed(timerTask, 10000);
         } else {
             // Internet not available
-            Log.i(TAG,"No internet available");
+            Log.i(TAG, "No internet available");
         }
     }
 
@@ -378,7 +451,7 @@ public class LoginActivity extends AppCompatActivity {
         //
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_REGISTER) {
-            if (resultCode==RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 UserInfo newUser = (UserInfo) data.getExtras().getSerializable("newUser");
                 mUserInfoRef.child(newUser.getUserID()).setValue(newUser);
                 mEmailEditText.setText(newUser.getEmail());

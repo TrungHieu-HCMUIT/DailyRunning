@@ -94,31 +94,8 @@ public class UserFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
-        rootView = view;
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseStorage = FirebaseStorage.getInstance();
-        mAvatarStorageReference = mFirebaseStorage.getReference().child("avatar_photos");
-        //mCurrentUser = mFirebaseAuth.getCurrentUser();
-        //init viewmodel
-        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
-        //
-        initView();
 
-        onClickSetup();
-
-
-
-        mUserViewModel.currentUser.observe(getActivity(), currentUser -> {
-            mCurrentUser = currentUser;
-            updateUI();
-        });
-
-
-        mHomeViewModel.mHomeActivity.getValue().showNavBar();
-
-        return view;
+        return inflater.inflate(R.layout.fragment_user, container, false);
     }
 
     private void onClickSetup() {
@@ -126,7 +103,7 @@ public class UserFragment extends Fragment {
             mFirebaseAuth.signOut();
             LoginManager.getInstance().logOut();
         });
-        rootView.findViewById(R.id.setting_imageButton).setOnClickListener(v->{
+        rootView.findViewById(R.id.setting_imageButton).setOnClickListener(v -> {
             mNavController.navigate(R.id.action_userFragment_to_updateInfoFragment);
         });
     }
@@ -144,6 +121,28 @@ public class UserFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        rootView = view;
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseStorage = FirebaseStorage.getInstance();
+        mAvatarStorageReference = mFirebaseStorage.getReference().child("avatar_photos");
+        //mCurrentUser = mFirebaseAuth.getCurrentUser();
+        //init viewmodel
+        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        //
+        initView();
+
+        onClickSetup();
+
+
+        mUserViewModel.currentUser.observe(getActivity(), currentUser -> {
+            mCurrentUser = currentUser;
+            updateUI();
+        });
+
+
+        mHomeViewModel.mHomeActivity.getValue().showNavBar();
+
         mNavController = Navigation.findNavController(view);
         restoreState();
 
@@ -190,7 +189,8 @@ public class UserFragment extends Fragment {
     }
 
     private void loadAvatar() {
-        UserInfo userInfo = mFirebaseAuth.getCurrentUser().getProviderData().get(1);
+        UserInfo userInfo = mFirebaseAuth.getCurrentUser();
+        //TODO: Change this
         switch (userInfo.getProviderId()) {
             case EMAIL_PROVIDER_ID:
             case GOOGLE_PROVIDER_ID:
@@ -223,22 +223,12 @@ public class UserFragment extends Fragment {
     private void setUpUpdateAvatar() {
         mChangeAvatarImageButton.setOnClickListener(v -> {
             UserInfo userInfo = mFirebaseAuth.getCurrentUser().getProviderData().get(1);
-            switch (userInfo.getProviderId()) {
-                case EMAIL_PROVIDER_ID:
-                    //người dùng đăng nhập bằng email mới set avatar được
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.setType("image/*");
-                    intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                    startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
-                    break;
 
-                case FACEBOOK_PROVIDER_ID:
-                    Toast.makeText(getContext(), "Không thể đổi avatar khi đăng nhập bằng Facebook", Toast.LENGTH_LONG).show();
-                    break;
-                case GOOGLE_PROVIDER_ID:
-                    Toast.makeText(getContext(), "Không thể đổi avatar khi đăng nhập bằng Google", Toast.LENGTH_LONG).show();
-                    break;
-            }
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.setType("image/*");
+            intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
+
         });
     }
 
@@ -345,18 +335,18 @@ public class UserFragment extends Fragment {
         //region update avatar
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             Uri selectedImageUri = data.getData();
-            FirebaseUser userInfo =mFirebaseAuth.getCurrentUser();
+            FirebaseUser userInfo = mFirebaseAuth.getCurrentUser();
 
             StorageReference photoRef = mAvatarStorageReference.child(selectedImageUri.getLastPathSegment());
             photoRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl()
                     .addOnSuccessListener(uri -> {
-                Uri userAvatarUri = uri;
-                DatabaseReference userRef= FirebaseDatabase.getInstance().getReference().child("UserInfo").child(mCurrentUser.getUserID());
-                userRef.child("avatarURI").setValue(userAvatarUri.toString());
-                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
-                userInfo.updateProfile(profileUpdates).addOnCompleteListener(task ->
-                        Glide.with(avatarView.getContext()).load(userInfo.getPhotoUrl()).into(avatarView));
-            }));
+                        Uri userAvatarUri = uri;
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("UserInfo").child(mCurrentUser.getUserID());
+                        userRef.child("avatarURI").setValue(userAvatarUri.toString());
+                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
+                        userInfo.updateProfile(profileUpdates).addOnCompleteListener(task ->
+                                Glide.with(avatarView.getContext()).load(userInfo.getPhotoUrl()).into(avatarView));
+                    }));
 
         }
         //endregion
