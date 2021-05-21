@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dailyrunning.Authentication.LoginActivity;
 import com.example.dailyrunning.Model.PostDataTest;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.HomeViewModel;
@@ -49,11 +50,11 @@ public class HomeUserFragment extends Fragment {
     }
 
     private void populateData() {
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
+        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
+        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
+        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
+        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
+        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
     }
 
     //region save state

@@ -134,12 +134,12 @@ public class HomeActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 mUserViewModel.currentUser.setValue((UserInfo) data.getExtras().getSerializable("newUser"));
-
+               /* bottomNavigationViewEx.setSelectedItemId(R.id.homeFragment);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment());*/
                 //update ui
-
-                Toast.makeText(this, "Welcome " + mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Welcome " + mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
                 finish();
             }
         }

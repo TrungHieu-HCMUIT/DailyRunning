@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.dailyrunning.R;
@@ -30,6 +32,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel mHomeViewModel;
     private MaterialToolbar mTopToolBar;
     private UserViewModel mUserViewModel;
+    private NavController mNavController;
 
     @Nullable
     @Override
@@ -39,8 +42,8 @@ public class HomeFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mTopToolBar = rootView.findViewById(R.id.topToolBar);
         mTopToolBar.setTitle("");
+        mNavController= Navigation.findNavController(getActivity(),R.id.fragment_container);
 
-        updateUIWhenUserChanged();
 
 
         tabLayout = (SegmentTabLayout) rootView.findViewById(R.id.tabLayout);
@@ -56,14 +59,18 @@ public class HomeFragment extends Fragment {
         mHomeViewModel.mHomeActivity.getValue().showNavBar();
         return rootView;
 
+
     }
 
 
     private void updateUIWhenUserChanged() {
         mUserViewModel.currentUser.observe(getActivity(),
                 userInfo -> {
+                   /* if(userInfo.getDob()==null || userInfo.getHeight()==0||userInfo.getWeight()==0||userInfo.getDisplayName()==null)
+                        mNavController.navigate(R.id.action_homeFragment_to_updateInfoFragment);*/
                     mTopToolBar.setTitle("Good morning, " + userInfo.getDisplayName());
                     Log.v("Home Fragment","user updated "+mTopToolBar.getTitle()+"\n"+userInfo.getDisplayName());
+
                     //TODO: update post for new user
                 });
     }

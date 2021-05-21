@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.dailyrunning.Home.HomeActivity;
 import com.example.dailyrunning.Model.GiftInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.GiftAdapter;
@@ -102,6 +103,7 @@ public class UserFragment extends Fragment {
         mLogOutButton.setOnClickListener(v -> {
             mFirebaseAuth.signOut();
             LoginManager.getInstance().logOut();
+
         });
         rootView.findViewById(R.id.setting_imageButton).setOnClickListener(v -> {
             mNavController.navigate(R.id.action_userFragment_to_updateInfoFragment);
@@ -136,7 +138,10 @@ public class UserFragment extends Fragment {
 
 
         mUserViewModel.currentUser.observe(getActivity(), currentUser -> {
+            if(!isAdded())
+                return;
             mCurrentUser = currentUser;
+
             updateUI();
         });
 
@@ -189,20 +194,23 @@ public class UserFragment extends Fragment {
     }
 
     private void loadAvatar() {
-        UserInfo userInfo = mFirebaseAuth.getCurrentUser();
-        //TODO: Change this
-        switch (userInfo.getProviderId()) {
+        FirebaseUser userInfo = mFirebaseAuth.getCurrentUser();
+        switch (userInfo.getProviderData().get(1).getProviderId()) {
             case EMAIL_PROVIDER_ID:
             case GOOGLE_PROVIDER_ID:
                 Glide.with(avatarView.getContext()).load(userInfo.getPhotoUrl()).into(avatarView);
                 break;
             case FACEBOOK_PROVIDER_ID:
-                GraphRequest request = GraphRequest.newGraphPathRequest(
-                        AccessToken.getCurrentAccessToken(),
-                        "/" + userInfo.getUid() + "/picture?redirect=0&type=normal",
-                        new GraphRequest.Callback() {
-                            @Override
-                            public void onCompleted(GraphResponse response) {
+                //user chưa update avt thì lấy của fb
+                if (userInfo.getPhotoUrl().toString().contains("graph.facebook.com")) {
+                    //https://graph.facebook.com/2511714412307915/picture
+                    String fbUID = userInfo.getPhotoUrl().toString().
+                            replace("https://graph.facebook.com/", "")
+                            .replace("/picture", "");
+                    GraphRequest request = GraphRequest.newGraphPathRequest(
+                            AccessToken.getCurrentAccessToken(),
+                            "/" +fbUID + "/picture?redirect=0&type=normal",
+                            response -> {
                                 JSONObject res = response.getJSONObject();
                                 try {
                                     String avatarUrl = res.getJSONObject("data").getString("url");
@@ -211,13 +219,18 @@ public class UserFragment extends Fragment {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                            }
-                        });
+                            });
 
-                request.executeAsync();
+                    request.executeAsync();
+                }
+                else
+                {
+                    Glide.with(avatarView.getContext()).load(userInfo.getPhotoUrl()).into(avatarView);
+                }
                 break;
 
         }
+
     }
 
     private void setUpUpdateAvatar() {
@@ -337,12 +350,16 @@ public class UserFragment extends Fragment {
             Uri selectedImageUri = data.getData();
             FirebaseUser userInfo = mFirebaseAuth.getCurrentUser();
 
+            //tạo ref mới trong folder avatar_photos/
             StorageReference photoRef = mAvatarStorageReference.child(selectedImageUri.getLastPathSegment());
+            //up hình lên
             photoRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl()
                     .addOnSuccessListener(uri -> {
                         Uri userAvatarUri = uri;
+                        //update avatarURI trong UserInfo
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("UserInfo").child(mCurrentUser.getUserID());
                         userRef.child("avatarURI").setValue(userAvatarUri.toString());
+                        //update profile của firebase user
                         UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
                         userInfo.updateProfile(profileUpdates).addOnCompleteListener(task ->
                                 Glide.with(avatarView.getContext()).load(userInfo.getPhotoUrl()).into(avatarView));

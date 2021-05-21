@@ -1,4 +1,4 @@
-package com.example.dailyrunning.User;
+package com.example.dailyrunning.Authentication;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -18,16 +18,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.NumberPicker;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.dailyrunning.Model.UserInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.HomeViewModel;
+import com.example.dailyrunning.Utils.LoginViewModel;
 import com.example.dailyrunning.Utils.UserViewModel;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,19 +38,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
-public class UpdateInfoFragment extends Fragment {
-
+public class RegisterAddInfoFragment extends Fragment {
 
     private View rootView;
     private NumberPicker mHeightPicker;
     private NumberPicker mWeightPicker;
-    private HomeViewModel mHomeViewModel;
     private TextInputLayout mDOBTextInputLayout;
     private TextInputLayout mNameTextInputLayout;
     private TextInputLayout mEmailTextInputLayout;
     private int mYear, mMonth, mDay;
-    private UserViewModel mUserViewModel;
     private final int MALE = 0;
     private final int FEMALE = 1;
     private Button mSaveButton;
@@ -60,12 +54,13 @@ public class UpdateInfoFragment extends Fragment {
     private CheckBox mFemaleCheckBox;
     private DatabaseReference mUserInfoRef;
     private SimpleDateFormat mDateFormat;
-
+    private LoginViewModel mLoginViewModel;
+    private NavController mNavController;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_update_info, container, false);
+        return inflater.inflate(R.layout.fragment_register_add_info, container, false);
     }
 
     @Override
@@ -74,36 +69,20 @@ public class UpdateInfoFragment extends Fragment {
         rootView = view;
         initView();
         mUserInfoRef= FirebaseDatabase.getInstance().getReference().child("UserInfo");
-        mHomeViewModel.mHomeActivity.getValue().hideNavBar();
+        mLoginViewModel=new ViewModelProvider(getActivity()).get(LoginViewModel.class);
+        mNavController=Navigation.findNavController(getActivity(),R.id.login_fragment_container);
         setUp();
 
         viewFunctional();
     }
-
     private void setUp() {
         setUpNumberPicker();
         setUpGenderCheckBox();
         setUpDatePicker();
         setUpTextInputLayout();
-        showCurrentUserInfo();
-
     }
 
-    private void showCurrentUserInfo() {
-        UserInfo mCurrentUser=mUserViewModel.currentUser.getValue();
-        mEmailTextInputLayout.getEditText().setText(mCurrentUser.getEmail()==null?"":mCurrentUser.getEmail());
-        mNameTextInputLayout.getEditText().setText(mCurrentUser.getDisplayName());
-        if(mCurrentUser.getDob()!=null)
-        mDOBTextInputLayout.getEditText().setText(mDateFormat.format(mCurrentUser.getDob()));
-        mHeightPicker.setValue(mCurrentUser.getHeight());
-        mWeightPicker.setValue(mCurrentUser.getWeight());
-        if (mCurrentUser.getGender() == MALE) {
-            mMaleCheckBox.setChecked(true);
-        } else {
-            mFemaleCheckBox.setChecked(true);
-        }
 
-    }
 
     private void setUpTextInputLayout() {
         mEmailTextInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
@@ -136,19 +115,10 @@ public class UpdateInfoFragment extends Fragment {
     private void setUpDatePicker() {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
-        if (mUserViewModel.currentUser.getValue().getDob()==null) {
+
             mYear = c.get(Calendar.YEAR);
             mMonth = c.get(Calendar.MONTH);
             mDay = c.get(Calendar.DAY_OF_MONTH);
-        }
-        else
-        {
-            Date dob=mUserViewModel.currentUser.getValue().getDob();
-            c.setTime(dob);
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
-        }
         mDOBTextInputLayout.getEditText().setOnClickListener(v -> {
             DatePickerDialog mDatePickerDialog = new DatePickerDialog(getContext(), (view, year, month, dayOfMonth) -> {
                 mYear=year;
@@ -187,6 +157,7 @@ public class UpdateInfoFragment extends Fragment {
         rootView.findViewById(R.id.back_button).setOnClickListener(v -> {
             getActivity().onBackPressed();
         });
+        showInfo();
 
         mSaveButton.setOnClickListener(v -> {
             String emailString = mEmailTextInputLayout.getEditText().getText().toString().trim();
@@ -196,7 +167,7 @@ public class UpdateInfoFragment extends Fragment {
             int height = mHeightPicker.getValue();
             int weight = mWeightPicker.getValue();
             if (validateData(emailString, nameString, gender, dob, height, weight)) {
-                UserInfo mNewInfo=mUserViewModel.currentUser.getValue();
+                UserInfo mNewInfo=mLoginViewModel.tempUser;
                 mNewInfo.setDisplayName(nameString);
                 mNewInfo.setEmail(emailString);
                 mNewInfo.setGender(gender);
@@ -208,20 +179,28 @@ public class UpdateInfoFragment extends Fragment {
                 mNewInfo.setHeight(height);
                 mNewInfo.setWeight(weight);
                 mUserInfoRef.child(mNewInfo.getUserID()).setValue(mNewInfo).addOnCompleteListener(task->{
-                   if(task.isSuccessful())
-                   {
-                       mUserViewModel.currentUser.setValue(mNewInfo);
-                       updateFirebaseUser(mNewInfo);
-                   }
-                   else if(!task.isSuccessful())
-                   {
-                       Toast.makeText(getContext(),"Cập nhật thông tin thất bại",Toast.LENGTH_SHORT).show();
-                   }
+                    if(task.isSuccessful())
+                    {
+                        updateFirebaseUser(mNewInfo);
+                        Boolean isFromRegister=mLoginViewModel.isFromRegister;
+                        mLoginViewModel.getNewUser().postValue(mNewInfo);
+                        mLoginViewModel.isFromRegister=isFromRegister;
+                        mNavController.navigate(R.id.action_registerAddInfoFragment_to_loginFragment);
+                    }
+                    else if(!task.isSuccessful())
+                    {
+                        Toast.makeText(getContext(),"Cập nhật thông tin thất bại",Toast.LENGTH_SHORT).show();
+                    }
                 });
             }
         });
 
 
+    }
+
+    private void showInfo() {
+        mEmailTextInputLayout.getEditText().setText(mLoginViewModel.tempUser.getEmail());
+        mNameTextInputLayout.getEditText().setText(mLoginViewModel.tempUser.getDisplayName());
     }
 
     private void updateFirebaseUser(UserInfo mNewInfo) {
@@ -230,8 +209,6 @@ public class UpdateInfoFragment extends Fragment {
         UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
         mUser.updateProfile(mRequest);
         Toast.makeText(getContext(),"Cập nhật thông tin thành công",Toast.LENGTH_SHORT).show();
-        NavController mNavController= Navigation.findNavController(getActivity(),R.id.fragment_container);
-        mNavController.popBackStack();
     }
 
     private boolean validateData(String emailString, String nameString, Integer gender, String dob, int height, int weight) {
@@ -248,11 +225,9 @@ public class UpdateInfoFragment extends Fragment {
     private void initView() {
         mHeightPicker = rootView.findViewById(R.id.height_picker);
         mWeightPicker = rootView.findViewById(R.id.weight_picker);
-        mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         mDOBTextInputLayout = rootView.findViewById(R.id.update_dob_text_input_layout);
         mEmailTextInputLayout = rootView.findViewById(R.id.update_email_text_input_layout);
         mNameTextInputLayout = rootView.findViewById(R.id.update_name_text_input_layout);
-        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mSaveButton = rootView.findViewById(R.id.save_button);
         mMaleCheckBox = rootView.findViewById(R.id.male_radio_button);
         mFemaleCheckBox = rootView.findViewById(R.id.female_radio_button);
