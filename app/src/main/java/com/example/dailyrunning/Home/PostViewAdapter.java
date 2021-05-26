@@ -76,7 +76,6 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.distance.setText(listItem.get(position).getDistance());
         holder.duration.setText(listItem.get(position).getDuration());
         holder.pace.setText(listItem.get(position).getPace());
-        //Glide.with(mContext).load(base64ToBitmap(listItem.get(position).getImage())).into(holder.image);
         Glide.with(mContext).load(listItem.get(position).getImage()).into(holder.image);
         holder.like.setText("" + listItem.get(position).getNumOfLike());
         holder.comment.setText("" + listItem.get(position).getNumOfComment());
@@ -86,11 +85,4 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
     public int getItemCount() {
         return listItem.size();
     }
-    private Bitmap base64ToBitmap(String b64) {
-        //String base64String = "data:image/png;base64,"+b64;
-        //String base64Image = base64String.split(",")[1];
-        byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-    }
-
 }

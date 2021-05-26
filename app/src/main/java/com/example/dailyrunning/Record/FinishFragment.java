@@ -91,7 +91,7 @@ public class FinishFragment extends Fragment {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference activityRef = database.getReference().child("Activity");
         newActivityID = activityRef.push().getKey();
-        reference=FirebaseStorage.getInstance().getReference("imageMap");
+        reference=FirebaseStorage.getInstance().getReference().child("imageMap");
 
         distanceTextView.setText(formatDistance(completedDist));
         timeTextView.setText(formatDuration(completedTime));

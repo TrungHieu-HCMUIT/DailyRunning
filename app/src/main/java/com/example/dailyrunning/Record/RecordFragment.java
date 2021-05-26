@@ -127,6 +127,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     ImageButton pauseButton;
     ImageButton countinueButton;
     String formattedDate;
+    long time;
     Calendar c;
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
     private View rootView;
@@ -242,16 +243,15 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         endButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 stopTimer();
-                long time = count;
+
                 Bundle resultForFinishFragment = new Bundle();
                 resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, getDistance());
                 resultForFinishFragment.putLong(INTENT_TIMEKEY, time);
+
                 resultForFinishFragment.putParcelableArrayList(INTENT_LATLNGARRLIST, list);
                 resultForFinishFragment.putString(INTENT_DATECREATED, formattedDate);
                 mMap.snapshot(bitmap -> {
 
-                    ImageView img=rootView.findViewById(R.id.map_image);
-                    img.setImageBitmap(bitmap);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byteArray = stream.toByteArray();
@@ -260,6 +260,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
                     mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
 
                 });
+
             }
         });
         mFoldButton.setOnClickListener(v->{
@@ -421,6 +422,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void stopTimer() {
+        time = count;
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;
