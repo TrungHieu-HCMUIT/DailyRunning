@@ -241,25 +241,25 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         });
         endButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                stopTimer();
                 long time = count;
-                mMap.snapshot(new SnapshotReadyCallback() {
-                    @Override
-                    public void onSnapshotReady(Bitmap bitmap) {
-                        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        //bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        //byteArray = stream.toByteArray();
-                        ImageView img=rootView.findViewById(R.id.map_image);
-                        img.setImageBitmap(bitmap);
-                    }
-                });
                 Bundle resultForFinishFragment = new Bundle();
                 resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, getDistance());
                 resultForFinishFragment.putLong(INTENT_TIMEKEY, time);
-                resultForFinishFragment.putByteArray(INTENT_IMAGE,byteArray);
                 resultForFinishFragment.putParcelableArrayList(INTENT_LATLNGARRLIST, list);
                 resultForFinishFragment.putString(INTENT_DATECREATED, formattedDate);
-                //mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
-                stopTimer();
+                mMap.snapshot(bitmap -> {
+
+                    ImageView img=rootView.findViewById(R.id.map_image);
+                    img.setImageBitmap(bitmap);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byteArray = stream.toByteArray();
+                    resultForFinishFragment.putByteArray(INTENT_IMAGE,byteArray);
+
+                    mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
+
+                });
             }
         });
         mFoldButton.setOnClickListener(v->{

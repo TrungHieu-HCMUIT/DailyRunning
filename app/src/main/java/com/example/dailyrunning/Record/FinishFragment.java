@@ -98,19 +98,25 @@ public class FinishFragment extends Fragment {
         paceTextView.setText(paceString);
 
         buttonSave.setOnClickListener(v -> {
-            uploadImage();
-            Activity activity = new Activity(newActivityID,
-                    user.getUid(),
-                    formattedDate,
-                    completedDist,
-                    completedTime,
-                    downloadUrl.toString(),
-                    pace,
-                    describeText.getText().toString(),
-                    list
-            );
-            activityRef.child(newActivityID).setValue(activity);
-            getActivity().finish();
+            uploadImage(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    downloadUrl=uri;
+                    Activity activity = new Activity(newActivityID,
+                            user.getUid(),
+                            formattedDate,
+                            completedDist,
+                            completedTime,
+                            downloadUrl.toString(),
+                            pace,
+                            describeText.getText().toString(),
+                            list
+                    );
+                    activityRef.child(newActivityID).setValue(activity);
+                    getActivity().finish();
+                }
+            });
+
         });
 
         buttonBack.setOnClickListener(new View.OnClickListener() {
@@ -127,17 +133,12 @@ public class FinishFragment extends Fragment {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
-    private void uploadImage() {
+    private void uploadImage(OnSuccessListener<Uri> mSuccessCallback) {
         reference.putFile(getImageUri(getContext(),bitmap))
        .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
            @Override
            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-               reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                   @Override
-                   public void onSuccess(Uri uri) {
-                       downloadUrl = uri;
-                   }
-               });
+               reference.getDownloadUrl().addOnSuccessListener(mSuccessCallback);
            }
        });
     }

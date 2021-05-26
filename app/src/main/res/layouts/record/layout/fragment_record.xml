@@ -156,11 +156,12 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:src="@drawable/place_holder_picture"
-                android:id="@+id/map_image"></ImageView>
+                android:id="@+id/map_image" />
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
