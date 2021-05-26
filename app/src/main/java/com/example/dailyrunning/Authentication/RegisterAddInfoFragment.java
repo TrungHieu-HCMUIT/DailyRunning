@@ -208,11 +208,11 @@ public class RegisterAddInfoFragment extends Fragment {
         mUser.updateEmail(mNewInfo.getEmail());
         UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
         mUser.updateProfile(mRequest);
-        Toast.makeText(getContext(),"Cập nhật thông tin thành công",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(),"Đăng ký thành công",Toast.LENGTH_SHORT).show();
     }
 
     private boolean validateData(String emailString, String nameString, Integer gender, String dob, int height, int weight) {
-        if (TextUtils.isEmpty(emailString) || TextUtils.isEmpty(nameString)) {
+        if (TextUtils.isEmpty(emailString) || TextUtils.isEmpty(nameString) || TextUtils.isEmpty(dob)) {
             Toast.makeText(getContext(), "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return false;
         }

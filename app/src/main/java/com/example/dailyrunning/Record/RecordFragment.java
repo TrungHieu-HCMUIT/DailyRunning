@@ -243,6 +243,8 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
                 resultForFinishFragment.putLong(INTENT_TIMEKEY, elapsedTime);
                 resultForFinishFragment.putParcelableArrayList(INTENT_LATLNGARRLIST, list);
                 resultForFinishFragment.putString(INTENT_DATECREATED, formattedDate);
+
+
                 mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
             }
         });

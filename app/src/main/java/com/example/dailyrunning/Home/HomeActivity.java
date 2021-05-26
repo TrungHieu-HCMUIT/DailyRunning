@@ -11,7 +11,11 @@ import androidx.navigation.ui.NavigationUI;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,6 +34,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -56,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
 
-        /*// Add code to print out the key hash
+      /*  // Add code to print out the key hash
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.example.dailyrunning",
@@ -134,8 +141,8 @@ public class HomeActivity extends AppCompatActivity {
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 mUserViewModel.currentUser.setValue((UserInfo) data.getExtras().getSerializable("newUser"));
-               /* bottomNavigationViewEx.setSelectedItemId(R.id.homeFragment);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment());*/
+                bottomNavigationViewEx.setSelectedItemId(R.id.homeFragment);
+
                 //update ui
                 //Toast.makeText(this, "Welcome " + mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
@@ -203,13 +210,10 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationViewEx.enableItemShiftingMode(false);
         bottomNavigationViewEx.setTextVisibility(false);
 
-        FloatingActionButton newrecord = (FloatingActionButton) findViewById(R.id.newRecord);
-        newrecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MapsActivity.class);
-                startActivityForResult(intent, 0);
-            }
+        FloatingActionButton newrecord = findViewById(R.id.newRecord);
+        newrecord.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), MapsActivity.class);
+            startActivityForResult(intent, 0);
         });
     }
 
