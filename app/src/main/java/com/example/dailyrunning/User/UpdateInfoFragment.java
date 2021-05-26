@@ -18,16 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.NumberPicker;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.dailyrunning.Model.UserInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.Utils.HomeViewModel;
 import com.example.dailyrunning.Utils.UserViewModel;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -230,7 +227,7 @@ public class UpdateInfoFragment extends Fragment {
         UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
         mUser.updateProfile(mRequest);
         Toast.makeText(getContext(),"Cập nhật thông tin thành công",Toast.LENGTH_SHORT).show();
-        NavController mNavController= Navigation.findNavController(getActivity(),R.id.fragment_container);
+        NavController mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
         mNavController.popBackStack();
     }
 

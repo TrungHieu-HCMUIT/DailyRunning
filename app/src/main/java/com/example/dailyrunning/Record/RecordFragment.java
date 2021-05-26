@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.location.Location;
@@ -32,11 +34,15 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.text.format.DateUtils;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOverlay;
 import android.view.Window;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +55,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.SnapshotReadyCallback;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -59,8 +66,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.SphericalUtil;
+import com.spotify.protocol.types.Image;
 import com.spotify.protocol.types.Track;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,6 +84,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     private String INTENT_DISTANCEKEY = "distance";
     private String INTENT_TIMEKEY = "time";
     private String INTENT_DATECREATED = "datecreated";
+    private String INTENT_IMAGE = "pictureURL";
     private static final int UPDATE_TEXTVIEW = 0;
     // variable for Google Map API
     private GoogleMap mMap;
@@ -97,7 +107,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     private static int period = 1000; //1s
     private static double EARTH_RADIUS = 6378.137;//radius of earth
     private boolean isDraw=false;
-
+    private static View viewMap=null;
     private static double rad(double d) {
         return d * Math.PI / 180.0;
     }
@@ -111,6 +121,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     private TextView textlength = null;
     private TextView textView = null;
     private TextView textCalories = null;
+    private byte[] byteArray;
     FloatingActionButton startButton;
     ImageButton endButton;
     ImageButton pauseButton;
@@ -195,6 +206,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         /* when the start button is pressed, start the stopwatch service
          * and bind to that service.
          * */
+        viewMap=getView().findViewById(R.id.map);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // when the walk has started, take note of the current time.
@@ -230,12 +242,23 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         endButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 long time = count;
+                mMap.snapshot(new SnapshotReadyCallback() {
+                    @Override
+                    public void onSnapshotReady(Bitmap bitmap) {
+                        //ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        //bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        //byteArray = stream.toByteArray();
+                        ImageView img=rootView.findViewById(R.id.map_image);
+                        img.setImageBitmap(bitmap);
+                    }
+                });
                 Bundle resultForFinishFragment = new Bundle();
                 resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, getDistance());
                 resultForFinishFragment.putLong(INTENT_TIMEKEY, time);
+                resultForFinishFragment.putByteArray(INTENT_IMAGE,byteArray);
                 resultForFinishFragment.putParcelableArrayList(INTENT_LATLNGARRLIST, list);
                 resultForFinishFragment.putString(INTENT_DATECREATED, formattedDate);
-                mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
+                //mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
                 stopTimer();
             }
         });
@@ -408,7 +431,6 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
             mTimerTask = null;
 
         }
-        list.clear();
         count = 0;
         isDraw = false;
     }
@@ -439,7 +461,6 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         for (int i = 0; i < list.size() - 1; i++) {
             totalDistance = totalDistance + SphericalUtil.computeDistanceBetween(list.get(i), list.get(i + 1));
         }
-
         return totalDistance;
 
     }
@@ -492,28 +513,8 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     }
     public void updateTextView() {
         textView.setText(getTime(count));
-        for (int i = 1; i < list.size(); i++) {
-            s = GetDistance(list.get(i - 1),
-                    list.get(i));
-        }
-        for (int j=10; j < list.size(); j=j+10 ){
-            d = GetDistance(list.get(j - 10),
-                    list.get(j));
-        }
-        sum = sum + s;
-        String Sum = String .format("%.2f",sum);
+        String Sum = String .format("%.2f",getDistance());
         textlength.setText(Sum);
-    }
-    public static double GetDistance(LatLng point1,LatLng point2) {
-        double radLat1 = rad(point1.latitude);
-        double radLat2 = rad(point2.latitude);
-        double a = radLat1 - radLat2;
-        double b = rad(point1.longitude) - rad(point2.longitude);
-        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
-                Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
-        s = s * EARTH_RADIUS;//km
-//        Log.e("s", "s=" + s);
-        return s;
     }
     public void sendMessage(int id) {
         if (mHandler != null) {

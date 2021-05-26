@@ -15,13 +15,12 @@ public class Activity {
     private String pictureURI;
     private double pace;
     private String describe;
-    private ArrayList<LatLng> latLngArrayList;
+    private ArrayList<mLatLng> latLngArrayList;
 
-    public Activity() {
-    }
+    public Activity() { }
 
     public Activity(String activityID, String userID, String dateCreated, double distance, long duration,
-                    String pictureURI, double pace, String describe, ArrayList<LatLng> latLngArrayList) {
+                    String pictureURI, double pace, String describe, ArrayList<mLatLng> latLngArrayList) {
         this.activityID = activityID;
         this.userID = userID;
         this.dateCreated = dateCreated;
@@ -65,13 +64,9 @@ public class Activity {
         this.duration = duration;
     }
 
-    public ArrayList<LatLng> getLatLngArrayList() {
-        return latLngArrayList;
-    }
+    public ArrayList<mLatLng> getLatLngArrayList() { return latLngArrayList; }
 
-    public void setLatLngArrayList(ArrayList<LatLng> latLngArrayList) {
-        this.latLngArrayList = latLngArrayList;
-    }
+    public void setLatLngArrayList(ArrayList<mLatLng> latLngArrayList) { this.latLngArrayList = latLngArrayList; }
 
     public String getDescribe() {
         return describe;

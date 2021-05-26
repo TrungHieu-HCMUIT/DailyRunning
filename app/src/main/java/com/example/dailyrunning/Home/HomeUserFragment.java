@@ -1,22 +1,52 @@
 package com.example.dailyrunning.Home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dailyrunning.Model.Activity;
 import com.example.dailyrunning.Model.PostDataTest;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.Record.MapsActivity;
 import com.example.dailyrunning.Utils.HomeViewModel;
+import com.example.dailyrunning.Utils.UserViewModel;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static android.content.Intent.getIntent;
 
 public class HomeUserFragment extends Fragment {
 
@@ -24,8 +54,13 @@ public class HomeUserFragment extends Fragment {
     private ArrayList<PostDataTest> postList = new ArrayList<>();
     private RecyclerView recyclerView;
     private PostViewAdapter postViewAdapter;
-
+    private UserViewModel mUserViewModel;
     private HomeViewModel mHomeViewModel;
+    private String TAG="cac";
+    private NavController mNavController;
+    ArrayList<String> listDate = new ArrayList<>();
+    private String INTENT_DATECREATED="date";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,7 +71,11 @@ public class HomeUserFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         context = getContext();
+
         recyclerView = (RecyclerView) view.findViewById(R.id.home_user_recycleView);
+
+        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
         populateData();
         postViewAdapter = new PostViewAdapter(context, postList);
         recyclerView.setAdapter(postViewAdapter);
@@ -46,14 +85,45 @@ public class HomeUserFragment extends Fragment {
             recyclerView.getLayoutManager().onRestoreInstanceState(mHomeViewModel.userRecyclerViewState);
             mHomeViewModel.userRecyclerViewState=null;
         }
+
+        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(context, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
+            @Override public void onItemClick(View view, int position) {
+                Bundle bundle = new Bundle();
+                bundle.putString(INTENT_DATECREATED,listDate.get(position));
+                mNavController.navigate(R.id.action_homeFragment_to_mapViewFragment, bundle);
+            }
+
+            @Override public void onLongItemClick(View view, int position) {
+                // do whatever
+            }
+        }));
     }
 
+    @SuppressLint("RestrictedApi")
     private void populateData() {
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest("https://scontent.fsgn5-4.fna.fbcdn.net/v/t1.6435-9/164769211_2992168127686941_4108362963617110188_n.jpg?_nc_cat=102&ccb=1-3&_nc_sid=09cbfe&_nc_ohc=eJgxmulLiyMAX9Utvc4&_nc_ht=scontent.fsgn5-4.fna&oh=f737beb89998a5af014a1ebf0ca07d4a&oe=6090954B", "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference rt = database.getReference();
+        mUserViewModel.currentUser.observe(getActivity(),
+                userInfo -> {
+                    Query query = rt.child("Activity").orderByChild("userID").equalTo(userInfo.getUserID());
+                    query.addValueEventListener(new ValueEventListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.N)
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                                // TODO: handle the post
+                                Activity activity = postSnapshot.getValue(Activity.class);
+                                listDate.add(activity.getDateCreated());
+                                postList.add(new PostDataTest(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration()+"", activity.getPace()+"", userInfo.getAvatarURI(), 20, 20));
+                                postViewAdapter.notifyDataSetChanged();
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                        }
+                    });
+                });
     }
 
     //region save state
@@ -66,3 +136,4 @@ public class HomeUserFragment extends Fragment {
 
     //endregion
 }
+
