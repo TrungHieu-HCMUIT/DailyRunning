@@ -13,10 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.model.PostDataTest;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.utils.HomeViewModel;
+import com.example.dailyrunning.user.UserViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -27,6 +31,7 @@ public class HomeFollowingFragment extends Fragment {
     private RecyclerView recyclerView;
     private PostViewAdapter postViewAdapter;
     private HomeViewModel mHomeViewModel;
+    private UserViewModel mUserViewModel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -38,6 +43,7 @@ public class HomeFollowingFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         context = getContext();
         recyclerView = (RecyclerView) view.findViewById(R.id.home_following_recycleView);
+        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         populateData();
         postViewAdapter = new PostViewAdapter(context, postList);
         recyclerView.setAdapter(postViewAdapter);
@@ -50,18 +56,9 @@ public class HomeFollowingFragment extends Fragment {
     }
 
     private void populateData() {
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
-        postList.add(new PostDataTest(LoginActivity.DEFAULT_AVATAR_URL, "Trung Hiếu", "2021-12-02 00:00:00", "Mô tả", "10km", "20ph", "20 m/ph", 20, 20));
+        mUserViewModel.currentUser.observe(getActivity(),
+                userInfo -> {
+                });
     }
 
     //region savestate

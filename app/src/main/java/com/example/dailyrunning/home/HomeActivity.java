@@ -183,7 +183,7 @@ public class HomeActivity extends AppCompatActivity {
     //region Bottom widget and Fragment
     private void initWidgets() {
         bottomNavigationViewEx = findViewById(R.id.bottomNavViewEx);
-        mNavController = Navigation.findNavController(this, R.id.fragment_container);
+        mNavController = Navigation.findNavController(this, R.id.home_fragment_container);
     }
 
     private void setupBottomNavView() {

@@ -42,7 +42,7 @@ public class HomeFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mTopToolBar = rootView.findViewById(R.id.topToolBar);
         mTopToolBar.setTitle("");
-        mNavController= Navigation.findNavController(getActivity(),R.id.fragment_container);
+        mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
 
 
 

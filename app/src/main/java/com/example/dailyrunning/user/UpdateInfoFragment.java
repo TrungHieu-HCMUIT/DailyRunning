@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.user.UserViewModel;
 import com.example.dailyrunning.utils.HomeViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -226,7 +227,7 @@ public class UpdateInfoFragment extends Fragment {
         UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
         mUser.updateProfile(mRequest);
         Toast.makeText(getContext(),"Cập nhật thông tin thành công",Toast.LENGTH_SHORT).show();
-        NavController mNavController= Navigation.findNavController(getActivity(),R.id.fragment_container);
+        NavController mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
         mNavController.popBackStack();
     }
 
