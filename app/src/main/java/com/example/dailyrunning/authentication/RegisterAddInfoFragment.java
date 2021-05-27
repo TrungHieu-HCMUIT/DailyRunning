@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.utils.LoginViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

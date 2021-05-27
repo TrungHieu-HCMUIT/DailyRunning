@@ -15,7 +15,6 @@ import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.utils.HomeViewModel;
 import com.example.dailyrunning.user.UserViewModel;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
@@ -64,7 +63,7 @@ public class HomeFragment extends Fragment {
 
 
     private void updateUIWhenUserChanged() {
-        mUserViewModel.currentUser.observe(getActivity(),
+        mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
                    /* if(userInfo.getDob()==null || userInfo.getHeight()==0||userInfo.getWeight()==0||userInfo.getDisplayName()==null)
                         mNavController.navigate(R.id.action_homeFragment_to_updateInfoFragment);*/

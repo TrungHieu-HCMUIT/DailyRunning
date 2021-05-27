@@ -1,4 +1,4 @@
-package com.example.dailyrunning.utils;
+package com.example.dailyrunning.authentication;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

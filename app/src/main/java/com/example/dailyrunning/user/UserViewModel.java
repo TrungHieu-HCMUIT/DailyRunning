@@ -1,16 +1,25 @@
 package com.example.dailyrunning.user;
 
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
+import com.example.dailyrunning.R;
 import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.model.UserInfo;
 import com.facebook.AccessToken;
@@ -18,18 +27,26 @@ import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 public class UserViewModel extends ViewModel {
 
 
-
-    public MutableLiveData<UserInfo> currentUser = new MutableLiveData<UserInfo>();
+    private MutableLiveData<UserInfo> currentUser;
     public Parcelable mMedalRecyclerViewState;
     public Parcelable mGiftRecyclerViewState;
     public Integer mScrollViewPosition;
@@ -38,8 +55,65 @@ public class UserViewModel extends ViewModel {
     private static final String GOOGLE_PROVIDER_ID = "google.com";
     private static final String FACEBOOK_PROVIDER_ID = "facebook.com";
     private  MutableLiveData<List<GiftInfo>> gifts;
+    private final DatabaseReference mUserInfoRef= FirebaseDatabase.getInstance().getReference().child("UserInfo");
+    public MutableLiveData<String> avatarUri;
 
+    public LiveData<UserInfo> getCurrentUser()
+    {
+        if(currentUser==null)
+        {
+            currentUser=new MutableLiveData<>();
+            getUserInfo();
+        }
+        return currentUser;
+    }
+    public LiveData<String> getAvatarUri()
+    {
+        if(avatarUri==null)
+        {
+            avatarUri=new MutableLiveData<>();
+            avatarUri.setValue(currentUser.getValue().getAvatarURI());
+        }
+        return avatarUri;
+    }
 
+    public void getUserInfo()
+    {
+        DatabaseReference mCurrentUserRef = mUserInfoRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        mCurrentUserRef.get().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.e(this.getClass().getName(), task.getException().toString());
+                return;
+            }
+            DataSnapshot taskRes = task.getResult();
+            currentUser.setValue(taskRes.getValue(UserInfo.class));
+            if (currentUser.getValue() == null) {
+                Log.e(this.getClass().getName(), "current user is nulll");
+                return;
+            }
+        });
+    }
+    public void putAvatarToFireStorage(Intent data)
+    {
+        Uri selectedImageUri = data.getData();
+        FirebaseUser userInfo = FirebaseAuth.getInstance().getCurrentUser();
+        StorageReference mAvatarStorageReference = FirebaseStorage.getInstance().getReference().child("avatar_photos");
+
+        //tạo ref mới trong folder avatar_photos/
+        StorageReference photoRef = mAvatarStorageReference.child(selectedImageUri.getLastPathSegment());
+        //up hình lên
+        photoRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    Uri userAvatarUri = uri;
+                    //update avatarURI trong UserInfo
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("UserInfo").child(currentUser.getValue().getUserID());
+                    userRef.child("avatarURI").setValue(userAvatarUri.toString());
+                    //update profile của firebase user
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
+                    userInfo.updateProfile(profileUpdates).addOnCompleteListener(task ->avatarUri.setValue(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString()));
+                }));
+    }
     public void onChangeAvatarClick()
     {
         mUserNavigator.updateAvatarClick();
@@ -69,6 +143,33 @@ public class UserViewModel extends ViewModel {
         gifts.setValue(giftData);
     }
 
+    @BindingAdapter({"dobText"})
+    public static void setText(View view, Date date)
+    {
+        SimpleDateFormat mDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+
+        String res=mDateFormat.format(date);
+        ((TextView)view).setText(res);
+    }
+
+    @BindingAdapter({"pickerMin"})
+    public static void setMinValueForNumberPicker(View view, int value)
+    {
+        NumberPicker numberPicker= (NumberPicker) view;
+        numberPicker.setMinValue(value);
+    }
+    @BindingAdapter({"pickerMax"})
+    public static void setMaxValueForNumberPicker(View view, int value)
+    {
+        NumberPicker numberPicker= (NumberPicker) view;
+        numberPicker.setMaxValue(value);
+    }
+    @BindingAdapter({"pickerValue"})
+    public static void setValueForNumberPicker(View view, int value)
+    {
+        NumberPicker numberPicker= (NumberPicker) view;
+        numberPicker.setValue(value);
+    }
     @BindingAdapter({"user"})
     public static void setProfilePicture(ImageView imageView, FirebaseUser userInfo) {
         switch (userInfo.getProviderData().get(1).getProviderId()) {
@@ -124,6 +225,38 @@ public class UserViewModel extends ViewModel {
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();
     }
+    public void updateInfo(UserInfo mNewInfo, onUpdateCallback callBack)
+    {
+        mUserInfoRef.child(mNewInfo.getUserID()).setValue(mNewInfo).addOnCompleteListener(task->{
+            if(task.isSuccessful())
+            {
+                currentUser.setValue(mNewInfo);
+                updateFirebaseUser(mNewInfo);
+                callBack.onComplete(true);
+
+            }
+            else if(!task.isSuccessful())
+            {
+                callBack.onComplete(false);
+            }
+        });
+    }
+    private void updateFirebaseUser(UserInfo mNewInfo) {
+        FirebaseUser mUser= FirebaseAuth.getInstance().getCurrentUser();
+        mUser.updateEmail(mNewInfo.getEmail());
+        UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
+        mUser.updateProfile(mRequest);
+
+    }
+    public void onBackPress()
+    {
+        mUserNavigator.pop();
+    }
+    public interface onUpdateCallback{
+        void onComplete(boolean result);
+
+    }
+
 
 
 }

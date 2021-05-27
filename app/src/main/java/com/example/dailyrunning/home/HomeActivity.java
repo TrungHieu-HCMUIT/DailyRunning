@@ -20,7 +20,6 @@ import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.record.MapsActivity;
 import com.example.dailyrunning.model.UserInfo;
-import com.example.dailyrunning.utils.HomeViewModel;
 import com.example.dailyrunning.user.UserViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -132,7 +131,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                mUserViewModel.currentUser.setValue((UserInfo) data.getExtras().getSerializable("newUser"));
+                mUserViewModel.getUserInfo();
                 bottomNavigationViewEx.setSelectedItemId(R.id.homeFragment);
 
                 //update ui
@@ -154,23 +153,7 @@ public class HomeActivity extends AppCompatActivity {
         if (mCurrentUser == null) {
             startActivityForResult(new Intent(this, LoginActivity.class), RC_SIGN_IN);
         } else {
-            mCurrentUserRef = mFirebaseDatabase.getReference().child("UserInfo").child(mCurrentUser.getUid());
-
-            mCurrentUserRef.get().addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Log.e(this.getClass().getName(), task.getException().toString());
-                    return;
-                }
-                DataSnapshot taskRes = task.getResult();
-                mUserViewModel.currentUser.setValue(taskRes.getValue(UserInfo.class));
-                if (mUserViewModel.currentUser.getValue() == null) {
-                    Log.e(this.getClass().getName(), "current user is nulll");
-                    return;
-                }
-            });
-            if (!mCurrentUser.isEmailVerified() && mCurrentUser.getProviderId().equals("password")) {
-                showEmailVerificationDialog();
-            }
+            mUserViewModel.getUserInfo();
         }
 
 

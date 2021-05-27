@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.utils.LoginViewModel;
 
 /*
 * Q7UH R5LF EJ6M NRXE YMG4 Y3Y3 ILF6 QDAN
@@ -44,26 +43,3 @@ public class LoginActivity extends AppCompatActivity {
 
 
 }
-
-/*
-                                                    //region up avt len firebase
-                                                    StorageReference avtRef = FirebaseStorage.getInstance().getReference().child("avatar_photos").child(fbUID);
-                                                    avtRef.putFile(Uri.parse(avatarUrl)).addOnCompleteListener(task1 -> {
-                                                        if (task1.isSuccessful()) {
-                                                            avtRef.getDownloadUrl()
-                                                                    .addOnSuccessListener(uri -> {
-                                                                        Uri userAvatarUri = uri;
-                                                                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("UserInfo").child(user.getUid());
-                                                                        userRef.child("avatarURI").setValue(userAvatarUri.toString());
-                                                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
-                                                                        user.updateProfile(profileUpdates);
-                                                                    });
-                                                        }
-                                                        else
-                                                        {
-                                                            task1.getException().printStackTrace();
-                                                        }
-                                                    });
-
-                                                    //endregion
-*/

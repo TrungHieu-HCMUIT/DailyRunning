@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.utils.LoginViewModel;
 import com.example.dailyrunning.user.UserViewModel;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -209,8 +208,6 @@ public class LoginFragment extends Fragment {
         new androidx.appcompat.app.AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setMessage(message)
-
-
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -255,6 +252,7 @@ public class LoginFragment extends Fragment {
 
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
     }
+
 
     private void signInGoogle() {
         mGoogleSignInClient.signOut();

@@ -15,12 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.dailyrunning.model.PostDataTest;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.utils.HomeViewModel;
 import com.example.dailyrunning.user.UserViewModel;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -56,7 +51,7 @@ public class HomeFollowingFragment extends Fragment {
     }
 
     private void populateData() {
-        mUserViewModel.currentUser.observe(getActivity(),
+        mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
                 });
     }

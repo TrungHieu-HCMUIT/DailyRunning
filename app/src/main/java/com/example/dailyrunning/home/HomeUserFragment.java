@@ -2,19 +2,12 @@ package com.example.dailyrunning.home;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,17 +18,10 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dailyrunning.home.PostViewAdapter;
-import com.example.dailyrunning.home.RecyclerItemClickListener;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.PostDataTest;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.record.MapsActivity;
-import com.example.dailyrunning.utils.HomeViewModel;
 import com.example.dailyrunning.user.UserViewModel;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,11 +30,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static android.content.Intent.getIntent;
 
 public class HomeUserFragment extends Fragment {
 
@@ -105,7 +86,7 @@ public class HomeUserFragment extends Fragment {
     private void populateData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rt = database.getReference();
-        mUserViewModel.currentUser.observe(getActivity(),
+        mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
                     Query query = rt.child("Activity").orderByChild("userID").equalTo(userInfo.getUserID());
                     query.addValueEventListener(new ValueEventListener() {

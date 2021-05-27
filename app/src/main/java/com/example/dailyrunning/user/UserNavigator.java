@@ -4,4 +4,5 @@ public interface UserNavigator {
     void settingOnClick();
     void allGiftOnClick();
     void updateAvatarClick();
+    void pop();
 }

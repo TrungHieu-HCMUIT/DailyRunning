@@ -1,4 +1,4 @@
-package com.example.dailyrunning.utils;
+package com.example.dailyrunning.home;
 
 import android.os.Parcelable;
 

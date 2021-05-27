@@ -300,7 +300,7 @@
                     app:srcCompat="@drawable/ic_foot" />
 
                 <com.taosif7.android.ringchartlib.RingChart
-                    android:id="@+id/chart_concentric"
+                    android:id="@+id/step_ring_chart"
                     android:layout_width="192dp"
                     android:layout_height="192dp"
                     app:RingChartPrimaryColor="#02C39A"
@@ -338,7 +338,7 @@
                 android:textStyle="bold" />
 
             <com.flyco.tablayout.SegmentTabLayout
-                android:id="@+id/tl_2"
+                android:id="@+id/statistic_tab_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
                 android:layout_gravity="center_horizontal"
