@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/recordFragment"
-        android:name="com.example.dailyrunning.Record.RecordFragment"
+        android:name="com.example.dailyrunning.record.RecordFragment"
         android:label="fragment_record"
         tools:layout="@layout/fragment_record" >
         <action
@@ -22,16 +22,16 @@
     </fragment>
     <fragment
         android:id="@+id/finishFragment"
-        android:name="com.example.dailyrunning.Record.FinishFragment"
+        android:name="com.example.dailyrunning.record.FinishFragment"
         android:label="fragment_finish"
         tools:layout="@layout/fragment_finish" />
     <fragment
         android:id="@+id/spotifyFragment"
-        android:name="com.example.dailyrunning.Record.Spotify.SpotifyFragment"
+        android:name="com.example.dailyrunning.record.Spotify.SpotifyFragment"
         android:label="fragment_spotify"
         tools:layout="@layout/fragment_spotify" />
     <fragment
         android:id="@+id/playerFragment2"
-        android:name="com.example.dailyrunning.Record.Spotify.PlayerFragment"
+        android:name="com.example.dailyrunning.record.Spotify.PlayerFragment"
         android:label="PlayerFragment" />
 </navigation>

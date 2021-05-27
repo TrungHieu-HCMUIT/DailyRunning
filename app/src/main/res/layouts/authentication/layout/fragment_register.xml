@@ -14,7 +14,7 @@
         android:layout_marginBottom="-20dp"
         android:background="@color/white"
         android:orientation="vertical"
-        tools:context=".Authentication.RegisterActivity">
+        tools:context=".authentication.RegisterActivity">
 
         <TextView
             android:id="@+id/textView17"
