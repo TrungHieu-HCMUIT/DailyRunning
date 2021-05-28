@@ -154,7 +154,7 @@
                     android:background="@drawable/white_rounded_background"
                     android:textSize="16sp"
                     android:fontFamily="@font/roboto_regular"
-                    android:checked="@{userViewModel.currentUser.gender==0?true:false}"
+                    android:checked="@{userViewModel.currentUser.gender}"
                     android:textStyle="bold"
                     android:text="Nam" />
 
@@ -169,7 +169,7 @@
                     android:layout_width="145dp"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:checked="@{userViewModel.currentUser.gender==0?false:true}"
+                    android:checked="@{!userViewModel.currentUser.gender}"
 
                     android:background="@drawable/white_rounded_background"
                     android:layout_height="46dp"

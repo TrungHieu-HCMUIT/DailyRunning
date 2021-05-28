@@ -88,6 +88,8 @@ public class HomeUserFragment extends Fragment {
         DatabaseReference rt = database.getReference();
         mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
+            if (userInfo==null)
+                return;
                     Query query = rt.child("Activity").orderByChild("userID").equalTo(userInfo.getUserID());
                     query.addValueEventListener(new ValueEventListener() {
                         @RequiresApi(api = Build.VERSION_CODES.N)

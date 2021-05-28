@@ -1,5 +1,8 @@
 package com.example.dailyrunning.model;
 
+import android.text.TextUtils;
+import android.widget.Toast;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -7,17 +10,25 @@ public class UserInfo implements Serializable {
     private String displayName;
     private String email;
     private int point;
-    private int gender;
+    private boolean gender;
     private String userID;
     private Date dob;
     private int height;
     private int weight;
     private String avatarURI;
 
+    public boolean validateData() {
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(displayName) || dob==null) {
+            return false;
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches())
+            return false;
+        return true;
+    }
     public UserInfo()
     {}
     public UserInfo(String displayName, String email, int point,
-                    int gender, String userID, Date dob, int height,
+                    boolean gender, String userID, Date dob, int height,
                     int weight, String avatarURI) {
         this.displayName = displayName;
         this.email = email;
@@ -61,11 +72,11 @@ public class UserInfo implements Serializable {
         this.point = point;
     }
 
-    public int getGender() {
+    public boolean isGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(boolean gender) {
         this.gender = gender;
     }
 

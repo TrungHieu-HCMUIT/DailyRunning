@@ -108,6 +108,8 @@ public class UserFragment extends Fragment implements UserNavigator {
 
 
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
+            if (currentUser==null)
+                return;
             if (!isAdded())
                 return;
             mCurrentUser = currentUser;

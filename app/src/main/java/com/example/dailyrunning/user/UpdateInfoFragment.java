@@ -148,7 +148,7 @@ public class UpdateInfoFragment extends Fragment implements UserNavigator {
         binding.saveButton.setOnClickListener(v -> {
             String emailString = binding.updateEmailTextInputLayout.getEditText().getText().toString().trim();
             String nameString = binding.updateNameTextInputLayout.getEditText().getText().toString().trim();
-            Integer gender = binding.maleRadioButton.isChecked() ? 0 : (binding.femaleRadioButton.isChecked() ? 1 : 0);
+            boolean gender = binding.maleRadioButton.isChecked();
             String dob = binding.updateDobTextInputLayout.getEditText().getText().toString();
             int height = binding.heightPicker.getValue();
             int weight = binding.weightPicker.getValue();
@@ -179,7 +179,7 @@ public class UpdateInfoFragment extends Fragment implements UserNavigator {
     }
 
 
-    private boolean validateData(String emailString, String nameString, Integer gender, String dob, int height, int weight) {
+    private boolean validateData(String emailString, String nameString, boolean gender, String dob, int height, int weight) {
         if (TextUtils.isEmpty(emailString) || TextUtils.isEmpty(nameString)) {
             Toast.makeText(getContext(), "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return false;

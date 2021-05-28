@@ -4,27 +4,29 @@ package com.example.dailyrunning.user;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.databinding.BindingAdapter;
+import androidx.databinding.InverseBindingAdapter;
+import androidx.databinding.InverseBindingListener;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
-import com.example.dailyrunning.R;
+import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.model.UserInfo;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -37,13 +39,15 @@ import com.google.firebase.storage.StorageReference;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserViewModel extends ViewModel {
+
 
 
     private MutableLiveData<UserInfo> currentUser;
@@ -63,7 +67,6 @@ public class UserViewModel extends ViewModel {
         if(currentUser==null)
         {
             currentUser=new MutableLiveData<>();
-            getUserInfo();
         }
         return currentUser;
     }
@@ -77,21 +80,25 @@ public class UserViewModel extends ViewModel {
         return avatarUri;
     }
 
-    public void getUserInfo()
+    public void getUserInfo(LoginViewModel.TaskCallBack taskCallBack)
     {
         DatabaseReference mCurrentUserRef = mUserInfoRef.child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
+        AtomicBoolean result= new AtomicBoolean(true);
         mCurrentUserRef.get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e(this.getClass().getName(), task.getException().toString());
+                taskCallBack.onError(task.getException());
                 return;
             }
             DataSnapshot taskRes = task.getResult();
-            currentUser.setValue(taskRes.getValue(UserInfo.class));
-            if (currentUser.getValue() == null) {
+            if (taskRes.getValue()==null)
+            {
                 Log.e(this.getClass().getName(), "current user is nulll");
+                taskCallBack.onError(new Exception("Current user is null"));
                 return;
             }
+            currentUser.setValue(taskRes.getValue(UserInfo.class));
+            taskCallBack.onSuccess();
         });
     }
     public void putAvatarToFireStorage(Intent data)
@@ -144,13 +151,52 @@ public class UserViewModel extends ViewModel {
     }
 
     @BindingAdapter({"dobText"})
-    public static void setText(View view, Date date)
+    public static void getText(TextInputEditText view, Date date)
     {
+        if(date==null)
+            return;
         SimpleDateFormat mDateFormat=new SimpleDateFormat("dd/MM/yyyy");
 
         String res=mDateFormat.format(date);
-        ((TextView)view).setText(res);
+        if (view.getText().toString().equals(date))
+            return;
+        view.setText(res);
     }
+    @BindingAdapter({"dobTextAttrChanged"})
+    public static void setListener(TextInputEditText view, InverseBindingListener listener)
+    {
+       if (listener!=null)
+           view.addTextChangedListener(new TextWatcher() {
+               @Override
+               public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+               }
+
+               @Override
+               public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+               }
+
+               @Override
+               public void afterTextChanged(Editable s) {
+                    listener.onChange();
+               }
+           });
+    }
+    @InverseBindingAdapter(attribute = "dobText")
+    public static Date getText(View view)
+    {
+        SimpleDateFormat mDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+        EditText editText=(EditText)view;
+        Date res= null;
+        try {
+            res = mDateFormat.parse(editText.getText().toString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 
     @BindingAdapter({"pickerMin"})
     public static void setMinValueForNumberPicker(View view, int value)
@@ -169,6 +215,22 @@ public class UserViewModel extends ViewModel {
     {
         NumberPicker numberPicker= (NumberPicker) view;
         numberPicker.setValue(value);
+    }
+    @BindingAdapter({"pickerValueAttrChanged"})
+    public static void setNumberPickerListener(NumberPicker view, InverseBindingListener listener)
+    {
+        if (listener!=null)
+           view.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+               @Override
+               public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                   listener.onChange();
+               }
+           });
+    }
+    @InverseBindingAdapter(attribute = "pickerValue")
+    public static  int getPickerValue(NumberPicker view)
+    {
+        return view.getValue();
     }
     @BindingAdapter({"user"})
     public static void setProfilePicture(ImageView imageView, FirebaseUser userInfo) {
@@ -243,7 +305,6 @@ public class UserViewModel extends ViewModel {
     }
     private void updateFirebaseUser(UserInfo mNewInfo) {
         FirebaseUser mUser= FirebaseAuth.getInstance().getCurrentUser();
-        mUser.updateEmail(mNewInfo.getEmail());
         UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
         mUser.updateProfile(mRequest);
 

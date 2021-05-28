@@ -27,6 +27,7 @@ public class HomeFollowingFragment extends Fragment {
     private PostViewAdapter postViewAdapter;
     private HomeViewModel mHomeViewModel;
     private UserViewModel mUserViewModel;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,17 +43,18 @@ public class HomeFollowingFragment extends Fragment {
         populateData();
         postViewAdapter = new PostViewAdapter(context, postList);
         recyclerView.setAdapter(postViewAdapter);
-        mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
-        if (mHomeViewModel.followingRecyclerViewState!=null)
-        {
+        mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        if (mHomeViewModel.followingRecyclerViewState != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(mHomeViewModel.followingRecyclerViewState);
-            mHomeViewModel.followingRecyclerViewState=null;
+            mHomeViewModel.followingRecyclerViewState = null;
         }
     }
 
     private void populateData() {
         mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
+                    if (userInfo == null)
+                        return;
                 });
     }
 
@@ -61,7 +63,7 @@ public class HomeFollowingFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        mHomeViewModel.followingRecyclerViewState=recyclerView.getLayoutManager().onSaveInstanceState();
+        mHomeViewModel.followingRecyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
     }
 
     //endregion
