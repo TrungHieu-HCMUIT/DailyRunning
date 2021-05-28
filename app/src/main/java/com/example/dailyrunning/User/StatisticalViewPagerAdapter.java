@@ -1,4 +1,4 @@
-package com.example.dailyrunning.User;
+package com.example.dailyrunning.user;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

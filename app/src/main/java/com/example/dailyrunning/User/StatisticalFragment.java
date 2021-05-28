@@ -1,4 +1,4 @@
-package com.example.dailyrunning.User;
+package com.example.dailyrunning.user;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package com.example.dailyrunning.User;
+package com.example.dailyrunning.user;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -21,10 +21,10 @@ import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
-import com.example.dailyrunning.Model.UserInfo;
+import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.Utils.HomeViewModel;
-import com.example.dailyrunning.Utils.UserViewModel;
+import com.example.dailyrunning.utils.HomeViewModel;
+import com.example.dailyrunning.utils.UserViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

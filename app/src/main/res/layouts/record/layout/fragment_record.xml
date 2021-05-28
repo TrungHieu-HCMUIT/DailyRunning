@@ -197,7 +197,7 @@
 
             <fragment
                 android:id="@+id/bottom_player_fragment"
-                android:name="com.example.dailyrunning.Record.Spotify.BottomPlayerFragment"
+                android:name="com.example.dailyrunning.record.Spotify.BottomPlayerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:layout="@layout/fragment_bottom_player" />

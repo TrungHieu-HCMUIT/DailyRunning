@@ -1,4 +1,4 @@
-package com.example.dailyrunning.Authentication;
+package com.example.dailyrunning.authentication;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.Model.UserInfo;
+import com.example.dailyrunning.model.UserInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;

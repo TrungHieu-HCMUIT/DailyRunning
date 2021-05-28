@@ -1,4 +1,4 @@
-package com.example.dailyrunning.User;
+package com.example.dailyrunning.user;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,10 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
-import com.example.dailyrunning.Model.GiftInfo;
+import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.Utils.AllGiftAdapter;
-import com.example.dailyrunning.Utils.HomeViewModel;
+import com.example.dailyrunning.utils.AllGiftAdapter;
+import com.example.dailyrunning.utils.HomeViewModel;
 
 import java.util.ArrayList;
 

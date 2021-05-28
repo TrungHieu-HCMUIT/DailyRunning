@@ -1,4 +1,4 @@
-package com.example.dailyrunning.User;
+package com.example.dailyrunning.user;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -22,25 +22,20 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.dailyrunning.Model.GiftInfo;
+import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.Utils.GiftAdapter;
-import com.example.dailyrunning.Utils.HomeViewModel;
-import com.example.dailyrunning.Utils.MedalAdapter;
-import com.example.dailyrunning.Utils.UserViewModel;
+import com.example.dailyrunning.utils.GiftAdapter;
+import com.example.dailyrunning.utils.HomeViewModel;
+import com.example.dailyrunning.utils.MedalAdapter;
+import com.example.dailyrunning.utils.UserViewModel;
 import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -49,7 +44,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.taosif7.android.ringchartlib.RingChart;
 
 import org.json.JSONException;
@@ -80,7 +74,7 @@ public class UserFragment extends Fragment {
     private TextView userDisplayNameTextView;
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mAvatarStorageReference;
-    private com.example.dailyrunning.Model.UserInfo mCurrentUser;
+    private com.example.dailyrunning.model.UserInfo mCurrentUser;
     private Fragment mContext = UserFragment.this;
     private RecyclerView mGiftRecyclerView;
     private Button mSeeAllGiftButton;
