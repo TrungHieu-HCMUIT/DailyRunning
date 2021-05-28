@@ -2,9 +2,7 @@ package com.example.dailyrunning.model;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class Activity {
     private String activityID;

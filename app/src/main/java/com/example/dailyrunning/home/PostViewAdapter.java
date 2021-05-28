@@ -1,6 +1,9 @@
 package com.example.dailyrunning.home;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +33,9 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         public TextView distance;
         public TextView duration;
         public TextView pace;
-        public ImageView image;
         public TextView like;
         public TextView comment;
+        public ImageView image;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -73,6 +76,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.distance.setText(listItem.get(position).getDistance());
         holder.duration.setText(listItem.get(position).getDuration());
         holder.pace.setText(listItem.get(position).getPace());
+        //Glide.with(mContext).load(base64ToBitmap(listItem.get(position).getImage())).into(holder.image);
         Glide.with(mContext).load(listItem.get(position).getImage()).into(holder.image);
         holder.like.setText("" + listItem.get(position).getNumOfLike());
         holder.comment.setText("" + listItem.get(position).getNumOfComment());

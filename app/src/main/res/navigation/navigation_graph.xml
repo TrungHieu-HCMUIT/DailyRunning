@@ -17,10 +17,13 @@
         <action
             android:id="@+id/action_homeFragment_to_postDetailFragment"
             app:destination="@id/postDetailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_updateInfoFragment"
+            app:destination="@id/updateInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/findFragment"
-        android:name="com.example.dailyrunning.home.Find.FindFragment"
+        android:name="com.example.dailyrunning.home.find.FindFragment"
         android:label="FindFragment" />
     <fragment
         android:id="@+id/userFragment"

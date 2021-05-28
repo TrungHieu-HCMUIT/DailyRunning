@@ -19,10 +19,10 @@ import android.widget.Toast;
 
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.record.MapsActivity;
 import com.example.dailyrunning.model.UserInfo;
-import com.example.dailyrunning.utils.HomeViewModel;
-import com.example.dailyrunning.utils.UserViewModel;
+import com.example.dailyrunning.user.UserViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,11 +52,13 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //init firebaseAuth
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
 
-        /*// Add code to print out the key hash
+      /*  // Add code to print out the key hash
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
                     "com.example.dailyrunning",
@@ -71,10 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         } catch (NoSuchAlgorithmException e) {
 
         }*/
-        //init firebaseAuth
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        setUpAuthStateListener();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
         //init firebase database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUserInfoRef = mFirebaseDatabase.getReference().child("UserInfo");
@@ -85,7 +84,9 @@ public class HomeActivity extends AppCompatActivity {
         mHomeViewModel=new ViewModelProvider(this).get(HomeViewModel.class);
         //
         mHomeViewModel.mHomeActivity.setValue(this);
-
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        setUpAuthStateListener();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
         // Binding views by its id
         initWidgets();
 
@@ -106,6 +107,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     //region firebaseAuth
+/*
     private void showEmailVerificationDialog() {
         new AlertDialog.Builder(mContext)
                 .setTitle("Verify your email")
@@ -127,19 +129,31 @@ public class HomeActivity extends AppCompatActivity {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
     }
+*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                mUserViewModel.currentUser.setValue((UserInfo) data.getExtras().getSerializable("newUser"));
+                mUserViewModel.getUserInfo(new LoginViewModel.TaskCallBack() {
+                    @Override
+                    public void onSuccess() {
+
+                    }
+
+                    @Override
+                    public void onError(Exception exception) {
+                        if (mHomeViewModel.isActivityShow)
+                            mUserViewModel.onLogOutClick();
+                    }
+                });
+                bottomNavigationViewEx.setSelectedItemId(R.id.homeFragment);
 
                 //update ui
-
-                Toast.makeText(this, "Welcome " + mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Welcome " + mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
@@ -150,33 +164,48 @@ public class HomeActivity extends AppCompatActivity {
         mAuthStateListener = firebaseAuth -> checkAuthenticationState();
     }
 
+    private void startLoginSession()
+    {
+        startActivityForResult(new Intent(this, LoginActivity.class), RC_SIGN_IN);
+
+    }
     private void checkAuthenticationState() {
         FirebaseUser mCurrentUser = mFirebaseAuth.getCurrentUser();
         if (mCurrentUser == null) {
-            startActivityForResult(new Intent(this, LoginActivity.class), RC_SIGN_IN);
+            startLoginSession();
         } else {
-            mCurrentUserRef = mFirebaseDatabase.getReference().child("UserInfo").child(mCurrentUser.getUid());
 
-            mCurrentUserRef.get().addOnCompleteListener(task -> {
-                if (!task.isSuccessful()) {
-                    Log.e(this.getClass().getName(), task.getException().toString());
-                    return;
+            mUserViewModel.getUserInfo(new LoginViewModel.TaskCallBack() {
+                @Override
+                public void onSuccess() {
+
                 }
-                DataSnapshot taskRes = task.getResult();
-                mUserViewModel.currentUser.setValue(taskRes.getValue(UserInfo.class));
-                if (mUserViewModel.currentUser.getValue() == null) {
-                    Log.e(this.getClass().getName(), "current user is nulll");
-                    return;
+
+                @Override
+                public void onError(Exception exception) {
+                    if (mHomeViewModel.isActivityShow)
+                    mUserViewModel.onLogOutClick();
                 }
             });
-            if (!mCurrentUser.isEmailVerified() && mCurrentUser.getProviderId().equals("password")) {
-                showEmailVerificationDialog();
-            }
+
         }
 
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHomeViewModel.isActivityShow=false;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mHomeViewModel.isActivityShow=true;
+
+    }
 
     //endregion
 
@@ -203,13 +232,10 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationViewEx.enableItemShiftingMode(false);
         bottomNavigationViewEx.setTextVisibility(false);
 
-        FloatingActionButton newrecord = (FloatingActionButton) findViewById(R.id.newRecord);
-        newrecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), MapsActivity.class);
-                startActivityForResult(intent, 0);
-            }
+        FloatingActionButton newrecord = findViewById(R.id.newRecord);
+        newrecord.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), MapsActivity.class);
+            startActivityForResult(intent, 0);
         });
     }
 

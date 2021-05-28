@@ -11,6 +11,15 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,24 +74,17 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class RecordFragment extends Fragment implements OnMapReadyCallback {
 
-    private String INTENT_LATLNGARRLIST = "latlngarrlist";
-    private String INTENT_DISTANCEKEY = "distance";
-    private String INTENT_TIMEKEY = "time";
-    private String INTENT_DATECREATED = "datecreated";
-    private String INTENT_IMAGE = "pictureURL";
+    private final String INTENT_LATLNGARRLIST = "latlngarrlist";
+    private final String INTENT_DISTANCEKEY = "distance";
+    private final String INTENT_TIMEKEY = "time";
+    private final String INTENT_DATECREATED = "datecreated";
+    private final String INTENT_IMAGE = "pictureURL";
     private static final int UPDATE_TEXTVIEW = 0;
     // variable for Google Map API
     private GoogleMap mMap;
-    private CameraPosition mCameraPosition;
-    private LocationListener locListener;
+
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
-    private LocationManager locationManager;
-    private Location mLastKnownLocation;
-    private final LatLng mDefaultLocation = new LatLng(10.886113149181485, 106.78205916450588);
-    private static final int DEFAULT_ZOOM = 20;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
     ArrayList<LatLng> list = new ArrayList<LatLng>();
     private static int count = 0;
     private static double s = 0;

@@ -5,12 +5,19 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +28,9 @@ import android.widget.TextView;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.mLatLng;
 import com.example.dailyrunning.R;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,15 +42,16 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.UUID;
 
 
 public class FinishFragment extends Fragment {
 
+    private static final String INTENT_IMAGE = "pictureURL";
     private final String INTENT_DISTANCEKEY = "distance";
     private final String INTENT_TIMEKEY = "time";
     private String INTENT_DATECREATED = "datecreated";
     private String INTENT_LATLNGARRLIST = "latlngarrlist";
-    private String INTENT_IMAGE = "pictureURL";
     EditText describeText;
     ArrayList<mLatLng> list = new ArrayList<mLatLng>();
     DatabaseReference exampleRun;

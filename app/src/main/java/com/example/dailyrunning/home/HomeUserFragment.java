@@ -21,8 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.PostDataTest;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.utils.HomeViewModel;
-import com.example.dailyrunning.utils.UserViewModel;
+import com.example.dailyrunning.user.UserViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -87,8 +86,10 @@ public class HomeUserFragment extends Fragment {
     private void populateData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rt = database.getReference();
-        mUserViewModel.currentUser.observe(getActivity(),
+        mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
+            if (userInfo==null)
+                return;
                     Query query = rt.child("Activity").orderByChild("userID").equalTo(userInfo.getUserID());
                     query.addValueEventListener(new ValueEventListener() {
                         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -98,7 +99,7 @@ public class HomeUserFragment extends Fragment {
                                 // TODO: handle the post
                                 Activity activity = postSnapshot.getValue(Activity.class);
                                 listDate.add(activity.getDateCreated());
-                                postList.add(new PostDataTest(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration()+"", activity.getPace()+"", activity.getPictureURI(), 20, 20));
+                                postList.add(new PostDataTest(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration()+"", activity.getPace()+"", userInfo.getAvatarURI(), 20, 20));
                                 postViewAdapter.notifyDataSetChanged();
                             }
                         }
