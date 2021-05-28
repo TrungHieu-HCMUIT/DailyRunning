@@ -21,10 +21,10 @@ import android.widget.CheckBox;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import com.example.dailyrunning.databinding.FragmentUpdateInfoBinding;
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.utils.HomeViewModel;
-import com.example.dailyrunning.utils.UserViewModel;
+import com.example.dailyrunning.home.HomeViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -38,31 +38,27 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class UpdateInfoFragment extends Fragment {
+public class UpdateInfoFragment extends Fragment implements UserNavigator {
 
-
-    private View rootView;
-    private NumberPicker mHeightPicker;
-    private NumberPicker mWeightPicker;
-    private HomeViewModel mHomeViewModel;
-    private TextInputLayout mDOBTextInputLayout;
-    private TextInputLayout mNameTextInputLayout;
-    private TextInputLayout mEmailTextInputLayout;
-    private int mYear, mMonth, mDay;
-    private UserViewModel mUserViewModel;
     private final int MALE = 0;
     private final int FEMALE = 1;
-    private Button mSaveButton;
-    private CheckBox mMaleCheckBox;
-    private CheckBox mFemaleCheckBox;
+    private int mYear, mMonth, mDay;
+
+    private View rootView;
     private DatabaseReference mUserInfoRef;
     private SimpleDateFormat mDateFormat;
+    private FragmentUpdateInfoBinding binding;
+    private HomeViewModel mHomeViewModel;
+
+    private UserViewModel mUserViewModel;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_update_info, container, false);
+        binding = FragmentUpdateInfoBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
@@ -70,40 +66,25 @@ public class UpdateInfoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         rootView = view;
         initView();
-        mUserInfoRef= FirebaseDatabase.getInstance().getReference().child("UserInfo");
+        mUserInfoRef = FirebaseDatabase.getInstance().getReference().child("UserInfo");
         mHomeViewModel.mHomeActivity.getValue().hideNavBar();
+        binding.setUserViewModel(mUserViewModel);
+        binding.setLifecycleOwner(getActivity());
         setUp();
 
         viewFunctional();
     }
 
     private void setUp() {
-        setUpNumberPicker();
         setUpGenderCheckBox();
         setUpDatePicker();
         setUpTextInputLayout();
-        showCurrentUserInfo();
 
     }
 
-    private void showCurrentUserInfo() {
-        UserInfo mCurrentUser=mUserViewModel.currentUser.getValue();
-        mEmailTextInputLayout.getEditText().setText(mCurrentUser.getEmail()==null?"":mCurrentUser.getEmail());
-        mNameTextInputLayout.getEditText().setText(mCurrentUser.getDisplayName());
-        if(mCurrentUser.getDob()!=null)
-        mDOBTextInputLayout.getEditText().setText(mDateFormat.format(mCurrentUser.getDob()));
-        mHeightPicker.setValue(mCurrentUser.getHeight());
-        mWeightPicker.setValue(mCurrentUser.getWeight());
-        if (mCurrentUser.getGender() == MALE) {
-            mMaleCheckBox.setChecked(true);
-        } else {
-            mFemaleCheckBox.setChecked(true);
-        }
-
-    }
 
     private void setUpTextInputLayout() {
-        mEmailTextInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
+        binding.updateEmailTextInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -116,14 +97,11 @@ public class UpdateInfoFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String emailString=mEmailTextInputLayout.getEditText().getText().toString().trim();
-                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailString).matches())
-                {
-                    mEmailTextInputLayout.setError("Email không hợp lệ");
-                }
-                else
-                {
-                    mEmailTextInputLayout.setError(null);
+                String emailString = binding.updateEmailTextInputLayout.getEditText().getText().toString().trim();
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
+                    binding.updateEmailTextInputLayout.setError("Email không hợp lệ");
+                } else {
+                    binding.updateEmailTextInputLayout.setError(null);
 
                 }
             }
@@ -133,26 +111,20 @@ public class UpdateInfoFragment extends Fragment {
     private void setUpDatePicker() {
         // Get Current Date
         final Calendar c = Calendar.getInstance();
-        if (mUserViewModel.currentUser.getValue().getDob()==null) {
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+        Date userDob=mUserViewModel.getCurrentUser().getValue().getDob();
+        if ( userDob!= null) {
+            c.setTime(userDob);
         }
-        else
-        {
-            Date dob=mUserViewModel.currentUser.getValue().getDob();
-            c.setTime(dob);
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
-        }
-        mDOBTextInputLayout.getEditText().setOnClickListener(v -> {
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+        binding.updateDobTextInputLayout.getEditText().setOnClickListener(v -> {
             DatePickerDialog mDatePickerDialog = new DatePickerDialog(getContext(), (view, year, month, dayOfMonth) -> {
-                mYear=year;
-                mMonth=month;
-                mDay=dayOfMonth;
-                String dobString = String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month+1) + "/" + year;
-                mDOBTextInputLayout.getEditText().setText(dobString);
+                mYear = year;
+                mMonth = month;
+                mDay = dayOfMonth;
+                String dobString = String.format("%02d", dayOfMonth) + "/" + String.format("%02d", month + 1) + "/" + year;
+                binding.updateDobTextInputLayout.getEditText().setText(dobString);
             }, mYear, mMonth, mDay);
 
             mDatePickerDialog.show();
@@ -160,99 +132,87 @@ public class UpdateInfoFragment extends Fragment {
     }
 
     private void setUpGenderCheckBox() {
-        mFemaleCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.femaleRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked)
-                mMaleCheckBox.setChecked(false);
+                binding.maleRadioButton.setChecked(false);
         });
-        mMaleCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.maleRadioButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked)
-                mFemaleCheckBox.setChecked(false);
+                binding.femaleRadioButton.setChecked(false);
         });
     }
 
-    private void setUpNumberPicker() {
-        mHeightPicker.setMinValue(130);
-        mHeightPicker.setMaxValue(220);
-        mHeightPicker.setValue(160);
-        mWeightPicker.setMinValue(30);
-        mWeightPicker.setMaxValue(200);
-        mWeightPicker.setValue(50);
-
-    }
 
     private void viewFunctional() {
-        rootView.findViewById(R.id.back_button).setOnClickListener(v -> {
-            getActivity().onBackPressed();
-        });
 
-        mSaveButton.setOnClickListener(v -> {
-            String emailString = mEmailTextInputLayout.getEditText().getText().toString().trim();
-            String nameString = mNameTextInputLayout.getEditText().getText().toString().trim();
-            Integer gender = mMaleCheckBox.isChecked() ? 0 : (mFemaleCheckBox.isChecked() ? 1 : 0);
-            String dob = mDOBTextInputLayout.getEditText().getText().toString();
-            int height = mHeightPicker.getValue();
-            int weight = mWeightPicker.getValue();
+        binding.saveButton.setOnClickListener(v -> {
+            String emailString = binding.updateEmailTextInputLayout.getEditText().getText().toString().trim();
+            String nameString = binding.updateNameTextInputLayout.getEditText().getText().toString().trim();
+            boolean gender = binding.maleRadioButton.isChecked();
+            String dob = binding.updateDobTextInputLayout.getEditText().getText().toString();
+            int height = binding.heightPicker.getValue();
+            int weight = binding.weightPicker.getValue();
             if (validateData(emailString, nameString, gender, dob, height, weight)) {
-                UserInfo mNewInfo=mUserViewModel.currentUser.getValue();
+                UserInfo mNewInfo = mUserViewModel.getCurrentUser().getValue();
                 mNewInfo.setDisplayName(nameString);
                 mNewInfo.setEmail(emailString);
                 mNewInfo.setGender(gender);
                 try {
-                    mNewInfo.setDob(mDateFormat.parse(dob)  );
+                    mNewInfo.setDob(mDateFormat.parse(dob));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
                 mNewInfo.setHeight(height);
                 mNewInfo.setWeight(weight);
-                mUserInfoRef.child(mNewInfo.getUserID()).setValue(mNewInfo).addOnCompleteListener(task->{
-                   if(task.isSuccessful())
-                   {
-                       mUserViewModel.currentUser.setValue(mNewInfo);
-                       updateFirebaseUser(mNewInfo);
-                   }
-                   else if(!task.isSuccessful())
-                   {
-                       Toast.makeText(getContext(),"Cập nhật thông tin thất bại",Toast.LENGTH_SHORT).show();
-                   }
+                mUserViewModel.updateInfo(mNewInfo, result -> {
+                    if (result) {
+                        Toast.makeText(getContext(), "Cập nhật thông tin thành công", Toast.LENGTH_SHORT).show();
+                        NavController mNavController = Navigation.findNavController(getActivity(), R.id.home_fragment_container);
+                        mNavController.popBackStack();
+                    } else {
+                        Toast.makeText(getContext(), "Cập nhật thông tin thất bại", Toast.LENGTH_SHORT).show();
+
+                    }
                 });
             }
         });
-
-
     }
 
-    private void updateFirebaseUser(UserInfo mNewInfo) {
-        FirebaseUser mUser= FirebaseAuth.getInstance().getCurrentUser();
-        mUser.updateEmail(mNewInfo.getEmail());
-        UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
-        mUser.updateProfile(mRequest);
-        Toast.makeText(getContext(),"Cập nhật thông tin thành công",Toast.LENGTH_SHORT).show();
-        NavController mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
-        mNavController.popBackStack();
-    }
 
-    private boolean validateData(String emailString, String nameString, Integer gender, String dob, int height, int weight) {
+    private boolean validateData(String emailString, String nameString, boolean gender, String dob, int height, int weight) {
         if (TextUtils.isEmpty(emailString) || TextUtils.isEmpty(nameString)) {
             Toast.makeText(getContext(), "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (mEmailTextInputLayout.getError() != null || mNameTextInputLayout.getError() != null)
+        if (binding.updateEmailTextInputLayout.getError() != null || binding.updateNameTextInputLayout.getError() != null)
             return false;
         return true;
     }
 
 
     private void initView() {
-        mHeightPicker = rootView.findViewById(R.id.height_picker);
-        mWeightPicker = rootView.findViewById(R.id.weight_picker);
         mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
-        mDOBTextInputLayout = rootView.findViewById(R.id.update_dob_text_input_layout);
-        mEmailTextInputLayout = rootView.findViewById(R.id.update_email_text_input_layout);
-        mNameTextInputLayout = rootView.findViewById(R.id.update_name_text_input_layout);
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        mSaveButton = rootView.findViewById(R.id.save_button);
-        mMaleCheckBox = rootView.findViewById(R.id.male_radio_button);
-        mFemaleCheckBox = rootView.findViewById(R.id.female_radio_button);
-        mDateFormat=new SimpleDateFormat("dd/MM/yyyy");
+        mDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    }
+
+    @Override
+    public void settingOnClick() {
+
+    }
+
+    @Override
+    public void allGiftOnClick() {
+
+    }
+
+    @Override
+    public void updateAvatarClick() {
+
+    }
+
+    @Override
+    public void pop() {
+        getActivity().onBackPressed();
     }
 }
