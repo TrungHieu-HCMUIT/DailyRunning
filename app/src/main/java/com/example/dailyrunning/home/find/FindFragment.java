@@ -1,4 +1,4 @@
-package com.example.dailyrunning.home.Find;
+package com.example.dailyrunning.home.find;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
