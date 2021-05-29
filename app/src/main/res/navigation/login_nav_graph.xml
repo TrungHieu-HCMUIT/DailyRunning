@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.dailyrunning.Authentication.LoginFragment"
+        android:name="com.example.dailyrunning.authentication.LoginFragment"
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
@@ -18,7 +18,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.dailyrunning.Authentication.RegisterFragment"
+        android:name="com.example.dailyrunning.authentication.RegisterFragment"
         android:label="RegisterFragment" >
         <action
             android:id="@+id/action_registerFragment_to_registerAddInfoFragment"
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerAddInfoFragment"
-        android:name="com.example.dailyrunning.Authentication.RegisterAddInfoFragment"
+        android:name="com.example.dailyrunning.authentication.RegisterAddInfoFragment"
         android:label="RegisterAddInfoFragment" >
         <action
             android:id="@+id/action_registerAddInfoFragment_to_loginFragment"
