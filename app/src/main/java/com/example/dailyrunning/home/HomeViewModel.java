@@ -1,4 +1,4 @@
-package com.example.dailyrunning.utils;
+package com.example.dailyrunning.home;
 
 import android.os.Parcelable;
 
@@ -13,4 +13,5 @@ public class HomeViewModel extends ViewModel {
     public Integer tabPosition;
     public Boolean isExpanded;
     public MutableLiveData<HomeActivity>mHomeActivity=new MutableLiveData<>();
+    public boolean isActivityShow=true;
 }
