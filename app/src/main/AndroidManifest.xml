@@ -51,10 +51,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".record.MapsActivity"></activity>
+        <activity android:name=".record.MapsActivity" />
 
-        <activity android:name=".record.IndividualRunningActivity"></activity>
-        <activity android:name=".record.MapsActivity"></activity>
 
     </application>
     <queries>
