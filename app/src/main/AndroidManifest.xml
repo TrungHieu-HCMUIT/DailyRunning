@@ -50,14 +50,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <service
-            android:name=".record.StopWatchService"
-            android:enabled="true"
-            android:exported="false" />
 
-        <activity android:name=".record.MapsActivity"></activity>
+        <activity android:name=".record.MapsActivity" />
 
-        <activity android:name=".record.IndividualRunningActivity"></activity>
 
     </application>
     <queries>

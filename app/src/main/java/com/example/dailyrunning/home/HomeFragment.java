@@ -15,8 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.utils.HomeViewModel;
-import com.example.dailyrunning.utils.UserViewModel;
+import com.example.dailyrunning.user.UserViewModel;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.material.appbar.AppBarLayout;
@@ -42,8 +41,7 @@ public class HomeFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mTopToolBar = rootView.findViewById(R.id.topToolBar);
         mTopToolBar.setTitle("");
-        mNavController= Navigation.findNavController(getActivity(),R.id.fragment_container);
-
+        mNavController = Navigation.findNavController(getActivity(), R.id.home_fragment_container);
 
 
         tabLayout = (SegmentTabLayout) rootView.findViewById(R.id.tabLayout);
@@ -64,12 +62,12 @@ public class HomeFragment extends Fragment {
 
 
     private void updateUIWhenUserChanged() {
-        mUserViewModel.currentUser.observe(getActivity(),
+        mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
-                   /* if(userInfo.getDob()==null || userInfo.getHeight()==0||userInfo.getWeight()==0||userInfo.getDisplayName()==null)
-                        mNavController.navigate(R.id.action_homeFragment_to_updateInfoFragment);*/
+                    if (userInfo == null)
+                        return;
                     mTopToolBar.setTitle("Good morning, " + userInfo.getDisplayName());
-                    Log.v("Home Fragment","user updated "+mTopToolBar.getTitle()+"\n"+userInfo.getDisplayName());
+                    Log.v("Home Fragment", "user updated " + mTopToolBar.getTitle() + "\n" + userInfo.getDisplayName());
 
                     //TODO: update post for new user
                 });

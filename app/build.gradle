@@ -2,6 +2,10 @@
 
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
+
+
+
 }
 
 android {
@@ -28,6 +32,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures{
+        viewBinding = true
+        dataBinding = true
+    }
+
     sourceSets {
         main {
             res.srcDirs =
@@ -44,8 +53,7 @@ android {
     }
 }
 
-//firebase
-apply plugin: 'com.google.gms.google-services'
+
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
@@ -60,6 +68,9 @@ dependencies {
     implementation 'com.github.kaaes:spotify-web-api-android:0.4.1'
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
     implementation "com.spotify.android:auth:1.2.3"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
@@ -147,5 +158,10 @@ dependencies {
 
     //google api
 
+
+
+
+
+
+
 }
-apply plugin: 'com.google.gms.google-services'

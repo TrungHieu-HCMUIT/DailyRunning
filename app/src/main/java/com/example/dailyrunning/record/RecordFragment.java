@@ -2,17 +2,24 @@ package com.example.dailyrunning.record;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,8 +32,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.os.IBinder;
-import android.text.format.DateUtils;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,49 +60,62 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.SphericalUtil;
+import com.spotify.protocol.types.Image;
 import com.spotify.protocol.types.Track;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
 public class RecordFragment extends Fragment implements OnMapReadyCallback {
 
-    private String INTENT_LATLNGARRLIST = "latlngarrlist";
-    private String INTENT_DISTANCEKEY = "distance";
-    private String INTENT_TIMEKEY = "time";
-    private String INTENT_DATECREATED = "datecreated";
+    private final String INTENT_LATLNGARRLIST = "latlngarrlist";
+    private final String INTENT_DISTANCEKEY = "distance";
+    private final String INTENT_TIMEKEY = "time";
+    private final String INTENT_DATECREATED = "datecreated";
+    private final String INTENT_IMAGE = "pictureURL";
+    private static final int UPDATE_TEXTVIEW = 0;
     // variable for Google Map API
     private GoogleMap mMap;
-    private CameraPosition mCameraPosition;
-    private LocationListener locListener;
+
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest mLocationRequest;
-    private LocationManager locationManager;
-    private Location mLastKnownLocation;
-    private final LatLng mDefaultLocation = new LatLng(10.886113149181485, 106.78205916450588);
-    private static final int DEFAULT_ZOOM = 20;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
     ArrayList<LatLng> list = new ArrayList<LatLng>();
-
+    private static int count = 0;
+    private static double s = 0;
+    private static double d = 0;
+    private static double sum = 0;
+    private static int delay = 1000; //1s
+    private static int period = 1000; //1s
+    private static double EARTH_RADIUS = 6378.137;//radius of earth
+    private boolean isDraw=false;
+    private static View viewMap=null;
+    private static double rad(double d) {
+        return d * Math.PI / 180.0;
+    }
+    private boolean isPause = false;
+    private boolean isStop = true;
     private MaterialCardView mBottomControlCardView;
     private Context mContext;
+    private Timer mTimer = null;
+    private TimerTask mTimerTask = null;
+    private Handler mHandler = null;
     private TextView textlength = null;
     private TextView textView = null;
     private TextView textCalories = null;
+    private byte[] byteArray;
     FloatingActionButton startButton;
     ImageButton endButton;
-    StopWatchService stopWatchService;
     ImageButton pauseButton;
     ImageButton countinueButton;
-    boolean mBound = false;
-    Intent startWatchIntent;
-    Intent stopWatchIntent;
+    String formattedDate;
+    long time;
     Calendar c;
-    String formattedDate = "";
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
     private View rootView;
     private NavController mNavController;
@@ -122,6 +142,18 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         checkBottomPlayerState();
         c = Calendar.getInstance();
 
+        mHandler = new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case UPDATE_TEXTVIEW:
+                        updateTextView();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+
 
         // creates the map leading to the onMapReady function being called
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
@@ -138,36 +170,6 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
 
         setUpOnClick();
 
-        /**
-         * Every one second: display the time that has passed since the walk has started.
-         */
-        Thread t = new Thread() {
-
-            @Override
-            public void run() {
-                try {
-                    while (!isInterrupted()) {
-                        Thread.sleep(1000);
-                        if (getActivity() != null)
-                            getActivity().runOnUiThread(new Runnable() {
-                                @SuppressLint("SetTextI18n")
-                                @Override
-                                public void run() {
-                                    if (mBound) {
-                                        long elapsedTime = stopWatchService.getElapsedTime();
-                                        String formattedTime = DateUtils.formatElapsedTime(elapsedTime);
-                                        textView.setText(formattedTime);
-                                        @SuppressLint("DefaultLocale") String Sum = String.format("%.2f", getDistance() / 100.0);
-                                        textlength.setText(Sum);
-                                    }
-                                }
-                            });
-                    }
-                } catch (InterruptedException e) {
-                }
-            }
-        };
-        t.start();
 
 
     }
@@ -192,56 +194,60 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         /* when the start button is pressed, start the stopwatch service
          * and bind to that service.
          * */
+        viewMap=getView().findViewById(R.id.map);
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                getActivity().startService(startWatchIntent);
-                getActivity().bindService(startWatchIntent, mConnection, Context.BIND_AUTO_CREATE);
-
                 // when the walk has started, take note of the current time.
-
                 formattedDate = df.format(c.getTime());
                 startButton.setVisibility(View.GONE);
                 mBottomControlCardView.setVisibility(View.VISIBLE);
                 requestLocationUpdates(list);
-
+                sum=0;
+                count=0;
+                startTimer();
+                updateTextView();
             }
         });
         pauseButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mBound = false;
                 countinueButton.setVisibility(View.VISIBLE);
                 endButton.setVisibility(View.VISIBLE);
                 pauseButton.setVisibility(View.GONE);
-
+                pauseTimer();
             }
         });
 
         countinueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mBound = true;
                 countinueButton.setVisibility(View.GONE);
                 endButton.setVisibility(View.GONE);
                 pauseButton.setVisibility(View.VISIBLE);
+                pauseTimer();
+                startTimer();
             }
         });
         endButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                double computedDistance = getDistance();
-                long elapsedTime = stopWatchService.getElapsedTime();
-                getActivity().stopService(stopWatchIntent);
-                if (mBound) {
-                    getActivity().unbindService(mConnection);
-                    mBound = false;
-                }
+                stopTimer();
+
                 Bundle resultForFinishFragment = new Bundle();
-                resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, computedDistance);
-                resultForFinishFragment.putLong(INTENT_TIMEKEY, elapsedTime);
+                resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, getDistance());
+                resultForFinishFragment.putLong(INTENT_TIMEKEY, time);
+
                 resultForFinishFragment.putParcelableArrayList(INTENT_LATLNGARRLIST, list);
                 resultForFinishFragment.putString(INTENT_DATECREATED, formattedDate);
+                mMap.snapshot(bitmap -> {
 
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    byteArray = stream.toByteArray();
+                    resultForFinishFragment.putByteArray(INTENT_IMAGE,byteArray);
 
-                mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
+                    mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
+
+                });
+
             }
         });
         mFoldButton.setOnClickListener(v->{
@@ -281,8 +287,6 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         pauseButton = rootView.findViewById(R.id.btnPause);
         countinueButton = rootView.findViewById(R.id.btnCountinue);
         mBottomControlCardView = rootView.findViewById(R.id.bottom_control_centre_card_view);
-        startWatchIntent = new Intent(getActivity(), StopWatchService.class);
-        stopWatchIntent = new Intent(getActivity(), StopWatchService.class);
         mBottomControlCentreLinearLayout=rootView.findViewById(R.id.bottom_control_centre_linear_layout);
         mSpotifyViewModel=new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
         mSpotifyImageButton=rootView.findViewById(R.id.music_image_button);
@@ -299,31 +303,15 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void onLocationChanged(Location location, ArrayList<LatLng> tList) {
-        tList.add(new LatLng(location.getLatitude(), location.getLongitude()));
+        if (isDraw) {
+            tList.add(new LatLng(location.getLatitude(), location.getLongitude()));
 
-        Polyline line = mMap.addPolyline(new PolylineOptions()
-                .addAll(tList)
-                .width(5)
-                .color(Color.RED));
+            Polyline line = mMap.addPolyline(new PolylineOptions()
+                    .addAll(tList)
+                    .width(5)
+                    .color(Color.RED));
+        }
     }
-
-
-    private ServiceConnection mConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className,
-                                       IBinder service) {
-            StopWatchService.LocalBinder binder = (StopWatchService.LocalBinder) service;
-            stopWatchService = binder.getService();
-            mBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mBound = false;
-        }
-    };
-
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMapReady(GoogleMap map) {
@@ -354,13 +342,90 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         // disable this because after the POI marker popup this tool will be added automatically
         mMap.getUiSettings().setMapToolbarEnabled(false);
     }
+    abstract class TaskState  {
+        public abstract void run();
+        public abstract TaskState next();
+    }
+    class InitialState extends TaskState {
+        public void run() {
+            sendMessage(UPDATE_TEXTVIEW);
+            do {
+                try {
 
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                }
+            } while (isPause);
+            count++;/*update time*/
+        }
+        public TaskState next() {
+            return new FinalState();
+        }
+    }
+    class FinalState extends TaskState  {
+        public void run() {
+            System.out.println("Finishing...");
+        }
+        public TaskState next(){
+            return new InitialState();
+        }
+    }
+    private void startTimer() {
+        isDraw = true;
+        if (mTimer == null) {
+            mTimer = new Timer();
+        }
+        if (mTimerTask == null) {
+            mTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    sendMessage(UPDATE_TEXTVIEW);
+                    do {
+                        try {
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                        }
+                    } while (isPause);
+                    count++;/*update time*/
+//                    sum = sumDistance(latitude,longitude);/*update distance*/
+                }
+            };
+        }
+
+        if (mTimer != null)
+            mTimer.schedule(new TimerTask() {
+                private TaskState state = new InitialState();
+                public void run() {
+                this.state.run();
+            }
+            }, delay, period);
+
+    }
+
+    private void pauseTimer(){
+        isPause = !isPause;
+        isDraw = !isDraw;
+    }
+
+    private void stopTimer() {
+        time = count;
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+
+        }
+        if (mTimerTask != null) {
+            mTimerTask.cancel();
+            mTimerTask = null;
+
+        }
+        count = 0;
+        isDraw = false;
+    }
+
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1340:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity()
@@ -371,9 +436,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
                 }
                 break;
         }
-
     }
-
     /**
      * Loop through the arrayList of latlng
      * and compute the distance between each latlng
@@ -387,18 +450,69 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         for (int i = 0; i < list.size() - 1; i++) {
             totalDistance = totalDistance + SphericalUtil.computeDistanceBetween(list.get(i), list.get(i + 1));
         }
-
         return totalDistance;
 
     }
-
+    public static String getTime(int second) {
+        if (second < 10) {
+            return "00:00:0" + second;
+        }
+        if (second < 60) {
+            return "00:00:" + second;
+        }
+        if (second < 3600) {
+            int minute = second / 60;
+            second = second - minute * 60;
+            if (minute < 10) {
+                if (second < 10) {
+                    return "00:" + "0" + minute + ":0" + second;
+                }
+                return "00:" + "0" + minute + ":" + second;
+            }
+            if (second < 10) {
+                return "00:" + minute + ":0" + second;
+            }
+            return "00:" + minute + ":" + second;
+        }
+        int hour = second / 3600;
+        int minute = (second - hour * 3600) / 60;
+        second = second - hour * 3600 - minute * 60;
+        if (hour < 10) {
+            if (minute < 10) {
+                if (second < 10) {
+                    return "0" + hour + ":0" + minute + ":0" + second;
+                }
+                return "0" + hour + ":0" + minute + ":" + second;
+            }
+            if (second < 10) {
+                return "0" + hour + ":" + minute + ":0" + second;
+            }
+            return "0" + hour + ":" + minute + ":" + second;
+        }
+        if (minute < 10) {
+            if (second < 10) {
+                return hour + ":0" + minute + ":0" + second;
+            }
+            return hour + ":0" + minute + ":" + second;
+        }
+        if (second < 10) {
+            return hour + ":" + minute + ":0" + second;
+        }
+        return hour + ":" + minute + ":" + second;
+    }
+    public void updateTextView() {
+        textView.setText(getTime(count));
+        String Sum = String .format("%.2f",getDistance());
+        textlength.setText(Sum);
+    }
+    public void sendMessage(int id) {
+        if (mHandler != null) {
+            Message message = Message.obtain(mHandler, id);
+            mHandler.sendMessage(message);
+        }
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mBound) {
-            getActivity().unbindService(mConnection);
-            mBound = false;
-        }
     }
-
 }

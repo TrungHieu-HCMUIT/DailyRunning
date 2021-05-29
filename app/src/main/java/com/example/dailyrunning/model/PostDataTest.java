@@ -8,10 +8,11 @@ public class PostDataTest {
     private String distance;
     private String duration;
     private String pace;
+    private String image;
     private int numOfLike;
     private int numOfComment;
 
-    public PostDataTest(String userAvatarUri, String username, String dateTime, String content, String distance, String duration, String pace, int numOfLike, int numOfComment) {
+    public PostDataTest(String userAvatarUri, String username, String dateTime, String content, String distance, String duration, String pace, String image, int numOfLike, int numOfComment) {
         this.userAvatarUri = userAvatarUri;
         this.username = username;
         this.dateTime = dateTime;
@@ -19,9 +20,11 @@ public class PostDataTest {
         this.distance = distance;
         this.duration = duration;
         this.pace = pace;
+        this.image = image;
         this.numOfLike = numOfLike;
         this.numOfComment = numOfComment;
     }
+
 
     public String getUserAvatarUri() {
         return userAvatarUri;
@@ -78,6 +81,10 @@ public class PostDataTest {
     public void setPace(String pace) {
         this.pace = pace;
     }
+
+    public String getImage() { return image; }
+
+    public void setImage(String image) { this.image = image; }
 
     public int getNumOfLike() {
         return numOfLike;
