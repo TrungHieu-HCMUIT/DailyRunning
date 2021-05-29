@@ -32,6 +32,16 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.record.Spotify.SpotifyViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -50,6 +60,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.SphericalUtil;
+import com.spotify.protocol.types.Image;
 import com.spotify.protocol.types.Track;
 
 import java.io.ByteArrayOutputStream;
@@ -103,6 +114,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     ImageButton pauseButton;
     ImageButton countinueButton;
     String formattedDate;
+    long time;
     Calendar c;
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy HH:mm:ss");
     private View rootView;
@@ -218,13 +230,15 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         endButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 stopTimer();
-                long time = count;
+
                 Bundle resultForFinishFragment = new Bundle();
                 resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, getDistance());
                 resultForFinishFragment.putLong(INTENT_TIMEKEY, time);
+
                 resultForFinishFragment.putParcelableArrayList(INTENT_LATLNGARRLIST, list);
                 resultForFinishFragment.putString(INTENT_DATECREATED, formattedDate);
                 mMap.snapshot(bitmap -> {
+
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     byteArray = stream.toByteArray();
@@ -233,6 +247,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
                     mNavController.navigate(R.id.action_recordFragment_to_finishFragment, resultForFinishFragment);
 
                 });
+
             }
         });
         mFoldButton.setOnClickListener(v->{
@@ -394,6 +409,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void stopTimer() {
+        time = count;
         if (mTimer != null) {
             mTimer.cancel();
             mTimer = null;

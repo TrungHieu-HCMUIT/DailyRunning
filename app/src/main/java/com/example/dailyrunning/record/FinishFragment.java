@@ -4,6 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +30,7 @@ import com.example.dailyrunning.model.mLatLng;
 import com.example.dailyrunning.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -91,7 +96,7 @@ public class FinishFragment extends Fragment {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference activityRef = database.getReference().child("Activity");
         newActivityID = activityRef.push().getKey();
-        reference=FirebaseStorage.getInstance().getReference("imageMap");
+        reference=FirebaseStorage.getInstance().getReference().child("imageMap");
 
         distanceTextView.setText(formatDistance(completedDist));
         timeTextView.setText(formatDuration(completedTime));
