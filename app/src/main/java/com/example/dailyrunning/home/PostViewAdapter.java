@@ -36,7 +36,6 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         public ImageView image;
         public TextView like;
         public TextView comment;
-        public ImageView image;
 
         public ViewHolder(@NonNull View view) {
             super(view);
