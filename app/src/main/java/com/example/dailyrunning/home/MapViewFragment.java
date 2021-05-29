@@ -1,8 +1,4 @@
-<<<<<<< HEAD:app/src/main/java/com/example/dailyrunning/record/IndividualRunningActivity.java
-package com.example.dailyrunning.record;
-=======
 package com.example.dailyrunning.home;
->>>>>>> refactor:app/src/main/java/com/example/dailyrunning/home/MapViewFragment.java
 
 import android.content.Context;
 import android.graphics.Color;
@@ -42,10 +38,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-<<<<<<< HEAD:app/src/main/java/com/example/dailyrunning/record/IndividualRunningActivity.java
-=======
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
->>>>>>> refactor:app/src/main/java/com/example/dailyrunning/home/MapViewFragment.java
 
 import java.util.ArrayList;
 import java.util.HashSet;
