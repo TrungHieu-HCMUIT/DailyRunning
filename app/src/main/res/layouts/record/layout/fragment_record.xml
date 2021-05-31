@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/bottom_control_centre_card_view"
             android:layout_width="match_parent"
@@ -157,6 +158,7 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -191,13 +193,14 @@
                         android:backgroundTint="@color/white"
                         android:padding="0dp"
                         android:src="@drawable/ic_spotify" />
+                    
                 </com.google.android.material.card.MaterialCardView>
             </FrameLayout>
 
 
             <fragment
                 android:id="@+id/bottom_player_fragment"
-                android:name="com.example.dailyrunning.Record.Spotify.BottomPlayerFragment"
+                android:name="com.example.dailyrunning.record.Spotify.BottomPlayerFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:layout="@layout/fragment_bottom_player" />

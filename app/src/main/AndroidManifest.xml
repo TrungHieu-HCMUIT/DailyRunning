@@ -9,8 +9,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-        android:largeHeap="true"
-        android:hardwareAccelerated="false"
 
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,18 +16,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DailyRunning">
-        <activity android:name=".Home.HomeActivity">
+        <activity android:name=".home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Authentication.LoginActivity"
+        <activity android:name=".authentication.LoginActivity"
 
             >
             </activity>
-        <activity android:name=".Authentication.RegisterActivity"></activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id"
@@ -54,7 +51,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".Record.MapsActivity"></activity>
+        <activity android:name=".record.MapsActivity" />
+
 
     </application>
     <queries>

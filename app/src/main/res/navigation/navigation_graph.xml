@@ -6,7 +6,7 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.dailyrunning.Home.HomeFragment"
+        android:name="com.example.dailyrunning.home.HomeFragment"
         android:label="HomeFragment" >
         <action
             android:id="@+id/action_homeFragment_to_findFragment"
@@ -17,14 +17,17 @@
         <action
             android:id="@+id/action_homeFragment_to_postDetailFragment"
             app:destination="@id/postDetailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_updateInfoFragment"
+            app:destination="@id/updateInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/findFragment"
-        android:name="com.example.dailyrunning.Home.Find.FindFragment"
+        android:name="com.example.dailyrunning.home.find.FindFragment"
         android:label="FindFragment" />
     <fragment
         android:id="@+id/userFragment"
-        android:name="com.example.dailyrunning.User.UserFragment"
+        android:name="com.example.dailyrunning.user.UserFragment"
         android:label="UserFragment" >
         <action
             android:id="@+id/action_userFragment_to_giftFragment"
@@ -35,17 +38,17 @@
     </fragment>
     <fragment
         android:id="@+id/giftFragment"
-        android:name="com.example.dailyrunning.User.GiftFragment"
+        android:name="com.example.dailyrunning.user.GiftFragment"
         android:label="fragment_gift"
         tools:layout="@layout/fragment_gift" />
     <fragment
         android:id="@+id/updateInfoFragment"
-        android:name="com.example.dailyrunning.User.UpdateInfoFragment"
+        android:name="com.example.dailyrunning.user.UpdateInfoFragment"
         android:label="fragment_update_info"
         tools:layout="@layout/fragment_update_info" />
     <fragment
         android:id="@+id/postDetailFragment"
-        android:name="com.example.dailyrunning.Home.PostDetailFragment"
+        android:name="com.example.dailyrunning.home.PostDetailFragment"
         android:label="fragment_post_detail"
         tools:layout="@layout/fragment_post_detail" >
         <action
@@ -54,7 +57,7 @@
     </fragment>
     <fragment
         android:id="@+id/mapViewFragment"
-        android:name="com.example.dailyrunning.Home.MapViewFragment"
+        android:name="com.example.dailyrunning.home.MapViewFragment"
         android:label="fragment_map_view"
         tools:layout="@layout/fragment_map_view" />
 </navigation>
