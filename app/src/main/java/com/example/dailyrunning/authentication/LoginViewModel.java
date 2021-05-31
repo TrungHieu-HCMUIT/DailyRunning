@@ -59,6 +59,10 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void onNormalLoginClick(String email, String password, TaskCallBack mTaskCallBack) {
+        if(email.isEmpty() || password.isEmpty()) {
+            mTaskCallBack.onError(new Exception("Empty email or password"));
+            return;
+        }
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

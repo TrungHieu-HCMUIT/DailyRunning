@@ -32,6 +32,8 @@ import com.example.dailyrunning.databinding.FragmentUserBinding;
 import com.facebook.login.LoginManager;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -165,7 +167,6 @@ public class UserFragment extends Fragment implements UserNavigator {
             @Override
             public void onFinish() {
                 binding.stepRingChart.stopAnimateLoading(0.6f);
-
             }
         }.start();
 
@@ -175,6 +176,7 @@ public class UserFragment extends Fragment implements UserNavigator {
         binding.statisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
         StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this);
         binding.statisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
+
         binding.statisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {
@@ -203,6 +205,7 @@ public class UserFragment extends Fragment implements UserNavigator {
                 super.onPageScrollStateChanged(state);
             }
         };
+
         binding.statisticalViewPager2.registerOnPageChangeCallback(pageChangeCallback);
 
     }
