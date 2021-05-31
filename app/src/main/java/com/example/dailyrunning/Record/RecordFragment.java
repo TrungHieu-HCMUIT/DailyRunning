@@ -241,9 +241,11 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
             }
         });
         endButton.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("MissingPermission")
             public void onClick(View v) {
                 stopTimer();
-
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mMap.setMyLocationEnabled(false);
                 Bundle resultForFinishFragment = new Bundle();
                 resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, getDistance());
                 resultForFinishFragment.putLong(INTENT_TIMEKEY, time);
