@@ -228,7 +228,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/svn_avo_bold"
-                android:text="999"
+                tools:text="999"
+                android:text="@{String.valueOf(userViewModel.currentUser.point)}"
                 android:textColor="#333333"
                 android:textSize="16sp" />
 
