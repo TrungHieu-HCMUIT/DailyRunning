@@ -201,7 +201,7 @@
             android:src="@drawable/ic_baseline_run_circle_24" />
 
         <TextView
-            android:id="@+id/i_m_running"
+            android:id="@+id/record_running_point_textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

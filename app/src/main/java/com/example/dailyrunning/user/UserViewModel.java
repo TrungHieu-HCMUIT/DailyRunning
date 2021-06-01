@@ -313,6 +313,15 @@ public class UserViewModel extends ViewModel {
     {
         mUserNavigator.pop();
     }
+
+    public void addPoint(int pointAcquired) {
+       UserInfo tempU= currentUser.getValue();
+       tempU.addPoint(pointAcquired);
+       currentUser.setValue(tempU);
+       mUserInfoRef.child(tempU.getUserID()).child("point").setValue(tempU.getPoint());
+
+    }
+
     public interface onUpdateCallback{
         void onComplete(boolean result);
 

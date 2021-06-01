@@ -35,6 +35,7 @@ public class MapsActivity extends FragmentActivity {
     //region spotify auth
     // Request code will be used to verify if result comes from the login activity. Can be set to any integer.
     private static final int REQUEST_CODE = 1337;
+    public static final int RECORD_CODE = 5712;
 
 
     //endregion

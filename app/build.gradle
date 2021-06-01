@@ -156,7 +156,19 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
 
-    //google api
+    //joda time
+    implementation 'joda-time:joda-time:2.10.10'
+
+
+    //folding card
+    implementation 'com.ramotion.foldingcell:folding-cell:1.2.3'
+
+    //card slider
+    implementation 'com.ramotion.cardslider:card-slider:0.3.1'
+
+
+
+
 
 
 

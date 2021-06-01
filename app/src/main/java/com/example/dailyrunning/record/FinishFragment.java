@@ -2,6 +2,7 @@ package com.example.dailyrunning.record;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -71,6 +72,9 @@ public class FinishFragment extends Fragment {
         bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
         String paceString = getPace(completedDist, completedTime);
+        int runningPoint=(int)completedDist/1000;
+
+        ((TextView)rootView.findViewById(R.id.record_running_point_textView)).setText(runningPoint+" điểm Running");
 
 
 
@@ -107,6 +111,9 @@ public class FinishFragment extends Fragment {
                             list
                     );
                     activityRef.child(newActivityID).setValue(activity);
+                    Intent point=new Intent();
+                    point.putExtra("point",runningPoint);
+                    getActivity().setResult(android.app.Activity.RESULT_OK,point);
                     getActivity().finish();
                 }
             });

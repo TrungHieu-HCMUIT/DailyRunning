@@ -1,6 +1,8 @@
 package com.example.dailyrunning.user;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,6 +37,8 @@ import com.example.dailyrunning.databinding.FragmentUserBinding;
 import com.facebook.login.LoginManager;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -40,6 +46,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ramotion.cardslider.CardSliderLayoutManager;
+import com.ramotion.cardslider.CardSnapHelper;
 import com.taosif7.android.ringchartlib.RingChart;
 
 import java.util.ArrayList;
@@ -125,10 +133,16 @@ public class UserFragment extends Fragment implements UserNavigator {
         restoreState();
 
 
+
     }
 
 
+
+
     private void setUpGiftRecyclerView() {
+        binding.giftRecyclerView.setLayoutManager(new CardSliderLayoutManager(getContext()));
+        binding.giftRecyclerView.setHasFixedSize(true);
+        new CardSnapHelper().attachToRecyclerView( binding.giftRecyclerView);
         List<GiftInfo> gifts = new ArrayList<>();
         GiftAdapter adapter = new GiftAdapter(gifts);
         binding.giftRecyclerView.setAdapter(adapter);
@@ -166,7 +180,6 @@ public class UserFragment extends Fragment implements UserNavigator {
             @Override
             public void onFinish() {
                 binding.stepRingChart.stopAnimateLoading(0.6f);
-
             }
         }.start();
 
@@ -176,6 +189,7 @@ public class UserFragment extends Fragment implements UserNavigator {
         binding.statisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
         StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this);
         binding.statisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
+
         binding.statisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {
@@ -204,6 +218,7 @@ public class UserFragment extends Fragment implements UserNavigator {
                 super.onPageScrollStateChanged(state);
             }
         };
+
         binding.statisticalViewPager2.registerOnPageChangeCallback(pageChangeCallback);
 
     }
