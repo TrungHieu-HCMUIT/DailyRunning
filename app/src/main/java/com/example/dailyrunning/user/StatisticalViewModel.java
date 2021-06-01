@@ -53,7 +53,10 @@ public class StatisticalViewModel extends ViewModel {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
+
                     HashMap map = (HashMap) task.getResult().getValue();
+                    if(map ==null)
+                        return;
                     for (Object o : map.values().toArray()) {
                         activities.add(toActivity((HashMap) o));
                     }

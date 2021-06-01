@@ -17,6 +17,7 @@ import com.example.dailyrunning.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ramotion.foldingcell.FoldingCell;
 
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class AllGiftAdapter  extends RecyclerView.Adapter<AllGiftAdapter.ViewHol
         public TextView mProviderNameTextView;
         public TextView mGiftDetailTextView;
         public TextView mPointTextView;
-
+        public FoldingCell mFoldingCell;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -38,6 +39,8 @@ public class AllGiftAdapter  extends RecyclerView.Adapter<AllGiftAdapter.ViewHol
             // to access the context from any ViewHolder instance.
             super(itemView);
 
+            mFoldingCell=itemView.findViewById(R.id.folding_cell);
+            mFoldingCell.setOnClickListener(v -> mFoldingCell.toggle(false));
             mGiftImageView=itemView.findViewById(R.id.gift_imageView);
             mProviderNameTextView=itemView.findViewById(R.id.provider_textView);
             mGiftDetailTextView=itemView.findViewById(R.id.gift_detail_textView);

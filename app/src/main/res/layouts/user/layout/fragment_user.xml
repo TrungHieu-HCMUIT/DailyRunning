@@ -71,6 +71,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_setting" />
 
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/avatarView"
                     android:layout_width="82dp"
