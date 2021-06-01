@@ -12,9 +12,6 @@
             android:id="@+id/action_homeFragment_to_findFragment"
             app:destination="@id/findFragment" />
         <action
-            android:id="@+id/action_homeFragment_to_mapViewFragment"
-            app:destination="@id/mapViewFragment" />
-        <action
             android:id="@+id/action_homeFragment_to_postDetailFragment"
             app:destination="@id/postDetailFragment" />
         <action

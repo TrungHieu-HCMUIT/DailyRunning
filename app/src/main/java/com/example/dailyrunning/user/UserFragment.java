@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.utils.GiftAdapter;
 import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.utils.MedalAdapter;
@@ -62,7 +63,7 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mAvatarStorageReference;
-    private com.example.dailyrunning.model.UserInfo mCurrentUser;
+    private UserInfo mCurrentUser;
     private Fragment mContext = UserFragment.this;
 
     private NavController mNavController;
