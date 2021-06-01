@@ -1,4 +1,4 @@
-package com.example.dailyrunning.record.Spotify;
+package com.example.dailyrunning.record.spotify;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

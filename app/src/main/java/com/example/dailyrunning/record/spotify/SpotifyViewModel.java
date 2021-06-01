@@ -1,4 +1,4 @@
-package com.example.dailyrunning.record.Spotify;
+package com.example.dailyrunning.record.spotify;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;

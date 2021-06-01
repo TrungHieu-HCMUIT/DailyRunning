@@ -1,7 +1,6 @@
 package com.example.dailyrunning.model;
 
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".record.Spotify.PlaylistViewFragment">
+    tools:context=".record.spotify.PlaylistViewFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,7 +76,7 @@
         android:layout_width="match_parent"
         tools:layout="@layout/fragment_bottom_player"
         android:layout_height="wrap_content"
-        android:name="com.example.dailyrunning.record.Spotify.BottomPlayerFragment"
+        android:name="com.example.dailyrunning.record.spotify.BottomPlayerFragment"
         android:layout_alignParentBottom="true"
         />
 

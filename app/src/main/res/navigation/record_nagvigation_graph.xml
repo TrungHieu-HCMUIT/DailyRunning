@@ -27,11 +27,11 @@
         tools:layout="@layout/fragment_finish" />
     <fragment
         android:id="@+id/spotifyFragment"
-        android:name="com.example.dailyrunning.record.Spotify.SpotifyFragment"
+        android:name="com.example.dailyrunning.record.spotify.SpotifyFragment"
         android:label="fragment_spotify"
         tools:layout="@layout/fragment_spotify" />
     <fragment
         android:id="@+id/playerFragment2"
-        android:name="com.example.dailyrunning.record.Spotify.PlayerFragment"
+        android:name="com.example.dailyrunning.record.spotify.PlayerFragment"
         android:label="PlayerFragment" />
 </navigation>

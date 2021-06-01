@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.record.Spotify.SpotifyViewModel;
+import com.example.dailyrunning.record.spotify.SpotifyViewModel;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;

@@ -1,4 +1,4 @@
-package com.example.dailyrunning.record.Spotify;
+package com.example.dailyrunning.record.spotify;
 
 import android.app.Activity;
 import android.content.Context;
