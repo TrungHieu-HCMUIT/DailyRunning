@@ -7,8 +7,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,18 +30,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.os.Handler;
-import android.os.Message;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.record.Spotify.SpotifyViewModel;
+import com.example.dailyrunning.record.spotify.SpotifyViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -53,14 +41,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.SphericalUtil;
-import com.spotify.protocol.types.Image;
 import com.spotify.protocol.types.Track;
 
 import java.io.ByteArrayOutputStream;
@@ -231,7 +217,6 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
             @SuppressLint("MissingPermission")
             public void onClick(View v) {
                 stopTimer();
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mMap.setMyLocationEnabled(false);
                 Bundle resultForFinishFragment = new Bundle();
                 resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, getDistance());

@@ -1,7 +1,5 @@
 package com.example.dailyrunning.model;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 
 public class Activity {
