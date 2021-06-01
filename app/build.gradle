@@ -163,6 +163,9 @@ dependencies {
     //folding card
     implementation 'com.ramotion.foldingcell:folding-cell:1.2.3'
 
+    //card slider
+    implementation 'com.ramotion.cardslider:card-slider:0.3.1'
+
 
 
 

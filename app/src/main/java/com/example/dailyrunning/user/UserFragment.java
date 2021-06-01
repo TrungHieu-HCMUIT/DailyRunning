@@ -45,6 +45,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ramotion.cardslider.CardSliderLayoutManager;
+import com.ramotion.cardslider.CardSnapHelper;
 import com.taosif7.android.ringchartlib.RingChart;
 
 import java.util.ArrayList;
@@ -137,6 +139,9 @@ public class UserFragment extends Fragment implements UserNavigator {
 
 
     private void setUpGiftRecyclerView() {
+        binding.giftRecyclerView.setLayoutManager(new CardSliderLayoutManager(getContext()));
+        binding.giftRecyclerView.setHasFixedSize(true);
+        new CardSnapHelper().attachToRecyclerView( binding.giftRecyclerView);
         List<GiftInfo> gifts = new ArrayList<>();
         GiftAdapter adapter = new GiftAdapter(gifts);
         binding.giftRecyclerView.setAdapter(adapter);
