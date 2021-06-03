@@ -20,23 +20,86 @@
             android:visibility="gone"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:padding="12dp"
             android:layout_height="wrap_content">
-            <ImageView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                android:src="@drawable/place_holder_picture"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:scaleType="centerCrop"
+                android:orientation="horizontal"
+                android:layout_height="wrap_content">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="wrap_content"
+                    app:cardCornerRadius="10dp"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:layout_width="91dp"
+                        android:layout_height="91dp"
+                        android:src="@drawable/place_holder_picture"
+                        android:scaleType="centerCrop"/>
+                </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tên nhà cung cấp"
+                        android:textColor="#868686"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="14sp"
+                        android:textFontWeight="500"
+                        android:layout_marginBottom="12dp"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_running_point"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="666"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textSize="14sp"
+                        android:textFontWeight="500"
+                        android:textColor="#333333"/>
 
+                </LinearLayout>
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginTop="8dp"/>
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/place_holder_picture"/>
+                android:text="Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi "/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/darker_gray"
+                android:layout_marginTop="8dp"/>
+            <Button
+                android:id="@+id/log_out_button"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#ECBA67"
+                android:text="Đổi ngay"
+                android:textAllCaps="true"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textFontWeight="500"
+                app:cornerRadius="18dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:gravity="center_horizontal"
+            android:visibility="visible"
             android:id="@+id/cell_title_view"
 
             android:layout_height="wrap_content">
