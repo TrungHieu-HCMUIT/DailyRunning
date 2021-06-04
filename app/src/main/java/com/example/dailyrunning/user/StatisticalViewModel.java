@@ -41,15 +41,14 @@ public class StatisticalViewModel extends ViewModel {
     private LocalDate now = new LocalDate();
     List<Activity> activities = new ArrayList<>();
     private DatabaseReference activityRef = FirebaseDatabase.getInstance().getReference().child("Activity");
-    private UserInfo mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
     private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
     DecimalFormat df = new DecimalFormat("#.##");
-
+    public String userID;
 
     public void fetchActivities() {
 
         activities.clear();
-        activityRef.orderByChild("userID").equalTo(mCurrentUser.getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        activityRef.orderByChild("userID").equalTo(userID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {

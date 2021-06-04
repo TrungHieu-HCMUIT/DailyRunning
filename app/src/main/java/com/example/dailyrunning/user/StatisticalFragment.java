@@ -23,19 +23,20 @@ import java.util.Date;
 public class StatisticalFragment extends Fragment {
 
 
-    private final int STATISTICAL_WEEK=0;
-    private final int STATISTICAL_MONTH=1;
-    private final int STATISTICAL_YEAR=2;
+    private final int STATISTICAL_WEEK = 0;
+    private final int STATISTICAL_MONTH = 1;
+    private final int STATISTICAL_YEAR = 2;
     private FragmentStatisticalBinding binding;
     private StatisticalViewModel statisticalViewModel;
     private int currentPage;
+    private String userID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         //region get View
-        binding=FragmentStatisticalBinding.inflate(inflater,container,false);
+        binding = FragmentStatisticalBinding.inflate(inflater, container, false);
         //endregion
 
         return binding.getRoot();
@@ -44,49 +45,29 @@ public class StatisticalFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        statisticalViewModel=new ViewModelProvider(requireActivity()).get(StatisticalViewModel.class);
+        statisticalViewModel = new ViewModelProvider(requireActivity()).get(StatisticalViewModel.class);
         binding.setStatisticalViewModel(statisticalViewModel);
         binding.setLifecycleOwner(requireActivity());
-        currentPage=getArguments().getInt("position");
+        currentPage = getArguments().getInt("position");
+        userID = getArguments().getString("uid");
+        statisticalViewModel.userID = userID;
+
         binding.setCurrentPage(currentPage);
         setData(currentPage);
 
     }
 
-    public static Fragment newInstance(int position) {
+    public static Fragment newInstance(int position, String uid) {
         StatisticalFragment mCurrentFragment = new StatisticalFragment();
         Bundle args = new Bundle();
-        args.putInt("position",position);
+        args.putInt("position", position);
+        args.putString("uid", uid);
         mCurrentFragment.setArguments(args);
         return mCurrentFragment;
     }
-    private void setData(int position)
-    {
+
+    private void setData(int position) {
         //TODO: get current user, get statistical info
         statisticalViewModel.fetchActivities();
-       /* switch (position)
-        {
-            case STATISTICAL_WEEK:
-                distance=12;
-                timeWorking=Calendar.getInstance().getTime();
-                workingCount=3;
-                break;
-            case STATISTICAL_MONTH:
-                distance=20;
-                timeWorking=Calendar.getInstance().getTime();
-                workingCount=10;
-                break;
-            case STATISTICAL_YEAR:
-                distance=50;
-                timeWorking=Calendar.getInstance().getTime();
-                workingCount=30;
-                break;
-            default:
-                break;
-        }
-        distanceTextView.setText(String.valueOf(distance)+" Km");
-        SimpleDateFormat dateFormat=new SimpleDateFormat("hh:mm:ss");
-        timeWorkingTextView.setText(dateFormat.format(timeWorking));
-        workingCountTextView.setText(String.valueOf(workingCount));*/
     }
 }

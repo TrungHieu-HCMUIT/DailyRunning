@@ -142,7 +142,11 @@ public class UserFragment extends Fragment implements UserNavigator {
     private void setUpGiftRecyclerView() {
         binding.giftRecyclerView.setLayoutManager(new CardSliderLayoutManager(getContext()));
         binding.giftRecyclerView.setHasFixedSize(true);
-        new CardSnapHelper().attachToRecyclerView( binding.giftRecyclerView);
+        try {
+            new CardSnapHelper().attachToRecyclerView( binding.giftRecyclerView);
+
+        }
+        catch (Exception ex){}
         List<GiftInfo> gifts = new ArrayList<>();
         GiftAdapter adapter = new GiftAdapter(gifts);
         binding.giftRecyclerView.setAdapter(adapter);
@@ -187,7 +191,7 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     private void setUpTabLayout() {
         binding.statisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
-        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this);
+        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this,mCurrentUser.getUserID());
         binding.statisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
 
         binding.statisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
