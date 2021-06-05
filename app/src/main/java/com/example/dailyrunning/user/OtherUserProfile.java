@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentOtherUserProfileBinding;
+import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.utils.MedalAdapter;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +30,7 @@ public class OtherUserProfile extends Fragment {
 
     private FragmentOtherUserProfileBinding binding;
     private OtherUserProfileViewModel mOtherUserProfileViewModel;
+    private MedalDialog mMedalDialog;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,36 +44,41 @@ public class OtherUserProfile extends Fragment {
         mOtherUserProfileViewModel=new ViewModelProvider(getActivity()).get(OtherUserProfileViewModel.class);
         binding.setOtherUserViewModel(mOtherUserProfileViewModel);
         binding.setLifecycleOwner(getActivity());
+        mMedalDialog=new MedalDialog();
         setUpMedalRecyclerView();
         setUpTabLayout();
     }
     private void setUpMedalRecyclerView() {
 
 
-        List<Integer> medalIDs = new ArrayList<>();
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
+        List<MedalInfo> medalInfos = new ArrayList<>();
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
 
-        MedalAdapter adapter = new MedalAdapter(medalIDs);
+        MedalAdapter adapter = new MedalAdapter(medalInfos, medalInfo -> {
+            mMedalDialog.setMedal(medalInfo);
+            mMedalDialog.show(getChildFragmentManager(),"medal dialog");
+        });
         binding.otherMedalRecycleView.setAdapter(adapter);
     }
     private void setUpTabLayout() {
         binding.otherStatisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
         //TODO thay user id hiện tại vào đây
-        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this, FirebaseAuth.getInstance().getUid());
+        StatisticalViewPagerAdapter statisticalViewPagerAdapter =
+                new StatisticalViewPagerAdapter(this, FirebaseAuth.getInstance().getUid());
         binding.otherStatisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
 
         binding.otherStatisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {

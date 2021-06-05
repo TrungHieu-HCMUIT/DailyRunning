@@ -81,7 +81,7 @@
                 android:background="@android:color/darker_gray"
                 android:layout_marginTop="8dp"/>
             <Button
-                android:id="@+id/log_out_button"
+                android:id="@+id/exchange_button"
                 android:layout_width="match_parent"
                 android:layout_height="37dp"
                 android:layout_gravity="center_horizontal"

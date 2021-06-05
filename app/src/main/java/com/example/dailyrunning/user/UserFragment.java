@@ -29,6 +29,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.utils.GiftAdapter;
 import com.example.dailyrunning.home.HomeViewModel;
@@ -79,7 +80,7 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     private HomeViewModel mHomeViewModel;
     FragmentUserBinding binding;
-
+    private MedalDialog mMedalDialog;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -87,7 +88,6 @@ public class UserFragment extends Fragment implements UserNavigator {
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         return view;
-        //return inflater.inflate(R.layout.fragment_user, container, false);
     }
 
 
@@ -114,6 +114,7 @@ public class UserFragment extends Fragment implements UserNavigator {
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
         //
+        mMedalDialog=new MedalDialog();
 
 
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
@@ -230,24 +231,28 @@ public class UserFragment extends Fragment implements UserNavigator {
     private void setUpMedalRecyclerView() {
 
 
-        List<Integer> medalIDs = new ArrayList<>();
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
+        List<MedalInfo> medalInfos = new ArrayList<>();
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
 
-        MedalAdapter adapter = new MedalAdapter(medalIDs);
+        MedalAdapter adapter = new MedalAdapter(medalInfos,medalInfo -> {
+
+            mMedalDialog.setMedal(medalInfo);
+            mMedalDialog.show(getChildFragmentManager(),"medal dialog");
+        });
         binding.medalRecycleView.setAdapter(adapter);
     }
 
