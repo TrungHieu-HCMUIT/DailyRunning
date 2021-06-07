@@ -71,11 +71,16 @@ public class FinishFragment extends Fragment {
         byte[] byteArray = resultFromRecordFragment.getByteArray(INTENT_IMAGE);
         bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-        String paceString = getPace(completedDist, completedTime);
+ feature_recordActivity
+        String speed = getSpeed(completedDist, completedTime);
+        getPace(completedDist, completedTime);
+
+        
         int runningPoint=(int)completedDist/1000;
 
         ((TextView)rootView.findViewById(R.id.record_running_point_textView)).setText(runningPoint+" điểm Running");
 
+ main
 
 
         describeText = rootView.findViewById(R.id.describe_editText);
@@ -87,13 +92,13 @@ public class FinishFragment extends Fragment {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference activityRef = database.getReference().child("Activity");
+        DatabaseReference activityRef = database.getReference().child("Activity").child(user.getUid());
         newActivityID = activityRef.push().getKey();
         reference=FirebaseStorage.getInstance().getReference().child("imageMap");
 
         distanceTextView.setText(formatDistance(completedDist));
         timeTextView.setText(formatDuration(completedTime));
-        paceTextView.setText(paceString);
+        paceTextView.setText(speed);
 
         buttonSave.setOnClickListener(v -> {
             uploadImage(new OnSuccessListener<Uri>() {
@@ -159,10 +164,15 @@ public class FinishFragment extends Fragment {
 
     }
 
-    public String getPace(double length, long t) {
+    public String getSpeed(double distance, long time)
+    {
+        int speed = (int) ((int) distance / time);
+        return  speed*3.6+"km/h";
+    }
+    public int getPace(double length, long t) {
         pace = 0;
         long time = t;
         pace = (int) (time / length);
-        return pace + "km/h";
+        return pace/60;
     }
 }

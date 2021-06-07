@@ -187,6 +187,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
                 formattedDate = df.format(c.getTime());
                 startButton.setVisibility(View.GONE);
                 mBottomControlCardView.setVisibility(View.VISIBLE);
+                list.clear();
                 requestLocationUpdates(list);
                 sum=0;
                 count=0;
@@ -293,7 +294,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         if (isDraw) {
             tList.add(new LatLng(location.getLatitude(), location.getLongitude()));
 
-            Polyline line = mMap.addPolyline(new PolylineOptions()
+            mMap.addPolyline(new PolylineOptions()
                     .addAll(tList)
                     .width(5)
                     .color(Color.RED));
@@ -322,12 +323,13 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onMyLocationChange(Location location) {
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
-                    mMap.animateCamera(CameraUpdateFactory.zoomTo(20));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(18));
                 }
             });
         }
         // disable this because after the POI marker popup this tool will be added automatically
         mMap.getUiSettings().setMapToolbarEnabled(false);
+        list.clear();
     }
     abstract class TaskState  {
         public abstract void run();
@@ -432,7 +434,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
      */
     private double getDistance() {
 
-        double totalDistance = 0;
+        double totalDistance = sum;
 
         for (int i = 0; i < list.size() - 1; i++) {
             totalDistance = totalDistance + SphericalUtil.computeDistanceBetween(list.get(i), list.get(i + 1));

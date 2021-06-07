@@ -30,6 +30,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class HomeUserFragment extends Fragment {
 
@@ -86,11 +88,12 @@ public class HomeUserFragment extends Fragment {
     private void populateData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rt = database.getReference();
+        postList.clear();
         mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
             if (userInfo==null)
                 return;
-                    Query query = rt.child("Activity").orderByChild("userID").equalTo(userInfo.getUserID());
+                    Query query = rt.child("Activity").child(userInfo.getUserID()).orderByChild("dateCreated");
                     query.addValueEventListener(new ValueEventListener() {
                         @RequiresApi(api = Build.VERSION_CODES.N)
                         @Override
@@ -99,8 +102,9 @@ public class HomeUserFragment extends Fragment {
                                 // TODO: handle the post
                                 Activity activity = postSnapshot.getValue(Activity.class);
                                 listDate.add(activity.getDateCreated());
-                                postList.add(new PostDataTest(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration()+"", activity.getPace()+"", userInfo.getAvatarURI(), 20, 20));
+                                postList.add(new PostDataTest(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration()+"", activity.getPace()+"", activity.getPictureURI(), 20, 20));
                                 postViewAdapter.notifyDataSetChanged();
+                                Collections.reverse(postList);
                             }
                         }
                         @Override
