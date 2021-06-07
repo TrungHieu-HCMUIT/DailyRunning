@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="274dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    tools:context=".user.MedalDialog">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        app:cardCornerRadius="20dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="12dp"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/medal_image"
+                    android:layout_width="32dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/medal_1"/>
+                <TextView
+                    android:id="@+id/medal_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="Tên huy chương Tên huy chươngTên huy chương Tên huy chươngTên huy chương Tên huy chương"
+                    android:layout_marginLeft="30dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:textFontWeight="700"
+                    android:textSize="18sp"
+                    android:maxLines="1"
+                    android:ellipsize="marquee"
+                    />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/medal_detail"
+                android:layout_marginVertical="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:fontFamily="@font/roboto_regular"
+                android:textFontWeight="400"
+                android:maxLines="3"
+                android:ellipsize="marquee"
+                android:text="Giải thích huy chương Giải thích huy chương Giải thích huy chương Giải thích huy chương Giải thích huy chương Giải thích huy chương Giải thích huy chương "/>
+
+            <Button
+                android:id="@+id/dismiss_button"
+                android:layout_width="173dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@color/color_palette_3"
+                android:text="Xác nhận"
+                android:textAllCaps="false"
+                android:fontFamily="@font/roboto_regular"
+                android:textSize="15sp"
+                android:textColor="@color/white"
+                android:textFontWeight="500"
+                app:cornerRadius="18dp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

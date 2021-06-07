@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
@@ -156,8 +155,16 @@ public class HomeActivity extends AppCompatActivity {
                 //Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
                 finish();
             }
-        }
+        } else if (requestCode == MapsActivity.RECORD_CODE) {
+            if (resultCode == RESULT_OK) {
+                int pointAcquired=data.getIntExtra("point",0);
+                mUserViewModel.addPoint(pointAcquired);
+            } else if (resultCode == RESULT_CANCELED) {
+                //Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
 
+            }
+
+        }
     }
 
     private void setUpAuthStateListener() {
@@ -235,7 +242,7 @@ public class HomeActivity extends AppCompatActivity {
         FloatingActionButton newrecord = findViewById(R.id.newRecord);
         newrecord.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), MapsActivity.class);
-            startActivityForResult(intent, 0);
+            startActivityForResult(intent, MapsActivity.RECORD_CODE);
         });
     }
 

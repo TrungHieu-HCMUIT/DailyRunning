@@ -10,11 +10,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.model.MedalInfo;
 
 import java.util.List;
 
 public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.ViewHolder> {
-
+    public interface OnMedalClickListener
+    {
+        void onMedalClickListener(MedalInfo medalInfo);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
@@ -31,10 +35,12 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.ViewHolder> 
 
         }
     }
-    private List<Integer> mMedalID;
-    public MedalAdapter(List<Integer> mMedalID)
+    private List<MedalInfo> medals;
+    private OnMedalClickListener mOnMedalClickListener;
+    public MedalAdapter(List<MedalInfo> medals,OnMedalClickListener mOnMedalClickListener)
     {
-        this.mMedalID=mMedalID;
+        this.medals =medals;
+        this.mOnMedalClickListener=mOnMedalClickListener;
     }
 
     @NonNull
@@ -48,19 +54,23 @@ public class MedalAdapter extends RecyclerView.Adapter<MedalAdapter.ViewHolder> 
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(medalView);
+
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MedalAdapter.ViewHolder holder, int position) {
-        Integer medalID=mMedalID.get(position);
+        MedalInfo currentMedal = medals.get(position);
 
         ImageView medalImageView=holder.mMedalImageView;
-        medalImageView.setImageResource(medalID);
+        medalImageView.setImageResource(currentMedal.getImageID());
+        holder.itemView.setOnClickListener(v->{
+            mOnMedalClickListener.onMedalClickListener(currentMedal);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return mMedalID.size();
+        return medals.size();
     }
 }

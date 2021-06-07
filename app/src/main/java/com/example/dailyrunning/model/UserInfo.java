@@ -16,6 +16,10 @@ public class UserInfo implements Serializable {
     private int weight;
     private String avatarURI;
 
+    public void addPoint(int point)
+    {
+        this.point+=point;
+    }
     public boolean validateData() {
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(displayName) || dob==null) {
             return false;

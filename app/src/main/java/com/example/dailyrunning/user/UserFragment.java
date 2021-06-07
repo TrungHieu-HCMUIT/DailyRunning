@@ -1,6 +1,8 @@
 package com.example.dailyrunning.user;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,6 +29,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.model.MedalInfo;
+import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.utils.GiftAdapter;
 import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.utils.MedalAdapter;
@@ -32,6 +38,8 @@ import com.example.dailyrunning.databinding.FragmentUserBinding;
 import com.facebook.login.LoginManager;
 import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -39,6 +47,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ramotion.cardslider.CardSliderLayoutManager;
+import com.ramotion.cardslider.CardSnapHelper;
 import com.taosif7.android.ringchartlib.RingChart;
 
 import java.util.ArrayList;
@@ -62,7 +72,7 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mAvatarStorageReference;
-    private com.example.dailyrunning.model.UserInfo mCurrentUser;
+    private UserInfo mCurrentUser;
     private Fragment mContext = UserFragment.this;
 
     private NavController mNavController;
@@ -70,7 +80,7 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     private HomeViewModel mHomeViewModel;
     FragmentUserBinding binding;
-
+    private MedalDialog mMedalDialog;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,7 +88,6 @@ public class UserFragment extends Fragment implements UserNavigator {
         binding = FragmentUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
         return view;
-        //return inflater.inflate(R.layout.fragment_user, container, false);
     }
 
 
@@ -105,6 +114,7 @@ public class UserFragment extends Fragment implements UserNavigator {
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
         //
+        mMedalDialog=new MedalDialog();
 
 
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
@@ -124,10 +134,20 @@ public class UserFragment extends Fragment implements UserNavigator {
         restoreState();
 
 
+
     }
 
 
+
+
     private void setUpGiftRecyclerView() {
+        binding.giftRecyclerView.setLayoutManager(new CardSliderLayoutManager(getContext()));
+        binding.giftRecyclerView.setHasFixedSize(true);
+        try {
+            new CardSnapHelper().attachToRecyclerView( binding.giftRecyclerView);
+
+        }
+        catch (Exception ex){}
         List<GiftInfo> gifts = new ArrayList<>();
         GiftAdapter adapter = new GiftAdapter(gifts);
         binding.giftRecyclerView.setAdapter(adapter);
@@ -165,7 +185,6 @@ public class UserFragment extends Fragment implements UserNavigator {
             @Override
             public void onFinish() {
                 binding.stepRingChart.stopAnimateLoading(0.6f);
-
             }
         }.start();
 
@@ -173,8 +192,9 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     private void setUpTabLayout() {
         binding.statisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
-        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this);
+        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this,mCurrentUser.getUserID());
         binding.statisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
+
         binding.statisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelect(int position) {
@@ -203,6 +223,7 @@ public class UserFragment extends Fragment implements UserNavigator {
                 super.onPageScrollStateChanged(state);
             }
         };
+
         binding.statisticalViewPager2.registerOnPageChangeCallback(pageChangeCallback);
 
     }
@@ -210,24 +231,28 @@ public class UserFragment extends Fragment implements UserNavigator {
     private void setUpMedalRecyclerView() {
 
 
-        List<Integer> medalIDs = new ArrayList<>();
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
-        medalIDs.add(R.drawable.medal_1);
-        medalIDs.add(R.drawable.medal_2);
-        medalIDs.add(R.drawable.medal_3);
-        medalIDs.add(R.drawable.medal_4);
-        medalIDs.add(R.drawable.medal_5);
+        List<MedalInfo> medalInfos = new ArrayList<>();
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
+        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
 
-        MedalAdapter adapter = new MedalAdapter(medalIDs);
+        MedalAdapter adapter = new MedalAdapter(medalInfos,medalInfo -> {
+
+            mMedalDialog.setMedal(medalInfo);
+            mMedalDialog.show(getChildFragmentManager(),"medal dialog");
+        });
         binding.medalRecycleView.setAdapter(adapter);
     }
 

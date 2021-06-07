@@ -2,6 +2,7 @@ package com.example.dailyrunning.record.spotify;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,6 +106,10 @@ public class BottomPlayerFragment extends Fragment {
                 }
             });
             mSpotifyViewModel.mPlayerState.observe(getActivity(), playerState -> {
+                if (playerState==null) {
+                    Log.e("SpotifyIn","playstate is null");
+                    return;
+                }
                 if (playerState.isPaused) {
                     mPauseButton.setTag("play");
                     mPauseButton.setImageResource(R.drawable.play);

@@ -108,7 +108,7 @@ public class UserViewModel extends ViewModel {
         StorageReference mAvatarStorageReference = FirebaseStorage.getInstance().getReference().child("avatar_photos");
 
         //tạo ref mới trong folder avatar_photos/
-        StorageReference photoRef = mAvatarStorageReference.child(selectedImageUri.getLastPathSegment());
+        StorageReference photoRef = mAvatarStorageReference.child(currentUser.getValue().getUserID());
         //up hình lên
         photoRef.putFile(selectedImageUri).addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl()
                 .addOnSuccessListener(uri -> {
@@ -313,6 +313,15 @@ public class UserViewModel extends ViewModel {
     {
         mUserNavigator.pop();
     }
+
+    public void addPoint(int pointAcquired) {
+       UserInfo tempU= currentUser.getValue();
+       tempU.addPoint(pointAcquired);
+       currentUser.setValue(tempU);
+       mUserInfoRef.child(tempU.getUserID()).child("point").setValue(tempU.getPoint());
+
+    }
+
     public interface onUpdateCallback{
         void onComplete(boolean result);
 

@@ -33,9 +33,9 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         public TextView distance;
         public TextView duration;
         public TextView pace;
+        public ImageView image;
         public TextView like;
         public TextView comment;
-        public ImageView image;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -86,4 +86,11 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
     public int getItemCount() {
         return listItem.size();
     }
+    private Bitmap base64ToBitmap(String b64) {
+        //String base64String = "data:image/png;base64,"+b64;
+        //String base64Image = base64String.split(",")[1];
+        byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+    }
+
 }

@@ -8,10 +8,11 @@ public class StatisticalViewPagerAdapter extends FragmentStateAdapter {
 
 
 
-    public StatisticalViewPagerAdapter(Fragment f) {//Pager constructor receives Activity instance
+    public StatisticalViewPagerAdapter(Fragment f,String userID) {//Pager constructor receives Activity instance
         super(f);
+        this.userID=userID;
     }
-
+    String userID;
     @Override
     public int getItemCount() {
         return 3;//Number of fragments displayed
@@ -26,7 +27,7 @@ public class StatisticalViewPagerAdapter extends FragmentStateAdapter {
     @Override
     public Fragment createFragment(int position) {
         // Return a NEW fragment instance in createFragment(int)
-        return StatisticalFragment.newInstance(position);
+        return StatisticalFragment.newInstance(position,userID);
     }
 }
 

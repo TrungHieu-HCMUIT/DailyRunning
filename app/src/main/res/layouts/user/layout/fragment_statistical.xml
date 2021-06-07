@@ -1,95 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingStart="16dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="16dp"
-    android:paddingBottom="12dp">
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="currentPage"
+            type="int" />
+        <variable
+            name="statisticalViewModel"
+            type="com.example.dailyrunning.user.StatisticalViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingStart="16dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp">
 
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:strokeColor="#AFAFAF"
-        app:strokeWidth="0.8dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingTop="12dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="12dp">
+            app:cardCornerRadius="10dp"
+            app:strokeColor="#AFAFAF"
+            app:strokeWidth="0.8dp">
 
-            <TextView
-                android:id="@+id/working_count_textView"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/time_working_textView"
-                android:layout_alignParentTop="false"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="21"
-                android:textColor="@color/black" />
+                android:paddingStart="16dp"
+                android:paddingTop="12dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="12dp">
 
-            <TextView
-                android:id="@+id/time_working_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/distance_textView"
-                android:layout_alignParentTop="false"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="00:20:21"
-                android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/working_count_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/time_working_textView"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/roboto_regular"
+                    tools:text="20"
+                    android:text="@{String.valueOf(statisticalViewModel.workingCount[currentPage])}"
+                    android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/textView14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textView13"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Số hoạt động"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/time_working_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/distance_textView"
+                    android:layout_alignParentTop="false"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/roboto_regular"
+                    tools:text="00:02:12"
+                    android:text="@{statisticalViewModel.timeWorking[currentPage]}"
+                    android:textColor="@color/black" />
 
-            <TextView
-                android:id="@+id/textView13"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textView12"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Thời gian hoạt động"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/textView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView13"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Số hoạt động"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textView12"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Quãng đường"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textView12"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Thời gian hoạt động"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/distance_textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:fontFamily="@font/roboto_regular"
-                android:text="21 Km"
-                android:textColor="@color/black" />
-        </RelativeLayout>
-    </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Quãng đường"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
 
-</RelativeLayout>
+                <TextView
+                    android:id="@+id/distance_textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:fontFamily="@font/roboto_regular"
+                    tools:text="20 Km"
+                    android:text="@{String.valueOf(statisticalViewModel.distance[currentPage])+ ` Km`}"
+                    android:textColor="@color/black" />
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+</layout>
