@@ -63,7 +63,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         mNavController = Navigation.findNavController(getActivity(), R.id.home_fragment_container);
 
-        
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference activityRef = database.getReference();
 
@@ -74,7 +74,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         //The function getMapAsync acquires a GoogleMap initializing the map system and the view.
         mapFragment.getMapAsync( this);
 
-        Query query = activityRef.child("Activity").orderByChild("dateCreated").equalTo(datecreated);
+        Query query = activityRef.child("Activity").child(user.getUid()).orderByChild("dateCreated").equalTo(datecreated);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
