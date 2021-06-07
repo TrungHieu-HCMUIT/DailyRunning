@@ -5,11 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.dailyrunning.model.Activity;
-import com.example.dailyrunning.model.mLatLng;
+import com.example.dailyrunning.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -84,7 +82,7 @@ public class StatisticalViewModel extends ViewModel {
                 map.get("pictureURI").toString(),
                 pace,
                 map.get("describe").toString(),
-                (ArrayList<mLatLng>) map.get("latLngArrayList")
+                (ArrayList<LatLng>) map.get("latLngArrayList")
         );
     }
 

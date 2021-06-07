@@ -19,7 +19,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyrunning.model.Activity;
-import com.example.dailyrunning.model.PostDataTest;
+import com.example.dailyrunning.model.PostData;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserViewModel;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +30,6 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class HomeUserFragment extends Fragment {
@@ -38,7 +37,7 @@ public class HomeUserFragment extends Fragment {
     private static final String TAG = "Home User Fragment";
 
     private Context context;
-    private ArrayList<PostDataTest> postList = new ArrayList<>();
+    private ArrayList<PostData> postList = new ArrayList<>();
     private RecyclerView recyclerView;
     private PostViewAdapter postViewAdapter;
     private UserViewModel mUserViewModel;
@@ -103,7 +102,7 @@ public class HomeUserFragment extends Fragment {
                                 // TODO: handle the post
                                 Activity activity = postSnapshot.getValue(Activity.class);
                                 listDate.add(activity.getDateCreated());
-                                postList.add(new PostDataTest(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration()+"", activity.getPace()+"", activity.getPictureURI(), 20, 20));
+                                postList.add(new PostData(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration(), activity.getPace()+"", activity.getPictureURI(), 20, 20));
                                 postViewAdapter.notifyDataSetChanged();
                                 Collections.reverse(postList);
                             }

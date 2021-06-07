@@ -1,6 +1,5 @@
 package com.example.dailyrunning.record;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,7 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.dailyrunning.model.Activity;
-import com.example.dailyrunning.model.mLatLng;
+import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,13 +36,15 @@ import java.util.ArrayList;
 
 public class FinishFragment extends Fragment {
 
+    private static final String TAG = "Finish Fragment";
+
     private static final String INTENT_IMAGE = "pictureURL";
-    private final String INTENT_DISTANCEKEY = "distance";
-    private final String INTENT_TIMEKEY = "time";
-    private String INTENT_DATECREATED = "datecreated";
-    private String INTENT_LATLNGARRLIST = "latlngarrlist";
+    private final String INTENT_DISTANCE_KEY = "distance";
+    private final String INTENT_TIME_KEY = "time";
+    private String INTENT_DATE_CREATED = "datecreated";
+    private String INTENT_LATLNG_LIST = "latlngarrlist";
     EditText describeText;
-    ArrayList<mLatLng> list = new ArrayList<mLatLng>();
+    ArrayList<LatLng> list = new ArrayList<>();
     DatabaseReference exampleRun;
     Button buttonSave;
     Button buttonBack;
@@ -51,7 +52,7 @@ public class FinishFragment extends Fragment {
     TextView timeTextView;
     TextView paceTextView;
     Bitmap  bitmap;
-    int pace;
+    double pace;
     Uri downloadUrl=null;
     private View rootView;
     StorageReference reference;
@@ -64,18 +65,15 @@ public class FinishFragment extends Fragment {
         //setTitle(R.string.runCompleted);
 
         Bundle resultFromRecordFragment = getArguments();
-        double completedDist = resultFromRecordFragment.getDouble(INTENT_DISTANCEKEY);
-        long completedTime = resultFromRecordFragment.getLong(INTENT_TIMEKEY);
-        list = (ArrayList<mLatLng>) resultFromRecordFragment.get(INTENT_LATLNGARRLIST);
-        String formattedDate = resultFromRecordFragment.getString(INTENT_DATECREATED);
+        double completedDist = resultFromRecordFragment.getDouble(INTENT_DISTANCE_KEY);
+        long completedDuration = resultFromRecordFragment.getLong(INTENT_TIME_KEY);
+        list = (ArrayList<LatLng>) resultFromRecordFragment.get(INTENT_LATLNG_LIST);
+        String formattedDate = resultFromRecordFragment.getString(INTENT_DATE_CREATED);
         byte[] byteArray = resultFromRecordFragment.getByteArray(INTENT_IMAGE);
         bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-        String speed = getSpeed(completedDist, completedTime);
-        getPace(completedDist, completedTime);
-
         
-        int runningPoint=(int)completedDist/1000;
+        int runningPoint= (int) completedDist/1000;
 
         ((TextView)rootView.findViewById(R.id.record_running_point_textView)).setText(runningPoint+" điểm Running");
 
@@ -93,9 +91,11 @@ public class FinishFragment extends Fragment {
         newActivityID = activityRef.push().getKey();
         reference=FirebaseStorage.getInstance().getReference().child("imageMap");
 
-        distanceTextView.setText(formatDistance(completedDist));
-        timeTextView.setText(formatDuration(completedTime));
-        paceTextView.setText(speed);
+        pace = getPace(completedDist, completedDuration);
+
+        distanceTextView.setText(completedDist + " km");
+        timeTextView.setText(formatDuration(completedDuration));
+        paceTextView.setText(pace + " m/s");
 
         buttonSave.setOnClickListener(v -> {
             uploadImage(new OnSuccessListener<Uri>() {
@@ -106,7 +106,7 @@ public class FinishFragment extends Fragment {
                             user.getUid(),
                             formattedDate,
                             completedDist,
-                            completedTime,
+                            completedDuration,
                             downloadUrl.toString(),
                             pace,
                             describeText.getText().toString(),
@@ -146,30 +146,12 @@ public class FinishFragment extends Fragment {
        });
     }
 
-    public String formatDistance(double pDistance) {
-        if (pDistance / 1000 >= 1) {
-            @SuppressLint("DefaultLocale") String distanceStr = String.format("%.2f", (pDistance / 1000));
-            return distanceStr + "km";
-        } else {
-            @SuppressLint("DefaultLocale") String distanceStr = String.format("%.0f", pDistance);
-            return distanceStr + "m";
-        }
-    }
-
     public String formatDuration(long pDuration) {
-        return DateUtils.formatElapsedTime(pDuration) + "s";
-
+        return DateUtils.formatElapsedTime(pDuration);
     }
 
-    public String getSpeed(double distance, long time)
-    {
-        int speed = (int) ((int) distance / time);
-        return  speed*3.6+"km/h";
-    }
-    public int getPace(double length, long t) {
-        pace = 0;
-        long time = t;
-        pace = (int) (time / length);
-        return pace/60;
+    public double getPace(double distance, long time) {
+        double speed = (double) (distance * 1000 / time);
+        return  speed * 3.6;
     }
 }

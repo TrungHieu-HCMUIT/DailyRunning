@@ -3,6 +3,7 @@ package com.example.dailyrunning.home;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.format.DateUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.dailyrunning.model.PostDataTest;
+import com.example.dailyrunning.model.PostData;
 import com.example.dailyrunning.R;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder>{
     // TODO: Use ArrayList<Object> instead
     private Context mContext;
-    private ArrayList<PostDataTest> listItem;
+    private ArrayList<PostData> listItem;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // TODO: Edit widgets here
@@ -54,7 +55,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         }
     }
 
-    public PostViewAdapter(@NonNull Context context, ArrayList<PostDataTest> data) {
+    public PostViewAdapter(@NonNull Context context, ArrayList<PostData> data) {
         this.mContext = context;
         listItem = data;
     }
@@ -73,9 +74,9 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.userName.setText(listItem.get(position).getUsername());
         holder.dateTime.setText(listItem.get(position).getDateTime());
         holder.content.setText(listItem.get(position).getContent());
-        holder.distance.setText(listItem.get(position).getDistance());
-        holder.duration.setText(listItem.get(position).getDuration());
-        holder.pace.setText(listItem.get(position).getPace());
+        holder.distance.setText(listItem.get(position).getDistance() + " km");
+        holder.duration.setText(DateUtils.formatElapsedTime(listItem.get(position).getDuration()));
+        holder.pace.setText(listItem.get(position).getPace()+ " m/s");
         //Glide.with(mContext).load(base64ToBitmap(listItem.get(position).getImage())).into(holder.image);
         Glide.with(mContext).load(listItem.get(position).getImage()).into(holder.image);
         holder.like.setText("" + listItem.get(position).getNumOfLike());

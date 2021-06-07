@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.dailyrunning.model.PostDataTest;
+import com.example.dailyrunning.model.PostData;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserViewModel;
 
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class HomeFollowingFragment extends Fragment {
 
     private Context context;
-    private ArrayList<PostDataTest> postList = new ArrayList<>();
+    private ArrayList<PostData> postList = new ArrayList<>();
     private RecyclerView recyclerView;
     private PostViewAdapter postViewAdapter;
     private HomeViewModel mHomeViewModel;

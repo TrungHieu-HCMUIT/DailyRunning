@@ -1,18 +1,19 @@
 package com.example.dailyrunning.model;
 
-public class PostDataTest {
+public class PostData
+{
     private String userAvatarUri;
     private String username;
     private String dateTime;
     private String content;
     private String distance;
-    private String duration;
+    private long duration;
     private String pace;
     private String image;
     private int numOfLike;
     private int numOfComment;
 
-    public PostDataTest(String userAvatarUri, String username, String dateTime, String content, String distance, String duration, String pace, String image, int numOfLike, int numOfComment) {
+    public PostData(String userAvatarUri, String username, String dateTime, String content, String distance, long duration, String pace, String image, int numOfLike, int numOfComment) {
         this.userAvatarUri = userAvatarUri;
         this.username = username;
         this.dateTime = dateTime;
@@ -66,11 +67,11 @@ public class PostDataTest {
         this.distance = distance;
     }
 
-    public String getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

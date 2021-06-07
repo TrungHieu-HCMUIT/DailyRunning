@@ -28,8 +28,8 @@ import com.spotify.android.appremote.api.PlayerApi;
 import com.spotify.protocol.types.Repeat;
 
 
-public class PlayerFragment extends Fragment {
 
+public class PlayerFragment extends Fragment {
 
     private RestoreStateViewModel mRestoreStateViewModel;
     private SpotifyViewModel mSpotifyViewModel;
@@ -95,7 +95,7 @@ private Runnable timerRunnable;
                 mPlaybackPosition+= 1000;
                 mSeekBar.setProgress((int) mPlaybackPosition);
                 try {
-                    getActivity().runOnUiThread(() -> mCurrentTime.setText(TrackAdapter.getDuration(mPlaybackPosition)));
+                    getActivity().runOnUiThread(() -> mCurrentTime.setText("" + TrackAdapter.getDuration(mPlaybackPosition)));
                 }
                 catch (Exception f){}
 
@@ -119,7 +119,7 @@ private Runnable timerRunnable;
                 mPauseButton.setTag("pause");
                 mPauseButton.setImageResource(R.drawable.pause);
             }
-            mCurrentTime.setText(TrackAdapter.getDuration(mPlaybackPosition));
+            mCurrentTime.setText("" + TrackAdapter.getDuration(mPlaybackPosition));
 
             //region shuffle
           /*  if(mShuffleButton.getTag().toString().equals("on"))
@@ -217,7 +217,7 @@ private Runnable timerRunnable;
             mTitleTextView.setText(currentTrack.name);
             mArtistTextView.setText(currentTrack.artist.name);
             mDurationTime = currentTrack.duration;
-            mDuration.setText(TrackAdapter.getDuration(currentTrack.duration));
+            mDuration.setText("" + TrackAdapter.getDuration(currentTrack.duration));
             mSeekBar.setMax((int) currentTrack.duration);
             String imageURI = currentTrack.imageUri.raw.replace("spotify:image:", "");
             imageURI = "https://i.scdn.co/image/" + imageURI;
@@ -268,7 +268,7 @@ private Runnable timerRunnable;
                 mPauseButton.setTag("pause");
                 mPauseButton.setImageResource(R.drawable.pause);
             }
-            mCurrentTime.setText(TrackAdapter.getDuration(mPlaybackPosition));
+            mCurrentTime.setText("" + TrackAdapter.getDuration(mPlaybackPosition));
         });
         mRestoreStateViewModel.mThumbnailImage.observe(getActivity(), image -> {
             if (image != null)

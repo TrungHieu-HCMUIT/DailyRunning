@@ -42,7 +42,6 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -60,10 +59,12 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class RecordFragment extends Fragment implements OnMapReadyCallback {
 
-    private final String INTENT_LATLNGARRLIST = "latlngarrlist";
-    private final String INTENT_DISTANCEKEY = "distance";
-    private final String INTENT_TIMEKEY = "time";
-    private final String INTENT_DATECREATED = "datecreated";
+    private static final String TAG = "RecordFragment";
+
+    private final String INTENT_LATLNG_LIST = "latlngarrlist";
+    private final String INTENT_DISTANCE_KEY = "distance";
+    private final String INTENT_TIME_KEY = "time";
+    private final String INTENT_DATE_CREATED = "datecreated";
     private final String INTENT_IMAGE = "pictureURL";
     private static final int UPDATE_TEXTVIEW = 0;
     // variable for Google Map API
@@ -162,7 +163,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
 
     private void checkBottomPlayerState() {
         Track currentTrack=mSpotifyViewModel.mCurrentTrack.getValue();
-        if(currentTrack!=null)
+        if (currentTrack!=null)
         {
             FragmentManager mFragmentManager=getChildFragmentManager();
             Fragment bottomPlayer=mFragmentManager.findFragmentById(R.id.bottom_player_fragment);
@@ -220,11 +221,11 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
                 stopTimer();
                 mMap.setMyLocationEnabled(false);
                 Bundle resultForFinishFragment = new Bundle();
-                resultForFinishFragment.putDouble(INTENT_DISTANCEKEY, getDistance());
-                resultForFinishFragment.putLong(INTENT_TIMEKEY, time);
+                resultForFinishFragment.putDouble(INTENT_DISTANCE_KEY, getDistance());
+                resultForFinishFragment.putLong(INTENT_TIME_KEY, time);
 
-                resultForFinishFragment.putParcelableArrayList(INTENT_LATLNGARRLIST, list);
-                resultForFinishFragment.putString(INTENT_DATECREATED, formattedDate);
+                resultForFinishFragment.putParcelableArrayList(INTENT_LATLNG_LIST, list);
+                resultForFinishFragment.putString(INTENT_DATE_CREATED, formattedDate);
                 mMap.snapshot(bitmap -> {
 
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -314,7 +315,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
 
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        // disenable zoom button because the zoom level is fixed.
+        // enable zoom button because the zoom level is fixed.
         //mMap.getUiSettings().setZoomControlsEnabled(true);
         //enable positioning button
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
@@ -430,7 +431,7 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
      * Loop through the arrayList of latlng
      * and compute the distance between each latlng
      *
-     * @return total distance covered in meters
+     * @return total distance covered in kilometers
      */
     private double getDistance() {
 
@@ -439,11 +440,13 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
         for (int i = 0; i < list.size() - 1; i++) {
             totalDistance = totalDistance + SphericalUtil.computeDistanceBetween(list.get(i), list.get(i + 1));
         }
-
-        // totalDistance = Math.round(totalDistance * 100.0) / 100.0;
+        // Convert to kilometer
+        totalDistance /= 1000.0;
+        // Two decimal places double format
+        totalDistance = Math.round(totalDistance * 100.0) / 100.0;
         return totalDistance;
-
     }
+
     public static String getTime(int second) {
         if (second < 10) {
             return "00:00:0" + second;
@@ -493,8 +496,8 @@ public class RecordFragment extends Fragment implements OnMapReadyCallback {
     }
     public void updateTextView() {
         textView.setText(getTime(count));
-        String Sum = String .format("%.2f",getDistance());
-        textlength.setText(Sum);
+        //String Sum = String.format("%.2f",getDistance());
+        textlength.setText(getDistance() + " km");
     }
     public void sendMessage(int id) {
         if (mHandler != null) {
