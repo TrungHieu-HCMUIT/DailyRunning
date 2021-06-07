@@ -35,13 +35,14 @@ import java.util.Collections;
 
 public class HomeUserFragment extends Fragment {
 
+    private static final String TAG = "Home User Fragment";
+
     private Context context;
     private ArrayList<PostDataTest> postList = new ArrayList<>();
     private RecyclerView recyclerView;
     private PostViewAdapter postViewAdapter;
     private UserViewModel mUserViewModel;
     private HomeViewModel mHomeViewModel;
-    private String TAG="cac";
     private NavController mNavController;
     ArrayList<String> listDate = new ArrayList<>();
     private String INTENT_DATECREATED="date";
@@ -88,7 +89,6 @@ public class HomeUserFragment extends Fragment {
     private void populateData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rt = database.getReference();
-        postList.clear();
         mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
             if (userInfo==null)
@@ -98,6 +98,7 @@ public class HomeUserFragment extends Fragment {
                         @RequiresApi(api = Build.VERSION_CODES.N)
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
+                            postList.clear();
                             for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                                 // TODO: handle the post
                                 Activity activity = postSnapshot.getValue(Activity.class);
