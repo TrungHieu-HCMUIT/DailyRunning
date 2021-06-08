@@ -43,17 +43,31 @@ public class StatisticalViewModel extends ViewModel {
     DecimalFormat df = new DecimalFormat("#.##");
     public String userID;
 
+    public void resetData() {
+        distance = new MutableLiveData<>();
+        timeWorking = new MutableLiveData<>();
+        workingCount = new MutableLiveData<>();
+        now = new LocalDate();
+        activities = new ArrayList<>();
+
+    }
+
     public void fetchActivities() {
 
         activities.clear();
-        activityRef.orderByChild("userID").equalTo(userID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        activityRef.child(userID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
 
                     HashMap map = (HashMap) task.getResult().getValue();
-                    if(map ==null)
+                    if (map == null) {
+                        timeWorking.setValue(new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00")));
+                        distance.setValue(new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0)));
+                        workingCount.setValue(new ArrayList<>(Arrays.asList(0, 0, 0)));
+
                         return;
+                    }
                     for (Object o : map.values().toArray()) {
                         activities.add(toActivity((HashMap) o));
                     }
@@ -95,22 +109,22 @@ public class StatisticalViewModel extends ViewModel {
         return time;
     }
 
-    public void getWeekStatistic()
-    {
+    public void getWeekStatistic() {
         LocalDate monday = now.withDayOfWeek(DateTimeConstants.MONDAY).minusDays(1);
         LocalDate sunday = now.withDayOfWeek(DateTimeConstants.SUNDAY).plusDays(1);
         List<Activity> weekActivity = activities.stream().filter(activity -> {
             int endIndex = activity.getDateCreated().indexOf(" ");
             String activityDate = activity.getDateCreated().substring(0, endIndex);
+            LocalDate actDate = null;
             try {
-                java.util.Date tempDate=mSimpleDateFormat.parse(activityDate);
-                LocalDate actDate=new LocalDate(tempDate);
+                java.util.Date tempDate = mSimpleDateFormat.parse(activityDate);
+                actDate = new LocalDate(tempDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
 
 
-            return now.isBefore(sunday)&&now.isAfter(monday);
+            return actDate.isBefore(sunday) && actDate.isAfter(monday);
         }).collect(Collectors.toList());
 
         int weekWorkingCount = weekActivity.size();
@@ -119,46 +133,48 @@ public class StatisticalViewModel extends ViewModel {
         String _timeWorking;
         for (Activity act : weekActivity
         ) {
-            weekDistance+=act.getDistance();
-            secWorking+=act.getDuration();
+            weekDistance += act.getDistance();
+            secWorking += act.getDuration();
         }
-        _timeWorking=timeConvert(secWorking);
-        weekDistance/=1000;
-        String distanceFormat=df.format(weekDistance);
-        weekDistance=Double.parseDouble(distanceFormat);
-        ArrayList<String> workingTime=timeWorking.getValue();
-        if (workingTime==null)
-            workingTime=new ArrayList<>(Arrays.asList("","",""));
+        _timeWorking = timeConvert(secWorking);
+        weekDistance /= 1000;
+        String distanceFormat = df.format(weekDistance);
+        weekDistance = Double.parseDouble(distanceFormat);
+        ArrayList<String> workingTime = timeWorking.getValue();
+        if (workingTime == null)
+            workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
         workingTime.set(0, _timeWorking);
         timeWorking.setValue(workingTime);
 
-        ArrayList<Double> _distance=distance.getValue();
-        if (_distance==null)
-            _distance=new ArrayList<>(Arrays.asList(0.0,0.0,0.0));
-        _distance.set(0,weekDistance);
+        ArrayList<Double> _distance = distance.getValue();
+        if (_distance == null)
+            _distance = new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0));
+        _distance.set(0, weekDistance);
         distance.setValue(_distance);
 
-        ArrayList<Integer> _workingCount=workingCount.getValue();
-        if (_workingCount==null)
-            _workingCount=new ArrayList<>(Arrays.asList(0,0,0));
-        _workingCount.set(0,weekWorkingCount);
+        ArrayList<Integer> _workingCount = workingCount.getValue();
+        if (_workingCount == null)
+            _workingCount = new ArrayList<>(Arrays.asList(0, 0, 0));
+        _workingCount.set(0, weekWorkingCount);
         workingCount.setValue(_workingCount);
 
 
     }
+
     public void getMonthStatistic() {
         LocalDate lastDay = now.dayOfMonth().withMaximumValue().plusDays(1);
         LocalDate firstDay = now.dayOfMonth().withMinimumValue().minusDays(1);
         List<Activity> monthActivity = activities.stream().filter(activity -> {
             int endIndex = activity.getDateCreated().indexOf(" ");
             String activityDate = activity.getDateCreated().substring(0, endIndex);
+            LocalDate actDate = null;
             try {
-                java.util.Date tempDate =mSimpleDateFormat.parse(activityDate);
-                LocalDate actDate=new LocalDate(tempDate);
+                java.util.Date tempDate = mSimpleDateFormat.parse(activityDate);
+                actDate = new LocalDate(tempDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            return now.isBefore(lastDay)&&now.isAfter(firstDay);
+            return actDate.isBefore(lastDay) && actDate.isAfter(firstDay);
         }).collect(Collectors.toList());
         int monthWorkingCount = monthActivity.size();
         double monthDistance = 0;
@@ -166,44 +182,46 @@ public class StatisticalViewModel extends ViewModel {
         String _timeWorking;
         for (Activity act : monthActivity
         ) {
-            monthDistance +=act.getDistance();
-            secWorking+=act.getDuration();
+            monthDistance += act.getDistance();
+            secWorking += act.getDuration();
         }
-        _timeWorking=timeConvert(secWorking);
-        monthDistance /=1000;
-        String distanceFormat=df.format(monthDistance);
-        monthDistance =Double.parseDouble(distanceFormat);
-        ArrayList<String> workingTime=timeWorking.getValue();
-        if (workingTime==null)
-            workingTime=new ArrayList<>(Arrays.asList("","",""));
+        _timeWorking = timeConvert(secWorking);
+        monthDistance /= 1000;
+        String distanceFormat = df.format(monthDistance);
+        monthDistance = Double.parseDouble(distanceFormat);
+        ArrayList<String> workingTime = timeWorking.getValue();
+        if (workingTime == null)
+            workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
         workingTime.set(1, _timeWorking);
         timeWorking.setValue(workingTime);
 
-        ArrayList<Double> _distance=distance.getValue();
-        if (_distance==null)
-            _distance=new ArrayList<>(Arrays.asList(0.0,0.0,0.0));
+        ArrayList<Double> _distance = distance.getValue();
+        if (_distance == null)
+            _distance = new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0));
         _distance.set(1, monthDistance);
         distance.setValue(_distance);
 
-        ArrayList<Integer> _workingCount=workingCount.getValue();
-        if (_workingCount==null)
-            _workingCount=new ArrayList<>(Arrays.asList(0,0,0));
-        _workingCount.set(1,monthWorkingCount);
+        ArrayList<Integer> _workingCount = workingCount.getValue();
+        if (_workingCount == null)
+            _workingCount = new ArrayList<>(Arrays.asList(0, 0, 0));
+        _workingCount.set(1, monthWorkingCount);
         workingCount.setValue(_workingCount);
     }
+
     public void getYearStatistic() {
         LocalDate lastDay = now.dayOfYear().withMaximumValue().plusDays(1);
         LocalDate firstDay = now.dayOfYear().withMinimumValue().minusDays(1);
         List<Activity> yearActivity = activities.stream().filter(activity -> {
             int endIndex = activity.getDateCreated().indexOf(" ");
             String activityDate = activity.getDateCreated().substring(0, endIndex);
+            LocalDate actDate = null;
             try {
-                java.util.Date tempDate =mSimpleDateFormat.parse(activityDate);
-                LocalDate actDate=new LocalDate(tempDate);
+                java.util.Date tempDate = mSimpleDateFormat.parse(activityDate);
+                actDate = new LocalDate(tempDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            return now.isBefore(lastDay)&&now.isAfter(firstDay);
+            return actDate.isBefore(lastDay) && actDate.isAfter(firstDay);
         }).collect(Collectors.toList());
         int yearWorkingCount = yearActivity.size();
         double yearDistance = 0;
@@ -211,28 +229,28 @@ public class StatisticalViewModel extends ViewModel {
         String _timeWorking;
         for (Activity act : yearActivity
         ) {
-            yearDistance +=act.getDistance();
-            secWorking+=act.getDuration();
+            yearDistance += act.getDistance();
+            secWorking += act.getDuration();
         }
-        _timeWorking=timeConvert(secWorking);
-        yearDistance /=1000;
-        String distanceFormat=df.format(yearDistance);
-        yearDistance =Double.parseDouble(distanceFormat);
-        ArrayList<String> workingTime=timeWorking.getValue();
-        if (workingTime==null)
-            workingTime=new ArrayList<>(Arrays.asList("","",""));
+        _timeWorking = timeConvert(secWorking);
+        yearDistance /= 1000;
+        String distanceFormat = df.format(yearDistance);
+        yearDistance = Double.parseDouble(distanceFormat);
+        ArrayList<String> workingTime = timeWorking.getValue();
+        if (workingTime == null)
+            workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
         workingTime.set(2, _timeWorking);
         timeWorking.setValue(workingTime);
 
-        ArrayList<Double> _distance=distance.getValue();
-        if (_distance==null)
-            _distance=new ArrayList<>(Arrays.asList(0.0,0.0,0.0));
+        ArrayList<Double> _distance = distance.getValue();
+        if (_distance == null)
+            _distance = new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0));
         _distance.set(2, yearDistance);
         distance.setValue(_distance);
 
-        ArrayList<Integer> _workingCount=workingCount.getValue();
-        if (_workingCount==null)
-            _workingCount=new ArrayList<>(Arrays.asList(0,0,0));
+        ArrayList<Integer> _workingCount = workingCount.getValue();
+        if (_workingCount == null)
+            _workingCount = new ArrayList<>(Arrays.asList(0, 0, 0));
         _workingCount.set(2, yearWorkingCount);
         workingCount.setValue(_workingCount);
     }

@@ -1,6 +1,7 @@
 package com.example.dailyrunning.utils;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class AllGiftAdapter  extends RecyclerView.Adapter<AllGiftAdapter.ViewHol
             mGiftDetailTextView=itemView.findViewById(R.id.gift_detail_textView);
             mPointTextView=itemView.findViewById(R.id.point_textView);
             mExchangeButton=itemView.findViewById(R.id.exchange_button);
+            mFoldingCell.initialize(1000, Color.WHITE,0);
 
 
 

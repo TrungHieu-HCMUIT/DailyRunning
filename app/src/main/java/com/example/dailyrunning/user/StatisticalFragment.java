@@ -50,8 +50,6 @@ public class StatisticalFragment extends Fragment {
         binding.setLifecycleOwner(requireActivity());
         currentPage = getArguments().getInt("position");
         userID = getArguments().getString("uid");
-        statisticalViewModel.userID = userID;
-
         binding.setCurrentPage(currentPage);
         setData(currentPage);
 
@@ -67,7 +65,6 @@ public class StatisticalFragment extends Fragment {
     }
 
     private void setData(int position) {
-        //TODO: get current user, get statistical info
         statisticalViewModel.fetchActivities();
     }
 }

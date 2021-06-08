@@ -40,6 +40,7 @@ import com.flyco.tablayout.SegmentTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -81,6 +82,7 @@ public class UserFragment extends Fragment implements UserNavigator {
     private HomeViewModel mHomeViewModel;
     FragmentUserBinding binding;
     private MedalDialog mMedalDialog;
+    private StatisticalViewModel mStatisticalViewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -110,12 +112,13 @@ public class UserFragment extends Fragment implements UserNavigator {
         //init viewmodel
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        mStatisticalViewModel = new ViewModelProvider(getActivity()).get(StatisticalViewModel.class);
         mUserViewModel.setNavigator(this);
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
         //
         mMedalDialog=new MedalDialog();
-
+        
 
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
             if (currentUser==null)
@@ -123,8 +126,11 @@ public class UserFragment extends Fragment implements UserNavigator {
             if (!isAdded())
                 return;
             mCurrentUser = currentUser;
+            mStatisticalViewModel.resetData();
+            mStatisticalViewModel.userID = currentUser.getUserID();
 
             updateUI();
+
         });
 
 
