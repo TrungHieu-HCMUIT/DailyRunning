@@ -85,7 +85,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:fontFamily="@font/svn_avo_bold"
-                            android:text="0.0 km"
+                            android:text="0.00 km"
                             android:textAlignment="center"
                             android:textColor="@color/black"
                             android:textSize="20dp" />

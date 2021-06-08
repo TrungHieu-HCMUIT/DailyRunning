@@ -102,7 +102,8 @@ public class HomeUserFragment extends Fragment {
                                 // TODO: handle the post
                                 Activity activity = postSnapshot.getValue(Activity.class);
                                 listDate.add(activity.getDateCreated());
-                                postList.add(new PostData(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration(), activity.getPace()+"", activity.getPictureURI(), 20, 20));
+                                Log.d(TAG, "" + activity.getPace());
+                                postList.add(new PostData(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration(), activity.getPace(), activity.getPictureURI(), 20, 20));
                                 postViewAdapter.notifyDataSetChanged();
                                 Collections.reverse(postList);
                             }

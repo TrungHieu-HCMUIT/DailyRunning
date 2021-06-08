@@ -8,12 +8,12 @@ public class PostData
     private String content;
     private String distance;
     private long duration;
-    private String pace;
+    private double pace;
     private String image;
     private int numOfLike;
     private int numOfComment;
 
-    public PostData(String userAvatarUri, String username, String dateTime, String content, String distance, long duration, String pace, String image, int numOfLike, int numOfComment) {
+    public PostData(String userAvatarUri, String username, String dateTime, String content, String distance, long duration, double pace, String image, int numOfLike, int numOfComment) {
         this.userAvatarUri = userAvatarUri;
         this.username = username;
         this.dateTime = dateTime;
@@ -75,11 +75,11 @@ public class PostData
         this.duration = duration;
     }
 
-    public String getPace() {
+    public double getPace() {
         return pace;
     }
 
-    public void setPace(String pace) {
+    public void setPace(double pace) {
         this.pace = pace;
     }
 
