@@ -73,9 +73,9 @@ public class HomeUserFragment extends Fragment {
 
         recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(context, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
             @Override public void onItemClick(View view, int position) {
-//                Bundle bundle = new Bundle();
-//                bundle.putString(INTENT_DATECREATED,listDate.get(position));
-//                mNavController.navigate(R.id.action_homeFragment_to_mapViewFragment, bundle);
+                Bundle bundle = new Bundle();
+                bundle.putString(INTENT_DATECREATED,listDate.get(position));
+                mNavController.navigate(R.id.action_homeFragment_to_postDetailFragment, bundle);
             }
 
             @Override public void onLongItemClick(View view, int position) {
