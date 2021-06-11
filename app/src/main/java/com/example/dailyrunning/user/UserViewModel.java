@@ -48,8 +48,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UserViewModel extends ViewModel {
 
-
-
     private MutableLiveData<UserInfo> currentUser;
     public Parcelable mMedalRecyclerViewState;
     public Parcelable mGiftRecyclerViewState;
@@ -319,7 +317,6 @@ public class UserViewModel extends ViewModel {
        tempU.addPoint(pointAcquired);
        currentUser.setValue(tempU);
        mUserInfoRef.child(tempU.getUserID()).child("point").setValue(tempU.getPoint());
-
     }
 
     public interface onUpdateCallback{

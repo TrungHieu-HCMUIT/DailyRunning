@@ -21,12 +21,10 @@ import com.example.dailyrunning.R;
 import java.util.ArrayList;
 
 public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder>{
-    // TODO: Use ArrayList<Object> instead
     private Context mContext;
     private ArrayList<PostData> listItem;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        // TODO: Edit widgets here
         public ImageView userAvatar;
         public TextView userName;
         public TextView dateTime;
@@ -41,7 +39,6 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         public ViewHolder(@NonNull View view) {
             super(view);
 
-            // TODO: Edit binding view here
             userAvatar = (ImageView) view.findViewById(R.id.ivUserAvatar);
             userName = (TextView) view.findViewById(R.id.tvUsername);
             dateTime = (TextView) view.findViewById(R.id.tvDateTime);
@@ -69,7 +66,6 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // TODO: Insert views here
         Glide.with(mContext).load(listItem.get(position).getUserAvatarUri()).into(holder.userAvatar);
         holder.userName.setText(listItem.get(position).getUsername());
         holder.dateTime.setText(listItem.get(position).getDateTime());
