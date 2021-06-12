@@ -82,7 +82,6 @@ public class UserFragment extends Fragment implements UserNavigator {
     private HomeViewModel mHomeViewModel;
     FragmentUserBinding binding;
     private MedalDialog mMedalDialog;
-    private StatisticalViewModel mStatisticalViewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,27 +111,20 @@ public class UserFragment extends Fragment implements UserNavigator {
         //init viewmodel
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
-        mStatisticalViewModel = new ViewModelProvider(getActivity()).get(StatisticalViewModel.class);
         mUserViewModel.setNavigator(this);
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
         //
         mMedalDialog=new MedalDialog();
-        
-        UserInfo user= mUserViewModel.getCurrentUser().getValue();
-        if(user!=null)
-        {
-            mStatisticalViewModel.resetData();
-            mCurrentUser=user;
-            setUpTabLayout();
-        }
+
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
             if (currentUser==null)
                 return;
             if (!isAdded())
                 return;
             mCurrentUser = currentUser;
-            mStatisticalViewModel.resetData();
+            mUserViewModel.resetStatisticData();
+            mUserViewModel.fetchActivities();
             setUpTabLayout();
 
             updateUI();
@@ -204,7 +196,7 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     private void setUpTabLayout() {
         binding.statisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
-        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this,mCurrentUser.getUserID());
+        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this,true);
         binding.statisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
 
         binding.statisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {

@@ -17,11 +17,9 @@ import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentOtherUserProfileBinding;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.user.MedalDialog;
-import com.example.dailyrunning.user.OtherUserProfileViewModel;
 import com.example.dailyrunning.user.StatisticalViewPagerAdapter;
 import com.example.dailyrunning.utils.MedalAdapter;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,6 +51,7 @@ public class OtherUserProfileFragment extends Fragment {
         Log.d("Other userID", userID);
 
         mOtherUserProfileViewModel=new ViewModelProvider(getActivity()).get(OtherUserProfileViewModel.class);
+        mOtherUserProfileViewModel.init(userID);
         binding.setOtherUserViewModel(mOtherUserProfileViewModel);
         binding.setLifecycleOwner(getActivity());
         mMedalDialog = new MedalDialog();
@@ -89,7 +88,7 @@ public class OtherUserProfileFragment extends Fragment {
         binding.otherStatisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
         //TODO thay user id hiện tại vào đây
         StatisticalViewPagerAdapter statisticalViewPagerAdapter =
-                new StatisticalViewPagerAdapter(this, userID);
+                new StatisticalViewPagerAdapter(this,false);
         binding.otherStatisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
 
         binding.otherStatisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {

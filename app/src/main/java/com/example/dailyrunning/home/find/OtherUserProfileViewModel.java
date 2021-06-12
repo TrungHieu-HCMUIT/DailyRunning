@@ -1,36 +1,96 @@
-package com.example.dailyrunning.user;
+package com.example.dailyrunning.home.find;
 
-import androidx.annotation.NonNull;
+import android.widget.ImageView;
+
+import androidx.databinding.BindingAdapter;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.bumptech.glide.Glide;
+import com.example.dailyrunning.R;
+import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
+import com.example.dailyrunning.model.UserInfo;
+import com.example.dailyrunning.utils.MedalAdapter;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.sql.Date;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-public class StatisticalViewModel extends ViewModel {
-    //0=day,1=week,2=month
+
+public class OtherUserProfileViewModel extends ViewModel {
+    private MutableLiveData<String> avatarUrl=new MutableLiveData<>();
+    private MutableLiveData<String> userName=new MutableLiveData<>();
+    private MutableLiveData<Integer> followerCount=new MutableLiveData<>();
+    private MutableLiveData<Integer> followingCount=new MutableLiveData<>();
+    private MutableLiveData<Integer> runningPoint=new MutableLiveData<>();
+    //Huy hiệu cập nhật sau
+    private MutableLiveData<UserInfo> user=new MutableLiveData<>();
+    public void init(String userID) {
+        FirebaseDatabase.getInstance().getReference()
+                .child("UserInfo")
+                .child(userID)
+                .get().addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        user.setValue(task.getResult().getValue(UserInfo.class));
+                        fetchActivities();
+                    }
+                }) ;
+
+    }
+
+    @BindingAdapter({"avatarUrl"})
+    public static void setProfilePicture(ImageView imageView, String url) {
+        if (url == null)
+            Glide.with(imageView.getContext()).load(LoginActivity.DEFAULT_AVATAR_URL).into(imageView);
+        else
+            Glide.with(imageView.getContext()).load(url).into(imageView);
+    }
+
+    public LiveData<String> getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public LiveData<String> getUserName() {
+        return userName;
+    }
+
+    public LiveData<Integer> getFollowerCount() {
+        return followerCount;
+    }
+
+    public LiveData<Integer> getFollowingCount() {
+        return followingCount;
+    }
+
+    public LiveData<Integer> getRunningPoint() {
+        return runningPoint;
+    }
+
+
+    //region statistic
+    //statistic
     public MutableLiveData<ArrayList<Double>> distance = new MutableLiveData<>();
     public MutableLiveData<ArrayList<String>> timeWorking = new MutableLiveData<>();
     public MutableLiveData<ArrayList<Integer>> workingCount = new MutableLiveData<>();
@@ -41,46 +101,44 @@ public class StatisticalViewModel extends ViewModel {
     private DatabaseReference activityRef = FirebaseDatabase.getInstance().getReference().child("Activity");
     private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
     DecimalFormat df = new DecimalFormat("#.##");
-    public void resetData() {
+    public void resetStatisticData() {
         distance = new MutableLiveData<>();
         timeWorking = new MutableLiveData<>();
         workingCount = new MutableLiveData<>();
         now = new LocalDate();
         activities = new ArrayList<>();
-
     }
 
-    public void fetchActivities(String userID) {
+    public void fetchActivities() {
 
         activities.clear();
-        activityRef.child(userID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful()) {
+        activityRef.child(user.getValue().getUserID()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
 
-                    HashMap map = (HashMap) task.getResult().getValue();
-                    if (map == null) {
-                        timeWorking.setValue(new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00")));
-                        distance.setValue(new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0)));
-                        workingCount.setValue(new ArrayList<>(Arrays.asList(0, 0, 0)));
+                HashMap map = (HashMap) task.getResult().getValue();
+                if (map == null) {
+                    timeWorking.setValue(new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00")));
+                    distance.setValue(new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0)));
+                    workingCount.setValue(new ArrayList<>(Arrays.asList(0, 0, 0)));
 
-                        return;
-                    }
-                    for (Object o : map.values().toArray()) {
-                        activities.add(toActivity((HashMap) o));
-                    }
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            getMonthStatistic();
-                            getWeekStatistic();
-                            getYearStatistic();
-                        }
-                    }.run();
+                    return;
                 }
+                for (Object o : map.values().toArray()) {
+                    activities.add(toActivity((HashMap) o));
+                }
+
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        getWeekStatistic();
+                        getMonthStatistic();
+                        getYearStatistic();
+                    }
+                }.run();
             }
         });
     }
+
 
     Activity toActivity(HashMap map) {
         double distance = Double.parseDouble(Objects.requireNonNull(map.get("distance")).toString());
@@ -100,7 +158,7 @@ public class StatisticalViewModel extends ViewModel {
 
 
     private String timeConvert(long sec) {
-        Date d = new Date(sec * 1000L);
+        java.sql.Date d = new java.sql.Date(sec * 1000L);
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss"); // HH for 0-23
         df.setTimeZone(TimeZone.getTimeZone("GMT"));
         String time = df.format(d);
@@ -115,7 +173,7 @@ public class StatisticalViewModel extends ViewModel {
             String activityDate = activity.getDateCreated().substring(0, endIndex);
             LocalDate actDate = null;
             try {
-                java.util.Date tempDate = mSimpleDateFormat.parse(activityDate);
+                Date tempDate = mSimpleDateFormat.parse(activityDate);
                 actDate = new LocalDate(tempDate);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -156,7 +214,6 @@ public class StatisticalViewModel extends ViewModel {
         _workingCount.set(0, weekWorkingCount);
         workingCount.setValue(_workingCount);
 
-
     }
 
     public void getMonthStatistic() {
@@ -167,7 +224,7 @@ public class StatisticalViewModel extends ViewModel {
             String activityDate = activity.getDateCreated().substring(0, endIndex);
             LocalDate actDate = null;
             try {
-                java.util.Date tempDate = mSimpleDateFormat.parse(activityDate);
+                Date tempDate = mSimpleDateFormat.parse(activityDate);
                 actDate = new LocalDate(tempDate);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -214,7 +271,7 @@ public class StatisticalViewModel extends ViewModel {
             String activityDate = activity.getDateCreated().substring(0, endIndex);
             LocalDate actDate = null;
             try {
-                java.util.Date tempDate = mSimpleDateFormat.parse(activityDate);
+                Date tempDate = mSimpleDateFormat.parse(activityDate);
                 actDate = new LocalDate(tempDate);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -253,4 +310,5 @@ public class StatisticalViewModel extends ViewModel {
         workingCount.setValue(_workingCount);
     }
 
+    //endregion
 }

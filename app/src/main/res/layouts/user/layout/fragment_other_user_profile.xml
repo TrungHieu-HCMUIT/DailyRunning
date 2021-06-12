@@ -7,7 +7,7 @@
 
         <variable
             name="otherUserViewModel"
-            type="com.example.dailyrunning.user.OtherUserProfileViewModel" />
+            type="com.example.dailyrunning.home.find.OtherUserProfileViewModel" />
     </data>
 
     <ScrollView

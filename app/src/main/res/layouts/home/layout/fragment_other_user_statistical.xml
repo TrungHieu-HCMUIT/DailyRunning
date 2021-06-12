@@ -8,8 +8,8 @@
             name="currentPage"
             type="int" />
         <variable
-            name="userViewModel"
-            type="com.example.dailyrunning.user.UserViewModel" />
+            name="otherUserViewModel"
+            type="com.example.dailyrunning.home.find.OtherUserProfileViewModel" />
     </data>
 
     <RelativeLayout
@@ -46,7 +46,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/roboto_regular"
                     tools:text="20"
-                    android:text="@{String.valueOf(userViewModel.workingCount[currentPage])}"
+                    android:text="@{String.valueOf(otherUserViewModel.workingCount[currentPage])}"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -59,7 +59,7 @@
                     android:layout_marginTop="16dp"
                     android:fontFamily="@font/roboto_regular"
                     tools:text="00:02:12"
-                    android:text="@{userViewModel.timeWorking[currentPage]}"
+                    android:text="@{otherUserViewModel.timeWorking[currentPage]}"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -101,7 +101,7 @@
                     android:layout_alignParentRight="true"
                     android:fontFamily="@font/roboto_regular"
                     tools:text="20 Km"
-                    android:text="@{String.valueOf(userViewModel.distance[currentPage])+ ` Km`}"
+                    android:text="@{String.valueOf(otherUserViewModel.distance[currentPage])+ ` Km`}"
                     android:textColor="@color/black" />
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>

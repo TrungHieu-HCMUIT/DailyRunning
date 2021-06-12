@@ -6,16 +6,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.example.dailyrunning.home.find.OtherUserStatisticalFragment;
+
 public class StatisticalViewPagerAdapter extends FragmentStateAdapter {
 
-
-
-    public StatisticalViewPagerAdapter(Fragment f,String userID) {//Pager constructor receives Activity instance
+    private boolean isMe;
+    public StatisticalViewPagerAdapter(Fragment f,boolean isMe) {//Pager constructor receives Activity instance
         super(f);
-        Log.d("StatisticalViewPagerAdapter", "constructor: " + userID);
-        this.userID=userID;
+        this.isMe=isMe;
     }
-    String userID;
     @Override
     public int getItemCount() {
         return 3;//Number of fragments displayed
@@ -29,9 +28,10 @@ public class StatisticalViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        // Return a NEW fragment instance in createFragment(int)
-        Log.d("StatisticalViewPagerAdapter", "create Fragment: " + userID);
-        return StatisticalFragment.newInstance(position,userID);
+        if(isMe)
+        return StatisticalFragment.newInstance(position);
+        else
+            return OtherUserStatisticalFragment.newInstance(position);
     }
 }
 
