@@ -119,7 +119,13 @@ public class UserFragment extends Fragment implements UserNavigator {
         //
         mMedalDialog=new MedalDialog();
         
-
+        UserInfo user= mUserViewModel.getCurrentUser().getValue();
+        if(user!=null)
+        {
+            mStatisticalViewModel.resetData();
+            mCurrentUser=user;
+            setUpTabLayout();
+        }
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
             if (currentUser==null)
                 return;
@@ -127,7 +133,7 @@ public class UserFragment extends Fragment implements UserNavigator {
                 return;
             mCurrentUser = currentUser;
             mStatisticalViewModel.resetData();
-            mStatisticalViewModel.userID = currentUser.getUserID();
+            setUpTabLayout();
 
             updateUI();
 

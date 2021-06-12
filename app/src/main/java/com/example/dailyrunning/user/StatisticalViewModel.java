@@ -41,8 +41,6 @@ public class StatisticalViewModel extends ViewModel {
     private DatabaseReference activityRef = FirebaseDatabase.getInstance().getReference().child("Activity");
     private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
     DecimalFormat df = new DecimalFormat("#.##");
-    public String userID;
-
     public void resetData() {
         distance = new MutableLiveData<>();
         timeWorking = new MutableLiveData<>();
@@ -52,7 +50,7 @@ public class StatisticalViewModel extends ViewModel {
 
     }
 
-    public void fetchActivities() {
+    public void fetchActivities(String userID) {
 
         activities.clear();
         activityRef.child(userID).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {

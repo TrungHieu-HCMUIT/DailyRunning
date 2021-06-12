@@ -53,7 +53,7 @@ public class StatisticalFragment extends Fragment {
         userID = getArguments().getString("uid");
         Log.d("StatisticalFragment", "onViewCreated: " + userID);
         binding.setCurrentPage(currentPage);
-        setData(currentPage);
+        setData();
 
     }
 
@@ -67,7 +67,7 @@ public class StatisticalFragment extends Fragment {
         return mCurrentFragment;
     }
 
-    private void setData(int position) {
-        statisticalViewModel.fetchActivities();
+    private void setData() {
+        statisticalViewModel.fetchActivities(userID);
     }
 }
