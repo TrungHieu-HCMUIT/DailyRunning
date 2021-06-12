@@ -1,6 +1,7 @@
 package com.example.dailyrunning.user;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class StatisticalFragment extends Fragment {
         binding.setLifecycleOwner(requireActivity());
         currentPage = getArguments().getInt("position");
         userID = getArguments().getString("uid");
+        Log.d("StatisticalFragment", "onViewCreated: " + userID);
         binding.setCurrentPage(currentPage);
         setData(currentPage);
 
@@ -60,6 +62,7 @@ public class StatisticalFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt("position", position);
         args.putString("uid", uid);
+        Log.d("StatisticalFragment", "newInstance: " + uid);
         mCurrentFragment.setArguments(args);
         return mCurrentFragment;
     }

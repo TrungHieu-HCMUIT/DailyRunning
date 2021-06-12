@@ -69,6 +69,6 @@
         tools:layout="@layout/fragment_map_view" />
     <fragment
         android:id="@+id/otherUserProfile"
-        android:name="com.example.dailyrunning.user.OtherUserProfile"
+        android:name="com.example.dailyrunning.home.find.OtherUserProfileFragment"
         android:label="OtherUserProfile" />
 </navigation>

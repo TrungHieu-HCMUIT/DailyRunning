@@ -22,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentFindBinding;
 import com.example.dailyrunning.home.HomeViewModel;
-import com.example.dailyrunning.model.UserRow;
+import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.user.UserNavigator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +45,7 @@ public class FindFragment extends Fragment {
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
 
-    private ArrayList<UserRow> mUserList = new ArrayList<>();
+    private ArrayList<UserInfo> mUserList = new ArrayList<>();
     private UserRowAdapter mAdapter;
 
     @Nullable
@@ -133,7 +133,7 @@ public class FindFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        mAdapter = new UserRowAdapter(getContext(), mUserList);
+        mAdapter = new UserRowAdapter(mNavController, getContext(), mUserList);
         binding.resultRv.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.resultRv.setAdapter(mAdapter);
     }
@@ -145,13 +145,10 @@ public class FindFragment extends Fragment {
                 Log.e("firebase", "Error getting data", task.getException());
             }
             else {
-                // TODO: Fix bug here
                 for (DataSnapshot userSnapshot: task.getResult().getChildren()) {
-                    String name = (String) userSnapshot.child("displayName").getValue();
+                    UserInfo user = userSnapshot.getValue(UserInfo.class);
+                    String name = user.getDisplayName();
                     if (name.contains(binding.searchUserEdt.getText().toString())) {
-                        String avatarURI = (String) userSnapshot.child("avatarURI").getValue();
-                        UserRow user = new UserRow(avatarURI, name);
-                        Log.d(TAG, user.getAvatarURI() + user.getDisplayName());
                         mUserList.add(user);
                     }
                 }

@@ -15,6 +15,8 @@ import com.example.dailyrunning.utils.MedalAdapter;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,6 +33,15 @@ public class OtherUserProfileViewModel extends ViewModel {
     private MutableLiveData<Integer> runningPoint=new MutableLiveData<>();
     //Huy hiệu cập nhật sau
 
+    public void init(String userID) {
+        FirebaseDatabase.getInstance().getReference()
+                .child("UserInfo")
+                .child(userID)
+                .get().addOnCompleteListener(task -> {
+
+                }) ;
+
+    }
 
     @BindingAdapter({"avatarUrl"})
     public static void setProfilePicture(ImageView imageView, String url) {
@@ -38,7 +49,6 @@ public class OtherUserProfileViewModel extends ViewModel {
             Glide.with(imageView.getContext()).load(LoginActivity.DEFAULT_AVATAR_URL).into(imageView);
         else
             Glide.with(imageView.getContext()).load(url).into(imageView);
-
     }
 
     public LiveData<String> getAvatarUrl() {
