@@ -311,4 +311,8 @@ public class OtherUserProfileViewModel extends ViewModel {
     }
 
     //endregion
+
+    //region activity
+
+    //endregion
 }
