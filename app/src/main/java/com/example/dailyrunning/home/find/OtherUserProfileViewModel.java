@@ -47,12 +47,15 @@ public class OtherUserProfileViewModel extends ViewModel {
     private MutableLiveData<Integer> runningPoint=new MutableLiveData<>();
     //Huy hiệu cập nhật sau
     private MutableLiveData<UserInfo> user=new MutableLiveData<>();
+
     public void init(String userID) {
         FirebaseDatabase.getInstance().getReference()
                 .child("UserInfo")
                 .child(userID)
                 .get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
+                        // Avatar
+                        // Statistic
                         user.setValue(task.getResult().getValue(UserInfo.class));
                         fetchActivities();
                     }

@@ -94,7 +94,8 @@ public class FindFragment extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -105,7 +106,6 @@ public class FindFragment extends Fragment {
                 else {
                     binding.resultRv.setVisibility(View.VISIBLE);
                     binding.clearTextIcon.setVisibility(View.VISIBLE);
-                    mUserList.clear();
                     setupRecyclerView();
                 }
             }
@@ -145,6 +145,7 @@ public class FindFragment extends Fragment {
                 Log.e("firebase", "Error getting data", task.getException());
             }
             else {
+                mUserList.clear();
                 for (DataSnapshot userSnapshot: task.getResult().getChildren()) {
                     UserInfo user = userSnapshot.getValue(UserInfo.class);
                     String name = user.getDisplayName();
@@ -155,6 +156,5 @@ public class FindFragment extends Fragment {
                 mAdapter.notifyDataSetChanged();
             }
         });
-
     }
 }

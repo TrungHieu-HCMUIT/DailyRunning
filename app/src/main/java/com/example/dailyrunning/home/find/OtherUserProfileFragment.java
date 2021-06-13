@@ -86,7 +86,6 @@ public class OtherUserProfileFragment extends Fragment {
     }
     private void setUpTabLayout() {
         binding.otherStatisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
-        //TODO thay user id hiện tại vào đây
         StatisticalViewPagerAdapter statisticalViewPagerAdapter =
                 new StatisticalViewPagerAdapter(this,false);
         binding.otherStatisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
