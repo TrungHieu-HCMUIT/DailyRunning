@@ -1,13 +1,13 @@
 package com.example.dailyrunning.model;
 
-public class mLatLng {
+public class LatLng {
     private double latitude;
     private double longitude;
 
-    public mLatLng() {
+    public LatLng() {
     }
 
-    public mLatLng(double latitude, double longitude) {
+    public LatLng(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

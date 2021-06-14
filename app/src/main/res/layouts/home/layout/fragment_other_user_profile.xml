@@ -7,7 +7,7 @@
 
         <variable
             name="otherUserViewModel"
-            type="com.example.dailyrunning.user.OtherUserProfileViewModel" />
+            type="com.example.dailyrunning.home.find.OtherUserProfileViewModel" />
     </data>
 
     <ScrollView
@@ -56,19 +56,19 @@
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/other_avatar_view"
+                    avatarUrl="@{otherUserViewModel.avatarUrl}"
                     android:layout_width="82dp"
                     android:layout_height="82dp"
                     android:src="@mipmap/ic_launcher"
                     app:civ_border_color="@color/white"
                     app:civ_border_width="6dp"
-                    tools:src="@drawable/place_holder_picture"
                     app:layout_constraintBottom_toBottomOf="@+id/view3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    avatarUrl="@{otherUserViewModel.avatarUrl}"
                     app:layout_constraintTop_toTopOf="@+id/view3"
-                    app:layout_constraintVertical_bias="0.494" />
+                    app:layout_constraintVertical_bias="0.494"
+                    tools:src="@drawable/place_holder_picture" />
 
 
                 <View
@@ -101,11 +101,11 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/svn_avo"
-                tools:text="Trung Hiếu"
+                android:text="@{otherUserViewModel.userName}"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 android:textSize="16sp"
-                android:text="@{otherUserViewModel.userName}"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                tools:text="Trung Hiếu" />
 
             <LinearLayout
                 android:layout_width="261dp"
@@ -128,11 +128,11 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/svn_avo"
-                        tools:text="0"
                         android:text="@{String.valueOf(otherUserViewModel.followerCount)}"
                         android:textColor="@color/black"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="0" />
 
                     <TextView
                         android:id="@+id/textView5"
@@ -166,12 +166,12 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/svn_avo"
-                        tools:text="0"
                         android:text="@{String.valueOf(otherUserViewModel.followingCount)}"
-
                         android:textColor="@color/black"
+
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="0" />
 
                     <TextView
                         android:id="@+id/textView6"
@@ -186,20 +186,44 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <Button
-                android:id="@+id/log_out_button"
-                android:layout_width="190dp"
-                android:layout_height="37dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="#ECBA67"
-                android:text="Theo dõi"
-                android:textAllCaps="true"
-                android:fontFamily="@font/roboto_regular"
-                android:textSize="13sp"
-                android:textColor="@color/black"
-                android:textFontWeight="700"
-                app:cornerRadius="18dp" />
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <Button
+                    android:id="@+id/follow_button"
+                    android:layout_width="190dp"
+                    android:layout_height="37dp"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="#ECBA67"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Theo dõi"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textFontWeight="700"
+                    android:textSize="13sp"
+                    android:visibility="invisible"
+                    app:cornerRadius="18dp" />
+
+                <Button
+                    android:id="@+id/unfollow_button"
+                    android:layout_width="190dp"
+                    android:layout_height="37dp"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/lighter_grey"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Huỷ theo dõi"
+                    android:textAllCaps="true"
+                    android:textColor="#ECBA67"
+                    android:textFontWeight="700"
+                    android:textSize="13sp"
+                    android:visibility="invisible"
+                    app:cornerRadius="18dp" />
+
+            </FrameLayout>
+
+
             <ImageView
                 android:id="@+id/imageView2"
                 android:layout_width="50dp"
@@ -215,10 +239,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/svn_avo_bold"
-                tools:text="999"
                 android:text="@{String.valueOf(otherUserViewModel.runningPoint)}"
                 android:textColor="#333333"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:text="999" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -291,26 +315,50 @@
                 android:layout_height="match_parent">
 
             </androidx.viewpager2.widget.ViewPager2>
-            <TextView
-                android:id="@+id/activity_text_View"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="24dp"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/svn_avo"
-                android:text="Hoạt động"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/activities_recycler_view"
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="24dp"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/activity_text_View"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/svn_avo"
+                    android:text="Hoạt động"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/activity_count_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/activity_text_View" />
+
+                <Button
+                    android:id="@+id/activity_see_all_button"
+                    android:layout_width="75dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="20dp"
+                    android:backgroundTint="#F0F0F0"
+                    android:fontFamily="@font/roboto_regular"
+                    android:padding="0dp"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="2dp"
+                    android:paddingRight="8dp"
+                    android:paddingBottom="2dp"
+                    android:text="XEM TẤT CẢ"
+                    android:textColor=" #ECBA67"
+                    android:textSize="8dp"
+                    android:textStyle="bold"
+                    app:cornerRadius="18dp"
+                    app:rippleColor=" #ECBA67" />
+            </RelativeLayout>
         </LinearLayout>
     </ScrollView>
 </layout>

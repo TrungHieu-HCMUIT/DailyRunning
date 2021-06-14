@@ -42,6 +42,11 @@ import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.utils.MedalAdapter;
 import com.example.dailyrunning.databinding.FragmentUserBinding;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.ActionCodeSettings;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -116,7 +121,7 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
         mUserViewModel.setNavigator(this);
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
-        //
+
         tvSteps =(TextView) rootView.findViewById(R.id.step_counter);
         sensorManager = (SensorManager)getActivity().getSystemService(getActivity().SENSOR_SERVICE);
         accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -128,14 +133,20 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
         mMedalDialog=new MedalDialog();
 
 
+        mMedalDialog = new MedalDialog();
+
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
             if (currentUser==null)
                 return;
             if (!isAdded())
                 return;
             mCurrentUser = currentUser;
+            mUserViewModel.resetStatisticData();
+            mUserViewModel.fetchActivities();
+            setUpTabLayout();
 
             updateUI();
+
         });
 
         sensorManager.registerListener(UserFragment.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
@@ -144,9 +155,7 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
 
         mNavController = Navigation.findNavController(view);
         restoreState();
-
-
-
+        setFollowCount();
     }
 
 
@@ -202,7 +211,7 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
 
     private void setUpTabLayout() {
         binding.statisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
-        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this,mCurrentUser.getUserID());
+        StatisticalViewPagerAdapter statisticalViewPagerAdapter = new StatisticalViewPagerAdapter(this,true);
         binding.statisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
 
         binding.statisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
@@ -238,8 +247,19 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
 
     }
 
-    private void setUpMedalRecyclerView() {
+    private void setFollowCount() {
+        FirebaseDatabase.getInstance().getReference()
+                .child("Follow")
+                .child(mUserViewModel.getCurrentUser().getValue().getUserID())
+                .get().addOnCompleteListener(task -> {
+            int follower = (int) task.getResult().child("followed").getChildrenCount();
+            binding.textView3.setText("" + follower);
+            int following = (int) task.getResult().child("following").getChildrenCount();
+            binding.textView7.setText("" + following);
+        });
+    }
 
+    private void setUpMedalRecyclerView() {
 
         List<MedalInfo> medalInfos = new ArrayList<>();
         medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));

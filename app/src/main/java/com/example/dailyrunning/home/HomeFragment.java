@@ -3,11 +3,13 @@ package com.example.dailyrunning.home;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -21,7 +23,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment{
     private View rootView;
     private AppBarLayout appBarLayout;
     private SegmentTabLayout tabLayout;
@@ -53,11 +55,13 @@ public class HomeFragment extends Fragment {
         exposeTabLayoutWhenCollapsed();
 
         setUpViewPager();
+
+        setupSearchIcon();
+
         updateUIWhenUserChanged();
+
         mHomeViewModel.mHomeActivity.getValue().showNavBar();
         return rootView;
-
-
     }
 
 
@@ -170,5 +174,18 @@ public class HomeFragment extends Fragment {
 
     //endregion
 
-
+    private void setupSearchIcon() {
+        mTopToolBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.ic_search:
+                        getActivity().findViewById(R.id.bottom_nav_bar).setVisibility(View.INVISIBLE);
+                        mNavController.navigate(R.id.action_homeFragment_to_findFragment);
+                        return true;
+                }
+                return false;
+            }
+        });
+    }
 }

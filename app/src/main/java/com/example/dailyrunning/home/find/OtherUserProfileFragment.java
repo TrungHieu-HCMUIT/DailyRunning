@@ -1,4 +1,4 @@
-package com.example.dailyrunning.user;
+package com.example.dailyrunning.home.find;
 
 import android.os.Bundle;
 
@@ -15,22 +15,36 @@ import android.view.ViewGroup;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentOtherUserProfileBinding;
 import com.example.dailyrunning.model.MedalInfo;
+import com.example.dailyrunning.user.MedalDialog;
+import com.example.dailyrunning.user.StatisticalViewPagerAdapter;
+import com.example.dailyrunning.user.UserViewModel;
 import com.example.dailyrunning.utils.MedalAdapter;
 import com.flyco.tablayout.listener.OnTabSelectListener;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class OtherUserProfile extends Fragment {
+public class OtherUserProfileFragment extends Fragment {
 
+    private static final String TAG = "OtherUserProfileFragment";
 
     private FragmentOtherUserProfileBinding binding;
+    private UserViewModel mUserViewModel;
     private OtherUserProfileViewModel mOtherUserProfileViewModel;
     private MedalDialog mMedalDialog;
+
+    private DatabaseReference mFollowRef_currentUserSide;
+    private DatabaseReference mFollowRef_otherUserSide;
+
+    private String currentUserID;
+    private String otherUserID;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,10 +55,29 @@ public class OtherUserProfile extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mOtherUserProfileViewModel=new ViewModelProvider(getActivity()).get(OtherUserProfileViewModel.class);
+
+        Bundle result = getArguments();
+        otherUserID = result.getString("userID");
+
+        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        currentUserID = mUserViewModel.getCurrentUser().getValue().getUserID();
+
+        // init database ref
+        mFollowRef_currentUserSide = FirebaseDatabase.getInstance().getReference()
+                .child("Follow")
+                .child(currentUserID);
+        mFollowRef_otherUserSide = FirebaseDatabase.getInstance().getReference()
+                .child("Follow")
+                .child(otherUserID);
+
+        mOtherUserProfileViewModel = new ViewModelProvider(getActivity()).get(OtherUserProfileViewModel.class);
+        mOtherUserProfileViewModel.init(otherUserID);
         binding.setOtherUserViewModel(mOtherUserProfileViewModel);
         binding.setLifecycleOwner(getActivity());
-        mMedalDialog=new MedalDialog();
+        mMedalDialog = new MedalDialog();
+
+        initUI();
+
         setUpMedalRecyclerView();
         setUpTabLayout();
     }
@@ -76,9 +109,8 @@ public class OtherUserProfile extends Fragment {
     }
     private void setUpTabLayout() {
         binding.otherStatisticTabLayout.setTabData(new String[]{"Theo tuần", "Theo tháng", "Theo năm"});
-        //TODO thay user id hiện tại vào đây
         StatisticalViewPagerAdapter statisticalViewPagerAdapter =
-                new StatisticalViewPagerAdapter(this, FirebaseAuth.getInstance().getUid());
+                new StatisticalViewPagerAdapter(this,false);
         binding.otherStatisticalViewPager2.setAdapter(statisticalViewPagerAdapter);
 
         binding.otherStatisticTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
@@ -114,4 +146,63 @@ public class OtherUserProfile extends Fragment {
 
     }
 
+    private void initUI() {
+        checkIsFollowing();
+
+        // region UserInfo
+        mOtherUserProfileViewModel.setOtherUserInfo();
+        FirebaseDatabase.getInstance().getReference()
+                .child("Activity")
+                .child(otherUserID)
+                .get().addOnCompleteListener(task -> {
+                    int numOfActivity = (int) task.getResult().getChildrenCount();
+                    binding.activityCountTextView.setText(numOfActivity + " hoạt động");
+        });
+        // endregion
+
+        // region Follow button
+        binding.followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFollowRef_currentUserSide.child("following").child(otherUserID).setValue(otherUserID);
+                mFollowRef_otherUserSide.child("followed").child(currentUserID).setValue(currentUserID);
+                mOtherUserProfileViewModel.setFollowCount();
+                binding.followButton.setVisibility(View.INVISIBLE);
+                binding.unfollowButton.setVisibility(View.VISIBLE);
+            }
+        });
+        // endregion
+
+        // region Unfollow button
+        binding.unfollowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFollowRef_currentUserSide.child("following").child(otherUserID).removeValue();
+                mFollowRef_otherUserSide.child("followed").child(currentUserID).removeValue();
+                mOtherUserProfileViewModel.setFollowCount();
+                binding.unfollowButton.setVisibility(View.INVISIBLE);
+                binding.followButton.setVisibility(View.VISIBLE);
+            }
+        });
+        // endregion
+    }
+
+    private void checkIsFollowing() {
+        AtomicBoolean isFollowing = new AtomicBoolean(false);
+        mFollowRef_currentUserSide.child("following").get().addOnCompleteListener(task -> {
+           if(task.isSuccessful()) {
+               for (DataSnapshot ds : task.getResult().getChildren()) {
+                   if (ds.getValue().toString().equals(otherUserID)) {
+                       isFollowing.set(true);
+                   }
+               }
+               if (isFollowing.get()) {
+                   binding.unfollowButton.setVisibility(View.VISIBLE);
+               }
+               else {
+                   binding.followButton.setVisibility(View.VISIBLE);
+               }
+           }
+        });
+    }
 }

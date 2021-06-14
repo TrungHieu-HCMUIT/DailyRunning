@@ -6,25 +6,20 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
-import com.example.dailyrunning.model.mLatLng;
+
 import com.example.dailyrunning.R;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,10 +33,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -85,8 +78,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                         List<Object> locations = (List<Object>) dataSnapshot.child(key).child("latLngArrayList").getValue();
                         for (Object locationObj : locations) {
                             Map<String, Object> location = (Map<String, Object>) locationObj;
-                            LatLng latLng = new LatLng((Double) location.get("latitude"), (Double) location.get("longitude"));
-                            list.add(latLng);
+                            LatLng LatLng = new LatLng((Double) location.get("latitude"), (Double) location.get("longitude"));
+                            list.add(LatLng);
                         }
                     }
                 }
@@ -121,8 +114,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         mMap.addPolyline(polyOptions);
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (LatLng latLng : listDraw) {
-            builder.include(latLng);
+        for (LatLng LatLng : listDraw) {
+            builder.include(LatLng);
         }
 
         final LatLngBounds bounds = builder.build();

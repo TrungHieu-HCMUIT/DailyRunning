@@ -32,10 +32,7 @@ public class MedalDialog extends DialogFragment {
         return inflater.inflate(R.layout.fragment_medal_dialog, container, false);
     }
     private MedalInfo medal;
-    MedalDialog()
-    {
-
-    }
+    public MedalDialog() {}
     private View rootView;
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
