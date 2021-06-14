@@ -17,13 +17,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentFindBinding;
 import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.model.UserInfo;
-import com.example.dailyrunning.user.UserNavigator;
+import com.example.dailyrunning.user.UserViewModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -31,7 +30,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class FindFragment extends Fragment {
 
@@ -39,13 +37,15 @@ public class FindFragment extends Fragment {
 
     private FragmentFindBinding binding;
     private HomeViewModel mHomeViewModel;
+    private UserViewModel mUserViewModel;
 
     private NavController mNavController;
 
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
 
-    private ArrayList<UserInfo> mUserList = new ArrayList<>();
+    private ArrayList<UserInfo> mUserList_original = new ArrayList<>();
+    private ArrayList<UserInfo> mUserList_result = new ArrayList<>();
     private UserRowAdapter mAdapter;
 
     @Nullable
@@ -72,6 +72,7 @@ public class FindFragment extends Fragment {
 
         // Init ViewModel
         mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
 
         mNavController = Navigation.findNavController(view);
 
@@ -127,34 +128,46 @@ public class FindFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 binding.searchUserEdt.setText(null);
+                binding.noResultTv.setVisibility(View.INVISIBLE);
             }
         });
         // endregion
     }
 
     private void initRecyclerView() {
-        mAdapter = new UserRowAdapter(mNavController, getContext(), mUserList);
+        mAdapter = new UserRowAdapter(mNavController, getContext(), mUserList_result);
         binding.resultRv.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.resultRv.setAdapter(mAdapter);
-    }
-
-    private void setupRecyclerView() {
 
         databaseReference.child("UserInfo").get().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             }
             else {
-                mUserList.clear();
                 for (DataSnapshot userSnapshot: task.getResult().getChildren()) {
                     UserInfo user = userSnapshot.getValue(UserInfo.class);
-                    String name = user.getDisplayName();
-                    if (name.contains(binding.searchUserEdt.getText().toString())) {
-                        mUserList.add(user);
-                    }
+                    mUserList_original.add(user);
                 }
-                mAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private void setupRecyclerView() {
+        mUserList_result.clear();
+        for (UserInfo user: mUserList_original) {
+            String name = user.getDisplayName();
+            if (name.contains(binding.searchUserEdt.getText().toString().trim())
+                && !name.equals(mUserViewModel.getCurrentUser().getValue().getDisplayName())) {
+                        mUserList_result.add(user);
+            }
+        }
+        if (mUserList_result.size() == 0
+            && binding.searchUserEdt.getText().toString().trim().length() != 0) {
+            binding.noResultTv.setVisibility(View.VISIBLE);
+        }
+        else {
+            binding.noResultTv.setVisibility(View.INVISIBLE);
+        }
+        mAdapter.notifyDataSetChanged();
     }
 }

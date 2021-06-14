@@ -1,5 +1,6 @@
 package com.example.dailyrunning.home.find;
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.databinding.BindingAdapter;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
 
 
 public class OtherUserProfileViewModel extends ViewModel {
+    private String userID;
     private MutableLiveData<String> avatarUrl=new MutableLiveData<>();
     private MutableLiveData<String> userName=new MutableLiveData<>();
     private MutableLiveData<Integer> followerCount=new MutableLiveData<>();
@@ -49,24 +51,25 @@ public class OtherUserProfileViewModel extends ViewModel {
     private MutableLiveData<UserInfo> user=new MutableLiveData<>();
 
     public void init(String userID) {
+        this.userID = userID;
         FirebaseDatabase.getInstance().getReference()
                 .child("UserInfo")
                 .child(userID)
                 .get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
-                        // Avatar
                         // Statistic
                         user.setValue(task.getResult().getValue(UserInfo.class));
                         fetchActivities();
+                        setFollowCount();
                     }
                 }) ;
-
     }
 
     @BindingAdapter({"avatarUrl"})
     public static void setProfilePicture(ImageView imageView, String url) {
-        if (url == null)
+        if (url == null) {
             Glide.with(imageView.getContext()).load(LoginActivity.DEFAULT_AVATAR_URL).into(imageView);
+        }
         else
             Glide.with(imageView.getContext()).load(url).into(imageView);
     }
@@ -91,6 +94,32 @@ public class OtherUserProfileViewModel extends ViewModel {
         return runningPoint;
     }
 
+    public void setOtherUserInfo() {
+        FirebaseDatabase.getInstance().getReference()
+                .child("UserInfo")
+                .child(userID)
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        avatarUrl.setValue((String) task.getResult().child("avatarURI").getValue());
+                        userName.setValue((String) task.getResult().child("displayName").getValue());
+            }
+        });
+    }
+
+    public void setFollowCount() {
+        FirebaseDatabase.getInstance().getReference()
+                .child("Follow")
+                .child(userID)
+                .get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                int follower = (int) task.getResult().child("followed").getChildrenCount();
+                followerCount.setValue(follower);
+                int following = (int) task.getResult().child("following").getChildrenCount();
+                followingCount.setValue(following);
+            }
+        });
+    }
+
 
     //region statistic
     //statistic
@@ -104,6 +133,7 @@ public class OtherUserProfileViewModel extends ViewModel {
     private DatabaseReference activityRef = FirebaseDatabase.getInstance().getReference().child("Activity");
     private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
     DecimalFormat df = new DecimalFormat("#.##");
+
     public void resetStatisticData() {
         distance = new MutableLiveData<>();
         timeWorking = new MutableLiveData<>();

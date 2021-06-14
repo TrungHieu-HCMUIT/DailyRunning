@@ -79,6 +79,7 @@ public class UserViewModel extends ViewModel {
         }
         return currentUser;
     }
+
     public LiveData<String> getAvatarUri()
     {
         if(avatarUri==null)

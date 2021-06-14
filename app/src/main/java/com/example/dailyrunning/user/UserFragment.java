@@ -114,8 +114,8 @@ public class UserFragment extends Fragment implements UserNavigator {
         mUserViewModel.setNavigator(this);
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
-        //
-        mMedalDialog=new MedalDialog();
+
+        mMedalDialog = new MedalDialog();
 
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
             if (currentUser==null)
@@ -136,13 +136,8 @@ public class UserFragment extends Fragment implements UserNavigator {
 
         mNavController = Navigation.findNavController(view);
         restoreState();
-
-
-
+        setFollowCount();
     }
-
-
-
 
     private void setUpGiftRecyclerView() {
         binding.giftRecyclerView.setLayoutManager(new CardSliderLayoutManager(getContext()));
@@ -232,8 +227,19 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     }
 
-    private void setUpMedalRecyclerView() {
+    private void setFollowCount() {
+        FirebaseDatabase.getInstance().getReference()
+                .child("Follow")
+                .child(mUserViewModel.getCurrentUser().getValue().getUserID())
+                .get().addOnCompleteListener(task -> {
+            int follower = (int) task.getResult().child("followed").getChildrenCount();
+            binding.textView3.setText("" + follower);
+            int following = (int) task.getResult().child("following").getChildrenCount();
+            binding.textView7.setText("" + following);
+        });
+    }
 
+    private void setUpMedalRecyclerView() {
 
         List<MedalInfo> medalInfos = new ArrayList<>();
         medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
