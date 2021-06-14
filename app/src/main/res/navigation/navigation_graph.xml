@@ -70,5 +70,13 @@
     <fragment
         android:id="@+id/otherUserProfile"
         android:name="com.example.dailyrunning.home.find.OtherUserProfileFragment"
-        android:label="OtherUserProfile" />
+        android:label="OtherUserProfile" >
+        <action
+            android:id="@+id/action_otherUserProfile_to_otherUserActivityFragment2"
+            app:destination="@id/otherUserActivityFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/otherUserActivityFragment2"
+        android:name="com.example.dailyrunning.home.find.OtherUserActivityFragment"
+        android:label="OtherUserActivityFragment" />
 </navigation>

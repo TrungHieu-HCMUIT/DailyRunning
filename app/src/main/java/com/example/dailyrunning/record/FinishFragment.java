@@ -73,8 +73,7 @@ public class FinishFragment extends Fragment {
         bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
 
-        String  speed = getSpeed(completedDist, completedTime);
-        getPace(completedDist, completedTime);
+
 
         
         int runningPoint= (int) completedDist/1000;

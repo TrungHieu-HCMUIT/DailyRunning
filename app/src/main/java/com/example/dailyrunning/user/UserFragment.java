@@ -48,6 +48,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.ActionCodeSettings;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ramotion.cardslider.CardSliderLayoutManager;
