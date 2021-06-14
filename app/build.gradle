@@ -164,6 +164,11 @@ dependencies {
     //lottie animation
     implementation 'com.airbnb.android:lottie:3.7.0'
 
+    //machine learning
+    implementation 'com.opencsv:opencsv:3.9'
+
+    //graphview
+    implementation 'com.jjoe64:graphview:4.2.1'
 
 
 

@@ -72,10 +72,15 @@ public class FinishFragment extends Fragment {
         byte[] byteArray = resultFromRecordFragment.getByteArray(INTENT_IMAGE);
         bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
+
+        String  speed = getSpeed(completedDist, completedTime);
+        getPace(completedDist, completedTime);
+
         
         int runningPoint= (int) completedDist/1000;
 
         ((TextView)rootView.findViewById(R.id.record_running_point_textView)).setText(runningPoint+" điểm Running");
+
 
 
         describeText = rootView.findViewById(R.id.describe_editText);
