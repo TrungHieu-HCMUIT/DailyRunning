@@ -217,7 +217,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/svn_avo_bold"
-            android:text="20 điểm Running"
+            tools:text="20 điểm Running"
             android:textColor="@color/black"
             android:textSize="17sp" />
 

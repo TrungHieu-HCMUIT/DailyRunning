@@ -7,10 +7,13 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +22,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.dailyrunning.model.Activity;
+import com.example.dailyrunning.model.Comment;
 import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.model.Like;
+import com.example.dailyrunning.model.Post;
+import com.example.dailyrunning.model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,13 +37,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FinishFragment extends Fragment {
 
-    private static final String TAG = "Finish Fragment";
+    private static final String TAG = "FinishFragment";
 
     private static final String INTENT_IMAGE = "pictureURL";
     private final String INTENT_DISTANCE_KEY = "distance";
@@ -51,18 +61,37 @@ public class FinishFragment extends Fragment {
     TextView distanceTextView;
     TextView timeTextView;
     TextView paceTextView;
+    TextView runningPointTextView;
     Bitmap  bitmap;
     double pace;
     Uri downloadUrl=null;
     private View rootView;
     StorageReference reference;
     String newActivityID;
+    String newPostID;
+    UserInfo userInfo;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_finish, container, false);
         //setTitle(R.string.runCompleted);
+
+        runningPointTextView = ((TextView)rootView.findViewById(R.id.record_running_point_textView));
+
+        describeText = rootView.findViewById(R.id.describe_editText);
+        buttonSave = rootView.findViewById(R.id.btnSave);
+        buttonBack = rootView.findViewById(R.id.btnBack);
+        distanceTextView = rootView.findViewById(R.id.km);
+        timeTextView = rootView.findViewById(R.id.time);
+        paceTextView = rootView.findViewById(R.id.pace);
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         Bundle resultFromRecordFragment = getArguments();
         double completedDist = resultFromRecordFragment.getDouble(INTENT_DISTANCE_KEY);
@@ -72,24 +101,24 @@ public class FinishFragment extends Fragment {
         byte[] byteArray = resultFromRecordFragment.getByteArray(INTENT_IMAGE);
         bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-        
+
         int runningPoint= (int) completedDist/1000;
 
-        ((TextView)rootView.findViewById(R.id.record_running_point_textView)).setText(runningPoint+" điểm Running");
-
-
-
-        describeText = rootView.findViewById(R.id.describe_editText);
-        buttonSave = rootView.findViewById(R.id.btnSave);
-        buttonBack = rootView.findViewById(R.id.btnBack);
-        distanceTextView = rootView.findViewById(R.id.km);
-        timeTextView = rootView.findViewById(R.id.time);
-        paceTextView = rootView.findViewById(R.id.pace);
-
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference activityRef = database.getReference().child("Activity").child(user.getUid());
+
+        DatabaseReference userInfoRef = database.getReference().child("UserInfo").child(firebaseUser.getUid());
+        DatabaseReference activityRef = database.getReference().child("Activity").child(firebaseUser.getUid());
+        DatabaseReference postRef = database.getReference().child("Post").child(firebaseUser.getUid());
+
+        userInfoRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                userInfo = task.getResult().getValue(UserInfo.class);
+            }
+        });
         newActivityID = activityRef.push().getKey();
+        newPostID = postRef.push().getKey();
+
         reference=FirebaseStorage.getInstance().getReference().child("imageMap");
 
         pace = getPace(completedDist, completedDuration);
@@ -97,14 +126,15 @@ public class FinishFragment extends Fragment {
         distanceTextView.setText(completedDist + " km");
         timeTextView.setText(formatDuration(completedDuration));
         paceTextView.setText(pace + " m/s");
+        runningPointTextView.setText(runningPoint+" điểm Running");
 
         buttonSave.setOnClickListener(v -> {
             uploadImage(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    downloadUrl=uri;
+                    downloadUrl = uri;
                     Activity activity = new Activity(newActivityID,
-                            user.getUid(),
+                            userInfo.getUserID(),
                             formattedDate,
                             completedDist,
                             completedDuration,
@@ -114,7 +144,21 @@ public class FinishFragment extends Fragment {
                             list
                     );
                     activityRef.child(newActivityID).setValue(activity);
-                    Intent point=new Intent();
+
+                    List<Comment> comments = new ArrayList<>();
+                    List<Like> likes = new ArrayList<>();
+
+                    Post post = new Post(newPostID,
+                            comments,
+                            likes,
+                            activity,
+                            userInfo.getUserID(),
+                            userInfo.getAvatarURI(),
+                            userInfo.getDisplayName()
+                    );
+                    postRef.child(newPostID).setValue(post);
+
+                    Intent point = new Intent();
                     point.putExtra("point",runningPoint);
                     getActivity().setResult(android.app.Activity.RESULT_OK,point);
                     getActivity().finish();
@@ -129,8 +173,8 @@ public class FinishFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
-        return rootView;
     }
+
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);

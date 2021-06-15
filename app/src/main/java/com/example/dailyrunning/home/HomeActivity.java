@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginViewModel;
+import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.record.MapsActivity;
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.user.UserViewModel;
@@ -29,6 +30,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -56,6 +60,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        List<Post> list = new ArrayList<>();
 
       /*  // Add code to print out the key hash
         try {

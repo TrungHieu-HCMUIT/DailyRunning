@@ -1,22 +1,29 @@
 package com.example.dailyrunning.model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
-public class Post {
+public class Post implements Comparable<Post>{
     private String postID;
-    private String userID;
-    private Date dateCreated;
-    private String content;
-    private int likeNum;
-    private String activityID;
+    private List<Comment> comments;
+    private List<Like> likes;
+    private Activity activity;
+    private String ownerID;
+    private String ownerAvatarUrl;
+    private String ownerName;
 
-    public Post(String postID, String userID, Date dateCreated, String content, int likeNum, String activityID) {
+    public Post() {}
+
+    public Post(String postID, List<Comment> comments, List<Like> likes, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
         this.postID = postID;
-        this.userID = userID;
-        this.dateCreated = dateCreated;
-        this.content = content;
-        this.likeNum = likeNum;
-        this.activityID = activityID;
+        this.comments = comments;
+        this.likes = likes;
+        this.activity = activity;
+        this.ownerID = ownerID;
+        this.ownerAvatarUrl = ownerAvatarUrl;
+        this.ownerName = ownerName;
     }
 
     public String getPostID() {
@@ -27,43 +34,72 @@ public class Post {
         this.postID = postID;
     }
 
-    public String getUserID() {
-        return userID;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
-    public Date getDateCreated() {
-        return dateCreated;
+    public List<Like> getLikes() {
+        return likes;
     }
 
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
+    public void setLikes(List<Like> likes) {
+        this.likes = likes;
     }
 
-    public String getContent() {
-        return content;
+    public Activity getActivity() {
+        return activity;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
-    public int getLikeNum() {
-        return likeNum;
+    public String getOwnerID() {
+        return ownerID;
     }
 
-    public void setLikeNum(int likeNum) {
-        this.likeNum = likeNum;
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
     }
 
-    public String getActivityID() {
-        return activityID;
+    public String getOwnerAvatarUrl() {
+        return ownerAvatarUrl;
     }
 
-    public void setActivityID(String activityID) {
-        this.activityID = activityID;
+    public void setOwnerAvatarUrl(String ownerAvatarUrl) {
+        this.ownerAvatarUrl = ownerAvatarUrl;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    @Override
+    public int compareTo(Post o) {
+        try {
+            Date thisDate = convertStringToDate(this.activity.getDateCreated());
+            Date otherDate = convertStringToDate(o.activity.getDateCreated());
+            if (thisDate.before(otherDate)) {
+                return -1;
+            }
+            else {
+                return 1;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public Date convertStringToDate(String date) throws ParseException {
+        return new SimpleDateFormat("dd-MM-yyy HH:mm:ss").parse(date);
     }
 }

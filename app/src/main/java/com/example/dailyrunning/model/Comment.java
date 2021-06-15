@@ -1,12 +1,23 @@
 package com.example.dailyrunning.model;
 
-import java.util.Date;
-
 public class Comment {
     private String commentID;
-    private String postID;
     private String content;
-    private Date timeCreated;
+    private String dateCreated;
+    private String ownerID;
+    private String ownerName;
+    private String avatarUrl;
+
+    public Comment() { }
+
+    public Comment(String commentID, String content, String dateCreated, String ownerID, String ownerName, String avatarUrl) {
+        this.commentID = commentID;
+        this.content = content;
+        this.dateCreated = dateCreated;
+        this.ownerID = ownerID;
+        this.ownerName = ownerName;
+        this.avatarUrl = avatarUrl;
+    }
 
     public String getCommentID() {
         return commentID;
@@ -14,14 +25,6 @@ public class Comment {
 
     public void setCommentID(String commentID) {
         this.commentID = commentID;
-    }
-
-    public String getPostID() {
-        return postID;
-    }
-
-    public void setPostID(String postID) {
-        this.postID = postID;
     }
 
     public String getContent() {
@@ -32,18 +35,35 @@ public class Comment {
         this.content = content;
     }
 
-    public Date getTimeCreated() {
-        return timeCreated;
+    public String getDateCreated() {
+        return dateCreated;
     }
 
-    public void setTimeCreated(Date timeCreated) {
-        this.timeCreated = timeCreated;
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
-    public Comment(String commentID, String postID, String content, Date timeCreated) {
-        this.commentID = commentID;
-        this.postID = postID;
-        this.content = content;
-        this.timeCreated = timeCreated;
+    public String getOwnerID() {
+        return ownerID;
+    }
+
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 }

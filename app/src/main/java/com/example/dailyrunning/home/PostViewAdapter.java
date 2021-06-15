@@ -15,14 +15,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.dailyrunning.model.PostData;
+import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 
 import java.util.ArrayList;
 
 public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder>{
     private Context mContext;
-    private ArrayList<PostData> listItem;
+    private ArrayList<Post> listItem;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView userAvatar;
@@ -52,7 +52,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         }
     }
 
-    public PostViewAdapter(@NonNull Context context, ArrayList<PostData> data) {
+    public PostViewAdapter(@NonNull Context context, ArrayList<Post> data) {
         this.mContext = context;
         listItem = data;
     }
@@ -66,17 +66,22 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(mContext).load(listItem.get(position).getUserAvatarUri()).into(holder.userAvatar);
-        holder.userName.setText(listItem.get(position).getUsername());
-        holder.dateTime.setText(listItem.get(position).getDateTime());
-        holder.content.setText(listItem.get(position).getContent());
-        holder.distance.setText(listItem.get(position).getDistance() + " km");
-        holder.duration.setText(DateUtils.formatElapsedTime(listItem.get(position).getDuration()));
-        holder.pace.setText(listItem.get(position).getPace()+ " m/s");
-        //Glide.with(mContext).load(base64ToBitmap(listItem.get(position).getImage())).into(holder.image);
-        Glide.with(mContext).load(listItem.get(position).getImage()).into(holder.image);
-        holder.like.setText("" + listItem.get(position).getNumOfLike());
-        holder.comment.setText("" + listItem.get(position).getNumOfComment());
+        Glide.with(mContext).load(listItem.get(position).getOwnerAvatarUrl()).into(holder.userAvatar);
+        holder.userName.setText(listItem.get(position).getOwnerName());
+        holder.dateTime.setText(listItem.get(position).getActivity().getDateCreated());
+        holder.content.setText(listItem.get(position).getActivity().getDescribe());
+        holder.distance.setText(listItem.get(position).getActivity().getDistance() + " km");
+        holder.duration.setText(DateUtils.formatElapsedTime(listItem.get(position).getActivity().getDuration()));
+        holder.pace.setText(listItem.get(position).getActivity().getPace()+ " m/s");
+        Glide.with(mContext).load(listItem.get(position).getActivity().getPictureURI()).into(holder.image);
+        if (listItem.get(position).getComments() == null) {
+            listItem.get(position).setComments(new ArrayList<>());
+        }
+        holder.like.setText("" + listItem.get(position).getComments().size());
+        if (listItem.get(position).getLikes() == null) {
+            listItem.get(position).setLikes(new ArrayList<>());
+        }
+        holder.comment.setText("" + listItem.get(position).getLikes().size());
     }
 
     @Override

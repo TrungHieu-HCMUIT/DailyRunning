@@ -19,7 +19,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyrunning.model.Activity;
-import com.example.dailyrunning.model.PostData;
+import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserViewModel;
 import com.google.firebase.database.DataSnapshot;
@@ -37,14 +37,12 @@ public class HomeUserFragment extends Fragment {
     private static final String TAG = "Home User Fragment";
 
     private Context context;
-    private ArrayList<PostData> postList = new ArrayList<>();
+    private ArrayList<Post> postList = new ArrayList<>();
     private RecyclerView recyclerView;
     private PostViewAdapter postViewAdapter;
     private UserViewModel mUserViewModel;
     private HomeViewModel mHomeViewModel;
     private NavController mNavController;
-    ArrayList<String> listDate = new ArrayList<>();
-    private String INTENT_DATECREATED="date";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,7 +66,7 @@ public class HomeUserFragment extends Fragment {
         if(mHomeViewModel.userRecyclerViewState !=null)
         {
             recyclerView.getLayoutManager().onRestoreInstanceState(mHomeViewModel.userRecyclerViewState);
-            mHomeViewModel.userRecyclerViewState=null;
+            mHomeViewModel.userRecyclerViewState = null;
         }
     }
 
@@ -80,7 +78,7 @@ public class HomeUserFragment extends Fragment {
                 userInfo -> {
                     if (userInfo==null)
                         return;
-                    Query query = rt.child("Activity").child(userInfo.getUserID()).orderByChild("dateCreated");
+                    Query query = rt.child("Post").child(userInfo.getUserID()).orderByChild("dateCreated");
                     query.addValueEventListener(new ValueEventListener() {
                         @RequiresApi(api = Build.VERSION_CODES.N)
                         @Override
@@ -88,10 +86,8 @@ public class HomeUserFragment extends Fragment {
                             postList.clear();
                             for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                                 // TODO: handle the post
-                                Activity activity = postSnapshot.getValue(Activity.class);
-                                listDate.add(activity.getDateCreated());
-                                Log.d(TAG, "" + activity.getPace());
-                                postList.add(new PostData(userInfo.getAvatarURI(), userInfo.getDisplayName(), activity.getDateCreated(), activity.getDescribe(), activity.getDistance()+"", activity.getDuration(), activity.getPace(), activity.getPictureURI(), 20, 20));
+                                Post post = postSnapshot.getValue(Post.class);
+                                postList.add(post);
                                 postViewAdapter.notifyDataSetChanged();
                                 Collections.reverse(postList);
                             }
