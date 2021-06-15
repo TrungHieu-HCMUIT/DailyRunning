@@ -33,10 +33,6 @@ import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
-import com.example.dailyrunning.user.stepcounter.ForegroundService;
-import com.example.dailyrunning.user.stepcounter.StepDetector;
-import com.example.dailyrunning.user.stepcounter.StepListener;
-import com.example.dailyrunning.user.stepcounter.StepService;
 import com.example.dailyrunning.utils.GiftAdapter;
 import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.utils.MedalAdapter;
@@ -48,6 +44,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.ActionCodeSettings;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ramotion.cardslider.CardSliderLayoutManager;
@@ -59,7 +56,7 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
-public class UserFragment extends Fragment implements UserNavigator, SensorEventListener, StepListener {
+public class UserFragment extends Fragment implements UserNavigator{
 
     private static final int RC_PHOTO_PICKER = 101;
     private static final String EMAIL_PROVIDER_ID = "password";
@@ -82,13 +79,6 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
     FragmentUserBinding binding;
     private MedalDialog mMedalDialog;
 
-    private StepDetector simpleStepDetector;
-    private SensorManager sensorManager;
-    private Sensor accel;
-    private static final String TEXT_NUM_STEPS = " bước";
-    private int numSteps=0;
-    private TextView tvSteps;
-    private static final long ONE_DAY_INTERVAL = 24 * 60 * 60 * 1000L;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -122,12 +112,6 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
 
-        tvSteps =(TextView) rootView.findViewById(R.id.step_counter);
-        sensorManager = (SensorManager)getActivity().getSystemService(getActivity().SENSOR_SERVICE);
-        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        simpleStepDetector = new StepDetector();
-        simpleStepDetector.registerListener(this);
-        scheduleJob(view);
 
 
         mMedalDialog=new MedalDialog();
@@ -148,8 +132,6 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
             updateUI();
 
         });
-
-        sensorManager.registerListener(UserFragment.this, accel, SensorManager.SENSOR_DELAY_FASTEST);
 
         mHomeViewModel.mHomeActivity.getValue().showNavBar();
 
@@ -330,45 +312,4 @@ public class UserFragment extends Fragment implements UserNavigator, SensorEvent
         mNavController.popBackStack();
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            simpleStepDetector.updateAccel(
-                    event.timestamp, event.values[0], event.values[1], event.values[2]);
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-    @Override
-    public void step(long timeNs) {
-        Log.d("tea",numSteps+"");
-        numSteps++;
-        tvSteps.setText(numSteps + TEXT_NUM_STEPS);
-    }
-
-    public void scheduleJob(View v) {
-        ComponentName componentName = new ComponentName(getContext(), StepService.class);
-        JobInfo info = new JobInfo.Builder(123, componentName)
-                .setRequiresCharging(true)
-                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
-                .setPersisted(true)
-                .setPeriodic(ONE_DAY_INTERVAL)
-                .build();
-        JobScheduler scheduler = (JobScheduler) getActivity().getSystemService(JOB_SCHEDULER_SERVICE);
-        int resultCode = scheduler.schedule(info);
-        if (resultCode == JobScheduler.RESULT_SUCCESS) {
-            Log.d("phu", "Job scheduled");
-        } else {
-            Log.d("phu", "Job scheduling failed");
-        }
-    }
-    public void cancelJob(View v) {
-        JobScheduler scheduler = (JobScheduler) getActivity().getSystemService(JOB_SCHEDULER_SERVICE);
-        scheduler.cancel(123);
-        Log.d("phu", "Job cancelled");
-    }
 }

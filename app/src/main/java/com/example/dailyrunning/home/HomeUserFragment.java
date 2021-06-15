@@ -70,18 +70,6 @@ public class HomeUserFragment extends Fragment {
             recyclerView.getLayoutManager().onRestoreInstanceState(mHomeViewModel.userRecyclerViewState);
             mHomeViewModel.userRecyclerViewState=null;
         }
-
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(context, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
-            @Override public void onItemClick(View view, int position) {
-                Bundle bundle = new Bundle();
-                bundle.putString(INTENT_DATECREATED,listDate.get(position));
-                mNavController.navigate(R.id.action_homeFragment_to_postDetailFragment, bundle);
-            }
-
-            @Override public void onLongItemClick(View view, int position) {
-                // do whatever
-            }
-        }));
     }
 
     @SuppressLint("RestrictedApi")
@@ -90,8 +78,8 @@ public class HomeUserFragment extends Fragment {
         DatabaseReference rt = database.getReference();
         mUserViewModel.getCurrentUser().observe(getActivity(),
                 userInfo -> {
-            if (userInfo==null)
-                return;
+                    if (userInfo==null)
+                        return;
                     Query query = rt.child("Activity").child(userInfo.getUserID()).orderByChild("dateCreated");
                     query.addValueEventListener(new ValueEventListener() {
                         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -126,4 +114,3 @@ public class HomeUserFragment extends Fragment {
 
     //endregion
 }
-

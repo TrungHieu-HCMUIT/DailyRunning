@@ -154,6 +154,7 @@ public class FindFragment extends Fragment {
 
     private void setupRecyclerView() {
         mUserList_result.clear();
+
         for (UserInfo user: mUserList_original) {
             String name = user.getDisplayName();
             if (name.contains(binding.searchUserEdt.getText().toString().trim())
