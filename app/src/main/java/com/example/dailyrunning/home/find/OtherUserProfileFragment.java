@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.LayoutInflater;
@@ -42,9 +44,10 @@ public class OtherUserProfileFragment extends Fragment {
 
     private DatabaseReference mFollowRef_currentUserSide;
     private DatabaseReference mFollowRef_otherUserSide;
-
+    private NavController mNavController;
     private String currentUserID;
     private String otherUserID;
+    private static final String INTENT_UserID="UserID";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -58,7 +61,7 @@ public class OtherUserProfileFragment extends Fragment {
 
         Bundle result = getArguments();
         otherUserID = result.getString("userID");
-
+        mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         currentUserID = mUserViewModel.getCurrentUser().getValue().getUserID();
 
@@ -185,6 +188,15 @@ public class OtherUserProfileFragment extends Fragment {
             }
         });
         // endregion
+
+        binding.activitySeeAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString(INTENT_UserID,otherUserID);
+                mNavController.navigate(R.id.action_otherUserProfile_to_otherUserActivityFragment, bundle);
+            }
+        });
     }
 
     private void checkIsFollowing() {

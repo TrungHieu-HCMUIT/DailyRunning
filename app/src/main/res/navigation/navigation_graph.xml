@@ -39,6 +39,12 @@
         <action
             android:id="@+id/action_userFragment_to_updateInfoFragment"
             app:destination="@id/updateInfoFragment" />
+        <action
+            android:id="@+id/action_userFragment_to_following"
+            app:destination="@id/following" />
+        <action
+            android:id="@+id/action_userFragment_to_followed"
+            app:destination="@id/followed" />
     </fragment>
     <fragment
         android:id="@+id/giftFragment"
@@ -70,5 +76,23 @@
     <fragment
         android:id="@+id/otherUserProfile"
         android:name="com.example.dailyrunning.home.find.OtherUserProfileFragment"
-        android:label="OtherUserProfile" />
+        android:label="OtherUserProfile" >
+        <action
+            android:id="@+id/action_otherUserProfile_to_otherUserActivityFragment"
+            app:destination="@id/otherUserActivityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/following"
+        android:name="com.example.dailyrunning.user.following"
+        android:label="fragment_following"
+        tools:layout="@layout/fragment_following" />
+    <fragment
+        android:id="@+id/followed"
+        android:name="com.example.dailyrunning.user.followed"
+        android:label="fragment_followed"
+        tools:layout="@layout/fragment_followed" />
+    <fragment
+        android:id="@+id/otherUserActivityFragment"
+        android:name="com.example.dailyrunning.home.find.OtherUserActivityFragment"
+        android:label="OtherUserActivityFragment" />
 </navigation>

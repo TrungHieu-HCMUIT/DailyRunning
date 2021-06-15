@@ -168,6 +168,7 @@ public class UserFragment extends Fragment implements UserNavigator{
         setUpRingChart();
         setUpTabLayout();
         setUpGiftRecyclerView();
+
     }
 
 

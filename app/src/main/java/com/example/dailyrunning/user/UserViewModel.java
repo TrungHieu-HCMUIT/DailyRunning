@@ -19,12 +19,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.bumptech.glide.Glide;
 import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.GiftInfo;
+import com.example.dailyrunning.user.UserViewModel;
+import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.model.UserInfo;
+
+import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
@@ -399,6 +402,7 @@ public class UserViewModel extends ViewModel {
                 map.get("pictureURI").toString(),
                 pace,
                 map.get("describe").toString(),
+                // TODO: chỗ này tự sửa nha
                 (ArrayList<LatLng>) map.get("latLngArrayList")
         );
     }
