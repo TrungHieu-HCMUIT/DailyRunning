@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +101,7 @@ public class FinishFragment extends Fragment {
         bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
 
-        int runningPoint= (int) completedDist/1000;
+        int runningPoint= (int) completedDist;
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -163,7 +162,7 @@ public class FinishFragment extends Fragment {
                     getActivity().setResult(android.app.Activity.RESULT_OK,point);
                     getActivity().finish();
                 }
-            });
+            },newActivityID);
 
         });
 
@@ -175,20 +174,14 @@ public class FinishFragment extends Fragment {
         });
     }
 
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
+    public byte[] bitmapToByteArray(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
+        return bytes.toByteArray();
     }
-    private void uploadImage(OnSuccessListener<Uri> mSuccessCallback) {
-        reference.putFile(getImageUri(getContext(),bitmap))
-       .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-           @Override
-           public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-               reference.getDownloadUrl().addOnSuccessListener(mSuccessCallback);
-           }
-       });
+    private void uploadImage(OnSuccessListener<Uri> mSuccessCallback,String imagePath) {
+        reference.child(imagePath).putBytes(bitmapToByteArray(getContext(),bitmap))
+       .addOnSuccessListener(taskSnapshot -> reference.getDownloadUrl().addOnSuccessListener(mSuccessCallback));
     }
 
     public String formatDuration(long pDuration) {
