@@ -242,30 +242,22 @@ public class UserFragment extends Fragment implements UserNavigator{
     }
 
     private void setUpMedalRecyclerView() {
-
         List<MedalInfo> medalInfos = new ArrayList<>();
-        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_1,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_2,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_3,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_4,"Medal Name","This is medal detail"));
-        medalInfos.add(new MedalInfo(R.drawable.medal_5,"Medal Name","This is medal detail"));
-
         MedalAdapter adapter = new MedalAdapter(medalInfos,medalInfo -> {
-
             mMedalDialog.setMedal(medalInfo);
             mMedalDialog.show(getChildFragmentManager(),"medal dialog");
         });
         binding.medalRecycleView.setAdapter(adapter);
+
+        mUserViewModel.medals.observe(getActivity(),medals->{
+            if(medals!=null)
+            {
+                medalInfos.clear();
+                medalInfos.addAll(medals);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override

@@ -3,6 +3,8 @@ package com.example.dailyrunning.home.find;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -13,14 +15,21 @@ import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.LatLng;
+import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
+import com.example.dailyrunning.user.UserViewModel;
 import com.example.dailyrunning.utils.MedalAdapter;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.json.JSONException;
@@ -39,6 +48,8 @@ import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
+import static com.example.dailyrunning.user.UserViewModel.getMedal;
+
 
 public class OtherUserProfileViewModel extends ViewModel {
     private String userID;
@@ -49,9 +60,12 @@ public class OtherUserProfileViewModel extends ViewModel {
     private MutableLiveData<Integer> runningPoint=new MutableLiveData<>();
     //Huy hiệu cập nhật sau
     private MutableLiveData<UserInfo> user=new MutableLiveData<>();
+    private ChildEventListener mChildEventListener;
 
     public void init(String userID) {
         this.userID = userID;
+        if(mChildEventListener!=null)
+        activityRef.child(user.getValue().getUserID()).removeEventListener(mChildEventListener);
         FirebaseDatabase.getInstance().getReference()
                 .child("UserInfo")
                 .child(userID)
@@ -100,8 +114,8 @@ public class OtherUserProfileViewModel extends ViewModel {
                 .child(userID)
                 .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        avatarUrl.setValue((String) task.getResult().child("avatarURI").getValue());
-                        userName.setValue((String) task.getResult().child("displayName").getValue());
+                        avatarUrl.postValue((String) task.getResult().child("avatarURI").getValue());
+                        userName.postValue((String) task.getResult().child("displayName").getValue());
             }
         });
     }
@@ -113,9 +127,9 @@ public class OtherUserProfileViewModel extends ViewModel {
                 .get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 int follower = (int) task.getResult().child("followed").getChildrenCount();
-                followerCount.setValue(follower);
+                followerCount.postValue(follower);
                 int following = (int) task.getResult().child("following").getChildrenCount();
-                followingCount.setValue(following);
+                followingCount.postValue(following);
             }
         });
     }
@@ -126,6 +140,8 @@ public class OtherUserProfileViewModel extends ViewModel {
     public MutableLiveData<ArrayList<Double>> distance = new MutableLiveData<>();
     public MutableLiveData<ArrayList<String>> timeWorking = new MutableLiveData<>();
     public MutableLiveData<ArrayList<Integer>> workingCount = new MutableLiveData<>();
+    public MutableLiveData<ArrayList<MedalInfo>> medals = new MutableLiveData<>();
+
     public int currentPage = 0;
     private Calendar c = Calendar.getInstance();
     private LocalDate now = new LocalDate();
@@ -141,25 +157,57 @@ public class OtherUserProfileViewModel extends ViewModel {
         now = new LocalDate();
         activities = new ArrayList<>();
     }
-
+    private void loadMedal(double yearDistance) {
+        ArrayList<MedalInfo> medalInfos = new ArrayList<>();
+        if (yearDistance >= 1000) {
+            for (int i = 1; i <= 5; i++) {
+                medalInfos.add(getMedal(i, true));
+            }
+        } else if (yearDistance >= 500) {
+            for (int i = 1; i <= 5; i++) {
+                if (i == 5)
+                    medalInfos.add(getMedal(i, false));
+                else
+                    medalInfos.add(getMedal(i, true));
+            }
+        } else if (yearDistance >= 200) {
+            for (int i = 1; i <= 5; i++) {
+                if (i >= 4)
+                    medalInfos.add(getMedal(i, false));
+                else
+                    medalInfos.add(getMedal(i, true));
+            }
+        } else if (yearDistance >= 100) {
+            for (int i = 1; i <= 5; i++) {
+                if (i >= 3)
+                    medalInfos.add(getMedal(i, false));
+                else
+                    medalInfos.add(getMedal(i, true));
+            }
+        } else if (yearDistance >= 50) {
+            for (int i = 1; i <= 5; i++) {
+                if (i >= 2)
+                    medalInfos.add(getMedal(i, false));
+                else
+                    medalInfos.add(getMedal(i, true));
+            }
+        } else {
+            for (int i = 1; i <= 5; i++) {
+                medalInfos.add(getMedal(i, false));
+            }
+        }
+        medals.postValue(medalInfos);
+    }
     public void fetchActivities() {
 
+        timeWorking.postValue(new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00")));
+        distance.postValue(new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0)));
+        workingCount.postValue(new ArrayList<>(Arrays.asList(0, 0, 0)));
         activities.clear();
-        activityRef.child(user.getValue().getUserID()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-
-                HashMap map = (HashMap) task.getResult().getValue();
-                if (map == null) {
-                    timeWorking.setValue(new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00")));
-                    distance.setValue(new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0)));
-                    workingCount.setValue(new ArrayList<>(Arrays.asList(0, 0, 0)));
-
-                    return;
-                }
-                for (Object o : map.values().toArray()) {
-                    activities.add(toActivity((HashMap) o));
-                }
-
+        mChildEventListener=new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                activities.add(snapshot.getValue(Activity.class));
                 new Runnable() {
                     @Override
                     public void run() {
@@ -169,25 +217,32 @@ public class OtherUserProfileViewModel extends ViewModel {
                     }
                 }.run();
             }
-        });
+
+            @Override
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        };
+        activityRef.child(user.getValue().getUserID()).addChildEventListener(mChildEventListener);
     }
 
 
-    Activity toActivity(HashMap map) {
-        double distance = Double.parseDouble(Objects.requireNonNull(map.get("distance")).toString());
-        double pace = Double.parseDouble(Objects.requireNonNull(map.get("pace")).toString());
-        return new Activity(
-                Objects.requireNonNull(map.get("activityID")).toString(),
-                Objects.requireNonNull(map.get("userID")).toString(),
-                Objects.requireNonNull(map.get("dateCreated")).toString(),
-                distance,
-                (long) map.get("duration"),
-                map.get("pictureURI").toString(),
-                pace,
-                map.get("describe").toString(),
-                (ArrayList<LatLng>) map.get("latLngArrayList")
-        );
-    }
+
 
 
     private String timeConvert(long sec) {
@@ -226,26 +281,25 @@ public class OtherUserProfileViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        weekDistance /= 1000;
         String distanceFormat = df.format(weekDistance);
         weekDistance = Double.parseDouble(distanceFormat);
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
         workingTime.set(0, _timeWorking);
-        timeWorking.setValue(workingTime);
+        timeWorking.postValue(workingTime);
 
         ArrayList<Double> _distance = distance.getValue();
         if (_distance == null)
             _distance = new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0));
         _distance.set(0, weekDistance);
-        distance.setValue(_distance);
+        distance.postValue(_distance);
 
         ArrayList<Integer> _workingCount = workingCount.getValue();
         if (_workingCount == null)
             _workingCount = new ArrayList<>(Arrays.asList(0, 0, 0));
         _workingCount.set(0, weekWorkingCount);
-        workingCount.setValue(_workingCount);
+        workingCount.postValue(_workingCount);
 
     }
 
@@ -274,26 +328,25 @@ public class OtherUserProfileViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        monthDistance /= 1000;
         String distanceFormat = df.format(monthDistance);
         monthDistance = Double.parseDouble(distanceFormat);
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
         workingTime.set(1, _timeWorking);
-        timeWorking.setValue(workingTime);
+        timeWorking.postValue(workingTime);
 
         ArrayList<Double> _distance = distance.getValue();
         if (_distance == null)
             _distance = new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0));
         _distance.set(1, monthDistance);
-        distance.setValue(_distance);
+        distance.postValue(_distance);
 
         ArrayList<Integer> _workingCount = workingCount.getValue();
         if (_workingCount == null)
             _workingCount = new ArrayList<>(Arrays.asList(0, 0, 0));
         _workingCount.set(1, monthWorkingCount);
-        workingCount.setValue(_workingCount);
+        workingCount.postValue(_workingCount);
     }
 
     public void getYearStatistic() {
@@ -321,26 +374,26 @@ public class OtherUserProfileViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        yearDistance /= 1000;
         String distanceFormat = df.format(yearDistance);
         yearDistance = Double.parseDouble(distanceFormat);
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
         workingTime.set(2, _timeWorking);
-        timeWorking.setValue(workingTime);
+        timeWorking.postValue(workingTime);
 
         ArrayList<Double> _distance = distance.getValue();
         if (_distance == null)
             _distance = new ArrayList<>(Arrays.asList(0.0, 0.0, 0.0));
         _distance.set(2, yearDistance);
-        distance.setValue(_distance);
+        distance.postValue(_distance);
 
         ArrayList<Integer> _workingCount = workingCount.getValue();
         if (_workingCount == null)
             _workingCount = new ArrayList<>(Arrays.asList(0, 0, 0));
         _workingCount.set(2, yearWorkingCount);
-        workingCount.setValue(_workingCount);
+        workingCount.postValue(_workingCount);
+        loadMedal(yearDistance);
     }
 
     //endregion
