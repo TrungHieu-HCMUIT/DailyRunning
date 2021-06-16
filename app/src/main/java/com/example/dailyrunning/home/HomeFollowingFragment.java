@@ -52,7 +52,11 @@ public class HomeFollowingFragment extends Fragment {
         postViewAdapter = new PostViewAdapter(context, postList);
         recyclerView.setAdapter(postViewAdapter);
 
-        userFollowingIdList = getUserFollowingIdList();
+        mUserViewModel.getCurrentUser().observe(getActivity(),user->{
+            if(user!=null)
+            userFollowingIdList = getUserFollowingIdList();
+
+        });
 
         mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         if (mHomeViewModel.followingRecyclerViewState != null) {
@@ -63,7 +67,7 @@ public class HomeFollowingFragment extends Fragment {
 
     private ArrayList<String> getUserFollowingIdList() {
         ArrayList<String> list = new ArrayList<>();
-        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference()
                 .child("Follow")
                 .child(currentUserId).child("following")

@@ -170,6 +170,9 @@ public class LoginFragment extends Fragment implements LoginNavigator{
 
 
         // Callback registration
+        binding.loginFacebookReal.setOnClickListener(v->{
+            mLoginViewModel.loadingDialog.showDialog();
+        });
         binding.loginFacebookReal.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -191,11 +194,13 @@ public class LoginFragment extends Fragment implements LoginNavigator{
             @Override
             public void onCancel() {
                 // App code
+                mLoginViewModel.loadingDialog.dismissDialog();
             }
 
             @Override
             public void onError(FacebookException exception) {
                 // App code
+                mLoginViewModel.loadingDialog.dismissDialog();
             }
         });
 

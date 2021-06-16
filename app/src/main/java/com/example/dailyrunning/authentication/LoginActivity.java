@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.utils.RunningLoadingDialog;
 
 /*
 * Q7UH R5LF EJ6M NRXE YMG4 Y3Y3 ILF6 QDAN
@@ -15,17 +16,19 @@ import com.example.dailyrunning.R;
 Nxhung2
  * */
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoginViewModel.LoadingDialog {
 
     private LoginViewModel mLoginViewModel;
     public static final String DEFAULT_AVATAR_URL = "https://firebasestorage.googleapis.com/v0/b/dailyrunning-6e8e9.appspot.com/o/avatar_photos%2Fsbcf-default-avatar%5B1%5D.png?alt=media&token=ec7c1fcd-9fc8-415f-b2ec-51ffb03867a3";
 
+    private RunningLoadingDialog loadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mLoginViewModel=new ViewModelProvider(this).get(LoginViewModel.class);
-
+        loadingDialog=new RunningLoadingDialog();
+        mLoginViewModel.setLoadingDialog(this);
 
         //endregion
     }
@@ -38,8 +41,16 @@ public class LoginActivity extends AppCompatActivity {
         //
         super.onActivityResult(requestCode, resultCode, data);
     }
-    
 
 
+    @Override
+    public void showDialog() {
+        loadingDialog.show(getSupportFragmentManager(),"tag");
+    }
 
+    @Override
+    public void dismissDialog() {
+        loadingDialog.dismiss();
+
+    }
 }
