@@ -181,7 +181,7 @@ public class FinishFragment extends Fragment {
     }
     private void uploadImage(OnSuccessListener<Uri> mSuccessCallback,String imagePath) {
         reference.child(imagePath).putBytes(bitmapToByteArray(getContext(),bitmap))
-       .addOnSuccessListener(taskSnapshot -> reference.getDownloadUrl().addOnSuccessListener(mSuccessCallback));
+       .addOnSuccessListener(taskSnapshot -> reference.child(imagePath).getDownloadUrl().addOnSuccessListener(mSuccessCallback));
     }
 
     public String formatDuration(long pDuration) {
