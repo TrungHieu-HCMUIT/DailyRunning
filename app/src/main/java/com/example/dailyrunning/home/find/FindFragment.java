@@ -117,7 +117,6 @@ public class FindFragment extends Fragment {
         binding.backArrowIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().findViewById(R.id.bottom_nav_bar).setVisibility(View.VISIBLE);
                 getActivity().onBackPressed();
             }
         });

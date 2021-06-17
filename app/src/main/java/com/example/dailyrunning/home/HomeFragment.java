@@ -61,6 +61,9 @@ public class HomeFragment extends Fragment{
         updateUIWhenUserChanged();
 
         mHomeViewModel.mHomeActivity.getValue().showNavBar();
+
+        getActivity().findViewById(R.id.bottom_nav_bar).setVisibility(View.VISIBLE);
+
         return rootView;
     }
 
@@ -180,7 +183,7 @@ public class HomeFragment extends Fragment{
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.ic_search:
-                        getActivity().findViewById(R.id.bottom_nav_bar).setVisibility(View.INVISIBLE);
+                        getActivity().findViewById(R.id.bottom_nav_bar).setVisibility(View.GONE);
                         mNavController.navigate(R.id.action_homeFragment_to_findFragment);
                         return true;
                 }

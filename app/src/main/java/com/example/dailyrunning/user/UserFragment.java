@@ -235,10 +235,32 @@ public class UserFragment extends Fragment implements UserNavigator{
                 .child(mUserViewModel.getCurrentUser().getValue().getUserID())
                 .get().addOnCompleteListener(task -> {
             int follower = (int) task.getResult().child("followed").getChildrenCount();
-            binding.textView3.setText("" + follower);
+            binding.followerTextView.setText("" + follower);
             int following = (int) task.getResult().child("following").getChildrenCount();
-            binding.textView7.setText("" + following);
+            binding.followingTextView.setText("" + following);
         });
+
+        // region FollowerCountTextView
+        binding.followerTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle userIdBundle = new Bundle();
+                userIdBundle.putString("userId", mCurrentUser.getUserID());
+                Navigation.findNavController(getView()).navigate(R.id.action_userFragment_to_followerListFragment, userIdBundle);
+            }
+        });
+        // endregion
+
+        // region FollowingCountTextView
+        binding.followingTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle userIdBundle = new Bundle();
+                userIdBundle.putString("userId", mCurrentUser.getUserID());
+                Navigation.findNavController(getView()).navigate(R.id.action_userFragment_to_followingListFragment, userIdBundle);
+            }
+        });
+        // endregion
     }
 
     private void setUpMedalRecyclerView() {

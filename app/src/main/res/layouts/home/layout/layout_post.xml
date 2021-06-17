@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="390dp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="24dp"
     android:layout_marginTop="24dp"
     android:layout_marginEnd="24dp"
     android:background="@color/grey"
-    android:elevation="10dp"
+    android:elevation="20dp"
     app:cardCornerRadius="10dp">
 
     <LinearLayout
@@ -164,29 +164,57 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="56dp"
                 android:layout_marginEnd="24dp"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider"
-                android:scaleType="centerCrop"/>
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-            <Button
-                android:id="@+id/btnLike"
-                android:layout_width="23.2dp"
-                android:layout_height="20dp"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/ic_like"
+            <FrameLayout
+                android:id="@+id/btnLikeLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ivMap" />
+                app:layout_constraintTop_toBottomOf="@+id/ivMap">
+
+                <Button
+                    android:id="@+id/btnUnlike"
+                    android:layout_width="27.84dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/ic_like"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent" />
+
+                <Button
+                    android:id="@+id/btnLike"
+                    android:layout_width="27.84dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/ic_like_black"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="parent" />
+
+            </FrameLayout>
+
 
             <Button
-                android:id="@+id/btnLike2"
-                android:layout_width="23.2dp"
-                android:layout_height="20dp"
+                android:id="@+id/btnComment"
+                android:layout_width="27.84dp"
+                android:layout_height="24dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/ic_comment"
-                app:layout_constraintStart_toEndOf="@+id/btnLike"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btnLikeLayout"
                 app:layout_constraintTop_toBottomOf="@+id/ivMap" />
 
             <TextView
@@ -197,10 +225,10 @@
                 android:fontFamily="@font/svn_avo"
                 android:text="20"
                 android:textColor="@color/darker_grey"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/btnLike"
-                app:layout_constraintStart_toEndOf="@+id/btnLike"
-                app:layout_constraintTop_toTopOf="@+id/btnLike" />
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@+id/btnLikeLayout"
+                app:layout_constraintStart_toEndOf="@+id/btnLikeLayout"
+                app:layout_constraintTop_toTopOf="@+id/btnLikeLayout" />
 
             <TextView
                 android:id="@+id/tvNumOfComment"
@@ -210,9 +238,9 @@
                 android:fontFamily="@font/svn_avo"
                 android:text="20"
                 android:textColor="@color/darker_grey"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tvNumOfLike"
-                app:layout_constraintStart_toEndOf="@+id/btnLike2"
+                app:layout_constraintStart_toEndOf="@+id/btnComment"
                 app:layout_constraintTop_toTopOf="@+id/tvNumOfLike"
                 app:layout_constraintVertical_bias="0.6" />
 

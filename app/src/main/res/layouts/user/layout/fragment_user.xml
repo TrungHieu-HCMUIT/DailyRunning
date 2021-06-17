@@ -153,13 +153,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/follower_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/svn_avo"
-                        android:text="0"
+                        tools:text="0"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />
@@ -190,13 +190,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/followingTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/svn_avo"
-                        android:text="0"
+                        tools:text="0"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold" />

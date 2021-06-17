@@ -3,6 +3,7 @@ package com.example.dailyrunning.user;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +23,7 @@ import androidx.databinding.InverseBindingListener;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
 import com.example.dailyrunning.authentication.LoginViewModel;

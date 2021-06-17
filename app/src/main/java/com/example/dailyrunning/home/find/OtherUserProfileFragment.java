@@ -6,8 +6,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -178,6 +180,39 @@ public class OtherUserProfileFragment extends Fragment {
                 mOtherUserProfileViewModel.setFollowCount();
                 binding.unfollowButton.setVisibility(View.INVISIBLE);
                 binding.followButton.setVisibility(View.VISIBLE);
+            }
+        });
+        // endregion
+
+        // region AllActivities Button
+        binding.activitySeeAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle userIdBundle = new Bundle();
+                userIdBundle.putString("userId", otherUserID);
+                Navigation.findNavController(getView()).navigate(R.id.action_otherUserProfile_to_activityListFragment, userIdBundle);
+            }
+        });
+        // endregion
+
+        // region FollowerCountTextView
+        binding.followerCountTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle userIdBundle = new Bundle();
+                userIdBundle.putString("userId", otherUserID);
+                Navigation.findNavController(getView()).navigate(R.id.action_otherUserProfile_to_followerListFragment, userIdBundle);
+            }
+        });
+        // endregion
+
+        // region FollowingCountTextView
+        binding.followingCountTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle userIdBundle = new Bundle();
+                userIdBundle.putString("userId", otherUserID);
+                Navigation.findNavController(getView()).navigate(R.id.action_otherUserProfile_to_followingListFragment, userIdBundle);
             }
         });
         // endregion
