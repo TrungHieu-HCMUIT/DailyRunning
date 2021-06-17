@@ -165,6 +165,8 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.7.0'
 
 
+    //circle button
+    implementation 'com.github.markushi:circlebutton:1.1'
 
 
 
