@@ -80,7 +80,7 @@ public class GiftFragment extends Fragment {
         giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
         AllGiftAdapter allGiftAdapter=new AllGiftAdapter(giftInfos, gift -> {
             mGiftViewModel.exchangeClick(() -> {
-                mCustomDialog.show(getChildFragmentManager(),"Show exchange complete");
+                mCustomDialog.show(getChildFragmentManager(),"tag");
             });
         });
         mGiftRecyclerView.setAdapter(allGiftAdapter);

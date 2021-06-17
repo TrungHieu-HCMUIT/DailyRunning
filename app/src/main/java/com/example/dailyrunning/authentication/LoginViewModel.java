@@ -39,10 +39,15 @@ public class LoginViewModel extends ViewModel {
     private MutableLiveData<UserInfo> mNewUser=new MutableLiveData<>();
     private DatabaseReference mUserInfoRef = FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<UserInfo> mRegisterUser=new MutableLiveData<>();
-
+    public LoadingDialog loadingDialog;
 
     {
         mRegisterUser.setValue(new UserInfo());
+    }
+
+    public void setLoadingDialog(LoadingDialog loadingDialog)
+    {this.loadingDialog=loadingDialog;
+
     }
 
     public MutableLiveData<UserInfo> getNewUser() {
@@ -63,9 +68,11 @@ public class LoginViewModel extends ViewModel {
             mTaskCallBack.onError(new Exception("Empty email or password"));
             return;
         }
+        loadingDialog.showDialog();
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        loadingDialog.dismissDialog();
 
                         FirebaseUser user = task.getResult().getUser();
                         mUserInfoRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,6 +98,8 @@ public class LoginViewModel extends ViewModel {
                             }
                         });
                     } else {
+                        loadingDialog.dismissDialog();
+
                         Log.v("NormalLoginError", task.getException().toString());
                         mTaskCallBack.onError(task.getException());
                     }
@@ -101,6 +110,11 @@ public class LoginViewModel extends ViewModel {
         void onSuccess();
 
         void onError(Exception exception);
+    }
+    public interface LoadingDialog
+    {
+        void showDialog();
+        void dismissDialog();
     }
 
 
@@ -124,6 +138,7 @@ public class LoginViewModel extends ViewModel {
             firebaseAuthWithGoogle(account.getIdToken(),mContext, mGoogleTaskCallBack);
         } catch (ApiException e) {
             // Google Sign In failed, update UI appropriately
+            loadingDialog.dismissDialog();
             Log.w(getClass().getName(), "Google sign in failed", e);
         }
     }
@@ -132,7 +147,7 @@ public class LoginViewModel extends ViewModel {
         FirebaseAuth.getInstance().signInWithCredential(credential)
                 .addOnCompleteListener((Activity) mContext, task -> {
                     if (task.isSuccessful()) {
-
+                        loadingDialog.dismissDialog();
                         FirebaseUser user = task.getResult().getUser();
                         mUserInfoRef.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -168,6 +183,8 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void onGoogleLoginClick() {
+
+        loadingDialog.showDialog();
         mNavigator.onGoogleLoginClick();
     }
     //endregion
@@ -180,6 +197,7 @@ public class LoginViewModel extends ViewModel {
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
 
+                        loadingDialog.dismissDialog();
 
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(this.getClass().getName(), "signInWithCredential:success");

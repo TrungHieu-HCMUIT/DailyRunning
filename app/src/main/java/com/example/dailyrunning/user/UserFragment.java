@@ -128,6 +128,7 @@ public class UserFragment extends Fragment implements UserNavigator{
             mUserViewModel.resetStatisticData();
             mUserViewModel.fetchActivities();
             setUpTabLayout();
+            setFollowCount();
 
             updateUI();
 
@@ -137,7 +138,6 @@ public class UserFragment extends Fragment implements UserNavigator{
 
         mNavController = Navigation.findNavController(view);
         restoreState();
-        setFollowCount();
     }
 
 

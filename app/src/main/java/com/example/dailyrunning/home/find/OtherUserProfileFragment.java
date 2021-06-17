@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentOtherUserProfileBinding;
+import com.example.dailyrunning.home.HomeActivity;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.user.MedalDialog;
 import com.example.dailyrunning.user.StatisticalViewPagerAdapter;
@@ -60,7 +61,7 @@ public class OtherUserProfileFragment extends Fragment {
 
         Bundle result = getArguments();
         otherUserID = result.getString("userID");
-
+        ((HomeActivity)getActivity()).hideNavBar();
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         currentUserID = mUserViewModel.getCurrentUser().getValue().getUserID();
 
