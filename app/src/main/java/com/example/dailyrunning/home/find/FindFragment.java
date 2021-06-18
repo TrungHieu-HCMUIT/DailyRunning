@@ -142,7 +142,7 @@ public class FindFragment extends Fragment {
             if (!task.isSuccessful()) {
                 Log.e("firebase", "Error getting data", task.getException());
             }
-            else {
+            else if (mUserList_original.size() == 0){
                 for (DataSnapshot userSnapshot: task.getResult().getChildren()) {
                     UserInfo user = userSnapshot.getValue(UserInfo.class);
                     mUserList_original.add(user);
