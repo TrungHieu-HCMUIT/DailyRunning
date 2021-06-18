@@ -135,9 +135,14 @@ public class UserViewModel extends ViewModel {
                     assert userInfo != null;
                     userInfo.updateProfile(profileUpdates).addOnCompleteListener(task -> avatarUri.postValue(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString()));
                     UserInfo newInfo=currentUser.getValue();
-                    newInfo.setAvatarURI(avatarUri.toString());
+                    newInfo.setAvatarURI(userAvatarUri.toString());
                     currentUser.setValue(newInfo);
-                    ((Runnable) () -> updatePostData()).run();
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            updatePostData();
+                        }
+                    }.run();
                 }));
 
     }

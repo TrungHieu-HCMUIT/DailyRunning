@@ -176,6 +176,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         if (timeWorkingInSec - lastPaceUpdateTime >= 1) {
             lastPaceUpdateTime = timeWorkingInSec;
             paceString.setValue(String.format("%.2f", newDistance) + " m/s");
+            Log.i("current pace",paceString.getValue());
         }
     }
 

@@ -127,8 +127,6 @@ public class UserFragment extends Fragment implements UserNavigator{
             mUserViewModel.fetchActivities();
             setUpTabLayout();
             setFollowCount();
-            //TODO TEST THIS
-            mUserViewModel.updatePostData();
             updateUI();
 
         });
