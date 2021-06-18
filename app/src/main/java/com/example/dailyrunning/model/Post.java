@@ -3,12 +3,13 @@ package com.example.dailyrunning.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class Post implements Comparable<Post>{
     private String postID;
-    private List<String> commentsUserId;
-    private List<String> likesUserId;
+    private List<Comment> commentsUserId;
+    private HashMap<String, String> likesUserId;
     private Activity activity;
     private String ownerID;
     private String ownerAvatarUrl;
@@ -16,7 +17,7 @@ public class Post implements Comparable<Post>{
 
     public Post() {}
 
-    public Post(String postID, List<String> commentsUserId, List<String> likesUserId, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
+    public Post(String postID, List<Comment> commentsUserId, HashMap<String, String> likesUserId, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
         this.postID = postID;
         this.commentsUserId = commentsUserId;
         this.likesUserId = likesUserId;
@@ -34,19 +35,19 @@ public class Post implements Comparable<Post>{
         this.postID = postID;
     }
 
-    public List<String> getCommentsUserId() {
+    public List<Comment> getCommentsUserId() {
         return commentsUserId;
     }
 
-    public void setCommentsUserId(List<String> commentsUserId) {
+    public void setCommentsUserId(List<Comment> commentsUserId) {
         this.commentsUserId = commentsUserId;
     }
 
-    public List<String> getLikesUserId() {
+    public HashMap<String, String> getLikesUserId() {
         return likesUserId;
     }
 
-    public void setLikesUserId(List<String> likesUserId) {
+    public void setLikesUserId(HashMap<String, String> likesUserId) {
         this.likesUserId = likesUserId;
     }
 

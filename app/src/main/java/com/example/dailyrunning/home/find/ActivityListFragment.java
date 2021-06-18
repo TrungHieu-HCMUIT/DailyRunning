@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -36,6 +37,7 @@ public class ActivityListFragment extends Fragment {
     private ArrayList<Post> postsList = new ArrayList<>();
     private PostViewAdapter postViewAdapter;
     private UserViewModel mUserViewModel;
+    private NavController mNavController;
 
     private FragmentActivityListBinding binding;
     @Override
@@ -50,13 +52,15 @@ public class ActivityListFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mNavController = Navigation.findNavController(getView());
+
         Bundle result = getArguments();
         userId = result.getString("userId");
 
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
 
         // init recyclerView
-        postViewAdapter = new PostViewAdapter(getContext(), FirebaseAuth.getInstance().getUid(), postsList);
+        postViewAdapter = new PostViewAdapter(getContext(), FirebaseAuth.getInstance().getUid(), postsList, mNavController);
         binding.activitiesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.activitiesRecyclerView.setAdapter(postViewAdapter);
 
@@ -69,7 +73,6 @@ public class ActivityListFragment extends Fragment {
         FirebaseDatabase.getInstance().getReference()
                 .child("Post")
                 .child(userId)
-                .child("followed")
                 .get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         for (DataSnapshot ds: task.getResult().getChildren()) {

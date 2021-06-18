@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -33,6 +35,7 @@ public class HomeFollowingFragment extends Fragment {
     private ArrayList<Post> postList = new ArrayList<>();
     private ArrayList<String> userFollowingIdList = new ArrayList<>();
     private RecyclerView recyclerView;
+    private NavController mNavController;
     private PostViewAdapter postViewAdapter;
     private HomeViewModel mHomeViewModel;
     private UserViewModel mUserViewModel;
@@ -50,8 +53,10 @@ public class HomeFollowingFragment extends Fragment {
         recyclerView = (RecyclerView) view.findViewById(R.id.home_following_recycleView);
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
 
+        mNavController = Navigation.findNavController(getActivity().findViewById(R.id.home_fragment_container));
+
         String userId = FirebaseAuth.getInstance().getUid();
-        postViewAdapter = new PostViewAdapter(context, userId, postList);
+        postViewAdapter = new PostViewAdapter(context, userId, postList, mNavController);
         recyclerView.setAdapter(postViewAdapter);
 
         mUserViewModel.getCurrentUser().observe(getActivity(),user->{

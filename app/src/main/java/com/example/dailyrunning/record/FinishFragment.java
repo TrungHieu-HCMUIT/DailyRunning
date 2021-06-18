@@ -24,7 +24,6 @@ import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.Comment;
 import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.model.Like;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -144,8 +144,8 @@ public class FinishFragment extends Fragment {
                     );
                     activityRef.child(newActivityID).setValue(activity);
 
-                    List<String> commentsUserId = new ArrayList<>();
-                    List<String> likesUserId = new ArrayList<>();
+                    List<Comment> commentsUserId = new ArrayList<>();
+                    HashMap<String, String> likesUserId = new HashMap<>();
 
                     Post post = new Post(newPostID,
                             commentsUserId,

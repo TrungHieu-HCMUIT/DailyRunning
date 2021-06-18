@@ -61,7 +61,7 @@ public class HomeUserFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
         populateData();
-        postViewAdapter = new PostViewAdapter(context, FirebaseAuth.getInstance().getUid(), postList);
+        postViewAdapter = new PostViewAdapter(context, FirebaseAuth.getInstance().getUid(), postList, mNavController);
         recyclerView.setAdapter(postViewAdapter);
         mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         if(mHomeViewModel.userRecyclerViewState !=null)

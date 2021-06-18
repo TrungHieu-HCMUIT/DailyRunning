@@ -3,6 +3,7 @@ package com.example.dailyrunning.home;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -23,11 +25,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder>{
     private Context mContext;
     private String currentUserId;
     private ArrayList<Post> postsList;
+    private NavController navController;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView userAvatar;
@@ -63,10 +67,11 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         }
     }
 
-    public PostViewAdapter(Context mContext, String currentUserId, ArrayList<Post> postsList) {
+    public PostViewAdapter(Context mContext, String currentUserId, ArrayList<Post> postsList, NavController navController) {
         this.mContext = mContext;
         this.currentUserId = currentUserId;
         this.postsList = postsList;
+        this.navController = navController;
     }
 
     @NonNull
@@ -88,14 +93,14 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         Glide.with(mContext).load(postsList.get(position).getActivity().getPictureURI()).into(holder.image);
 
         if (postsList.get(position).getLikesUserId() == null) {
-            postsList.get(position).setLikesUserId(new ArrayList<>());
+            postsList.get(position).setLikesUserId(new HashMap<>());
         }
         holder.likeTv.setText("" + postsList.get(position).getLikesUserId().size());
         if (postsList.get(position).getCommentsUserId() == null) {
             postsList.get(position).setCommentsUserId(new ArrayList<>());
         }
 
-        if (postsList.get(position).getLikesUserId().contains(currentUserId)) {
+        if (postsList.get(position).getLikesUserId().containsKey(currentUserId)) {
             holder.pressToLikeBtn.setVisibility(View.INVISIBLE);
             holder.pressToUnlikeBtn.setVisibility(View.VISIBLE);
         }
@@ -104,19 +109,41 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             holder.pressToUnlikeBtn.setVisibility(View.INVISIBLE);
         }
 
+        holder.userName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (postsList.get(position).getOwnerID().equals(currentUserId))
+                    return;
+                Bundle bundle = new Bundle();
+                bundle.putString("userID", postsList.get(position).getOwnerID());
+                navController.navigate(R.id.action_homeFragment_to_otherUserProfile, bundle);
+            }
+        });
+
+        holder.userAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (postsList.get(position).getOwnerID().equals(currentUserId))
+                    return;
+                Bundle bundle = new Bundle();
+                bundle.putString("userID", postsList.get(position).getOwnerID());
+                navController.navigate(R.id.action_homeFragment_to_otherUserProfile, bundle);
+            }
+        });
+
         holder.pressToLikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postsList.get(position).getLikesUserId().add(currentUserId);
-                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
+                DatabaseReference likesUserRef = FirebaseDatabase.getInstance().getReference()
                         .child("Post")
                         .child(postsList.get(position).getOwnerID())
-                        .child(postsList.get(position).getPostID());
-                postRef.setValue(postsList.get(position));
+                        .child(postsList.get(position).getPostID())
+                        .child("likesUserId");
+                likesUserRef.child(currentUserId).setValue(currentUserId);
                 setViewToUnlike(holder.pressToLikeBtn, holder.pressToUnlikeBtn);
-                postRef.get().addOnCompleteListener(task -> {
+                likesUserRef.get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        int numOfLikes = task.getResult().getValue(Post.class).getLikesUserId().size();
+                        int numOfLikes = (int) task.getResult().getChildrenCount();
                         holder.likeTv.setText("" + numOfLikes);
                     }
                 });
@@ -125,20 +152,16 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.pressToUnlikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postsList.get(position).getLikesUserId().remove(currentUserId);
-                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
+                DatabaseReference likesUserRef = FirebaseDatabase.getInstance().getReference()
                         .child("Post")
                         .child(postsList.get(position).getOwnerID())
-                        .child(postsList.get(position).getPostID());
-                postRef.setValue(postsList.get(position));
+                        .child(postsList.get(position).getPostID())
+                        .child("likesUserId");
+                likesUserRef.child(currentUserId).removeValue();
                 setViewToLike(holder.pressToLikeBtn, holder.pressToUnlikeBtn);
-                postRef.get().addOnCompleteListener(task -> {
+                likesUserRef.get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        ArrayList<String> likeList = (ArrayList<String>) task.getResult().getValue(Post.class).getLikesUserId();
-                        if (likeList == null) {
-                            likeList = new ArrayList<>();
-                        }
-                        int numOfLikes = likeList.size();
+                        int numOfLikes = (int) task.getResult().getChildrenCount();
                         holder.likeTv.setText("" + numOfLikes);
                     }
                 });
