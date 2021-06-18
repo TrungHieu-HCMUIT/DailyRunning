@@ -9,7 +9,7 @@ import java.util.List;
 public class Post implements Comparable<Post>{
     private String postID;
     private List<Comment> commentsUserId;
-    private HashMap<String, String> likesUserId;
+    private List<String> likesUserId;
     private Activity activity;
     private String ownerID;
     private String ownerAvatarUrl;
@@ -17,7 +17,7 @@ public class Post implements Comparable<Post>{
 
     public Post() {}
 
-    public Post(String postID, List<Comment> commentsUserId, HashMap<String, String> likesUserId, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
+    public Post(String postID, List<Comment> commentsUserId, List<String> likesUserId, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
         this.postID = postID;
         this.commentsUserId = commentsUserId;
         this.likesUserId = likesUserId;
@@ -43,11 +43,11 @@ public class Post implements Comparable<Post>{
         this.commentsUserId = commentsUserId;
     }
 
-    public HashMap<String, String> getLikesUserId() {
+    public List<String> getLikesUserId() {
         return likesUserId;
     }
 
-    public void setLikesUserId(HashMap<String, String> likesUserId) {
+    public void setLikesUserId(List<String> likesUserId) {
         this.likesUserId = likesUserId;
     }
 

@@ -145,7 +145,7 @@ public class FinishFragment extends Fragment {
                     activityRef.child(newActivityID).setValue(activity);
 
                     List<Comment> commentsUserId = new ArrayList<>();
-                    HashMap<String, String> likesUserId = new HashMap<>();
+                    List<String> likesUserId = new ArrayList<>();
 
                     Post post = new Post(newPostID,
                             commentsUserId,

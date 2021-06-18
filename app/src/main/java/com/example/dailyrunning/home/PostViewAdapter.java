@@ -93,14 +93,14 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         Glide.with(mContext).load(postsList.get(position).getActivity().getPictureURI()).into(holder.image);
 
         if (postsList.get(position).getLikesUserId() == null) {
-            postsList.get(position).setLikesUserId(new HashMap<>());
+            postsList.get(position).setLikesUserId(new ArrayList<>());
         }
         holder.likeTv.setText("" + postsList.get(position).getLikesUserId().size());
         if (postsList.get(position).getCommentsUserId() == null) {
             postsList.get(position).setCommentsUserId(new ArrayList<>());
         }
 
-        if (postsList.get(position).getLikesUserId().containsKey(currentUserId)) {
+        if (postsList.get(position).getLikesUserId().contains(currentUserId)) {
             holder.pressToLikeBtn.setVisibility(View.INVISIBLE);
             holder.pressToUnlikeBtn.setVisibility(View.VISIBLE);
         }
