@@ -100,7 +100,8 @@ public class HomeActivity extends AppCompatActivity {
 
         db = new DatabaseHandler(this);
         db.openDatabase();
-
+        StepModel stepModel = new StepModel(0,0);
+        db.insertTask(stepModel);
         // Enable BottomNavigationViewEx
         setupBottomNavView();
 

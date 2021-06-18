@@ -162,12 +162,15 @@ public class UserFragment extends Fragment implements UserNavigator {
 
         db = new DatabaseHandler(mContext.getContext());
         db.openDatabase();
-        StepModel task = db.getTasks("0");
+        StepModel task = db.getTasks("1");
         Log.d("phu1",task.getTask()+"");
         Log.d("phu2",task.getId()+"");
-        Singleton.getInstance().getTV().setText(task.getTask() + TEXT_NUM_STEPS);
-    }
+        Bundle bundle= getArguments();
+        if (bundle!=null)
+            binding.textView9.setText(bundle.getInt("Step"));
 
+        Singleton.getInstance().getTV().setText(task.getId() + TEXT_NUM_STEPS);
+    }
 
     private void setUpRingChart() {
         binding.stepRingChart.showLabels(false);

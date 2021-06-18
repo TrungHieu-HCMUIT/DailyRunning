@@ -124,6 +124,7 @@ public class MyPeriodicWork extends Worker implements SensorEventListener, StepL
         if (Singleton.getInstance().getTV()!=null)
             Singleton.getInstance().getTV().setText(numSteps + TEXT_NUM_STEPS);
         db.updateTask(0,numSteps+TEXT_NUM_STEPS);
-
+        Bundle bundle =new Bundle();
+        bundle.putInt("Step",numSteps);
     }
 }
