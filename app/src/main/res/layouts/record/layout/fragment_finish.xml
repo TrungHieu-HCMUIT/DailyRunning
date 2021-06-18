@@ -262,7 +262,6 @@
                     android:backgroundTint="@color/color_palette_3"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Lưu"
-                    android:onClick="@{()->recordViewModel.onSaveClick()}"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     app:cornerRadius="18dp" />

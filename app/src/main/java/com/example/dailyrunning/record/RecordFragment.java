@@ -39,17 +39,6 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class RecordFragment extends Fragment implements UserViewModel.OnTaskComplete {
 
     private static final String TAG = "RecordFragment";
-
-
-
-
-
-
-    ArrayList<LatLng> list = new ArrayList<LatLng>();
-
-
-
-
     private NavController mNavController;
 
     private SpotifyViewModel mSpotifyViewModel;
@@ -82,7 +71,8 @@ public class RecordFragment extends Fragment implements UserViewModel.OnTaskComp
                 .findFragmentById(R.id.map);
         mRecordViewModel.mLocationClient=getFusedLocationProviderClient(getActivity());
         mRecordViewModel.onTaskComplete=this;
-
+        mRecordViewModel.isMapLoading=true;
+        mRecordViewModel.loadingDialog.showDialog();
         mapFragment.getMapAsync(mRecordViewModel);
         binding.musicImageButton.setOnClickListener(v -> {
             mNavController.navigate(R.id.action_recordFragment_to_spotifyFragment);

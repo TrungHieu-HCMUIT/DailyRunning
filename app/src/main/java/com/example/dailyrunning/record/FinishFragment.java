@@ -1,5 +1,6 @@
 package com.example.dailyrunning.record;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -24,14 +25,16 @@ import android.widget.TextView;
 
 import com.example.dailyrunning.databinding.FragmentFindBinding;
 import com.example.dailyrunning.databinding.FragmentFinishBinding;
-import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.Comment;
 import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.model.Like;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.model.UserInfo;
+import com.example.dailyrunning.user.UserViewModel;
+import com.google.android.datatransport.runtime.dagger.multibindings.ElementsIntoSet;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -73,6 +76,27 @@ public class FinishFragment extends Fragment  {
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), callback);
         binding.cancelButton.setOnClickListener(v-> confirmCancelActivity());
+        binding.saveButton.setOnClickListener(v->{
+            mRecordViewModel.onSaveClick(new UserViewModel.OnTaskComplete() {
+                @Override
+                public void onComplete(boolean result) {
+                    if(result) {
+                        Snackbar.make(view, "Lưu hoạt động thành công", Snackbar.LENGTH_LONG).show();
+                        Intent point = new Intent();
+                        point.putExtra("point",mRecordViewModel.runningPointAcquired.getValue());
+                        getActivity().setResult(android.app.Activity.RESULT_OK,point);
+                        getActivity().finish();
+                    }
+                    else
+                    {
+                        Snackbar.make(view, "Lưu hoạt động thất bại", Snackbar.LENGTH_LONG).show();
+                        getActivity().setResult(Activity.RESULT_CANCELED);
+                        getActivity().finish();
+                    }
+
+                }
+            });
+        });
     }
 
     void confirmCancelActivity()

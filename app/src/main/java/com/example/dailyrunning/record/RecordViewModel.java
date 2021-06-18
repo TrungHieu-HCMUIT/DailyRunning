@@ -7,6 +7,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -94,7 +95,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
     public UserViewModel.OnTaskComplete onTaskComplete;
     public ShowConfirmDialog confirmDialog;
     public static SimpleDateFormat activityDateFormat = new SimpleDateFormat("dd-MM-yyy HH:mm");
-
+    public boolean isMapLoading=true;
     {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(300);
@@ -117,6 +118,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         averagePaceString.setValue("0:00 m/s");
         activityDescribe.setValue("");
         averagePace = 0;
+        isMapLoading=true;
     }
 
     void newRecord() {
@@ -159,7 +161,11 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
                 .zoom(ZOOM)
                 .build();
         map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+        if(isMapLoading)
+        {
+            isMapLoading=false;
+            loadingDialog.dismissDialog();
+        }
         updateDistance(newLocation);
         if (isTracking.getValue())
             locations.add(newLocation);
@@ -258,7 +264,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
                     builder.include(loc);
                 }
                 LatLngBounds bounds = builder.build();
-                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 200);
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 500);
                 map.moveCamera(cu);
                 averagePace = distance / timeWorkingInSec;
                 averagePaceString.setValue(String.format("%.2f", averagePace) + " m/s");
@@ -276,17 +282,12 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
                         .draggable(false)
                         .anchor(0.5f, 1));
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        map.snapshot(bitmap -> {
-                            activityImage = bitmap;
-                            loadingDialog.dismissDialog();
+                new Handler().postDelayed(() -> map.snapshot(bitmap -> {
+                    activityImage = bitmap;
+                    loadingDialog.dismissDialog();
 
-                            onTaskComplete.onComplete(true);
-                        });
-                    }
-                }, 1000);
+                    onTaskComplete.onComplete(true);
+                }), 1000);
             }
         });
 
@@ -298,32 +299,41 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         return bytes.toByteArray();
     }
 
-    public void onSaveClick() {
-        loadingDialog.showDialog();
-        String key = activityRef.push().getKey();
-        ArrayList<com.example.dailyrunning.model.LatLng> latLngArrayList = new ArrayList<>(locations.stream()
-                .map(location ->
-                        new com.example.dailyrunning.model.LatLng(location.latitude, location.longitude))
-                .collect(Collectors.toList()));
-        activityImageRef.child(key).putBytes(bitmapToByteArray(activityImage)).addOnSuccessListener(taskSnapshot -> activityImageRef.child(key).getDownloadUrl().addOnSuccessListener(
-                uri -> {
-                    Activity newActivity = new Activity(
-                            key,
-                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                            activityDateFormat.format(Calendar.getInstance().getTime()),
-                            distance,
-                            timeWorkingInSec,
-                            uri.toString(),
-                            averagePace,
-                            activityDescribe.getValue(),
-                            latLngArrayList
-                    );
-                    activityRef.child(key).setValue(newActivity);
-                    createNewPost(newActivity);
-                    loadingDialog.dismissDialog();
+    public void onSaveClick(UserViewModel.OnTaskComplete onTaskComplete) {
+        try {
+            loadingDialog.showDialog();
+            String key = activityRef.push().getKey();
+            ArrayList<com.example.dailyrunning.model.LatLng> latLngArrayList = locations.stream()
+                    .map(location ->
+                            new com.example.dailyrunning.model.LatLng(location.latitude, location.longitude))
+                    .collect(Collectors.toCollection(ArrayList::new));
+            activityImageRef.child(key).putBytes(bitmapToByteArray(activityImage)).addOnSuccessListener(taskSnapshot -> activityImageRef.child(key).getDownloadUrl().addOnSuccessListener(
+                    uri -> {
+                        Activity newActivity = new Activity(
+                                key,
+                                FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                activityDateFormat.format(Calendar.getInstance().getTime()),
+                                distance,
+                                timeWorkingInSec,
+                                uri.toString(),
+                                averagePace,
+                                activityDescribe.getValue(),
+                                latLngArrayList
+                        );
+                        activityRef.child(key).setValue(newActivity);
+                        createNewPost(newActivity);
+                        loadingDialog.dismissDialog();
+                        onTaskComplete.onComplete(true);
+                    }
+            ));
+        }
+        catch (Exception e)
+        {
+            Log.e("Save Activity Err",e.getMessage());
+            onTaskComplete.onComplete(false);
+        }
 
-                }
-        ));
+
 
     }
 
