@@ -49,7 +49,9 @@ public class HomeFollowingFragment extends Fragment {
         context = getContext();
         recyclerView = (RecyclerView) view.findViewById(R.id.home_following_recycleView);
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        postViewAdapter = new PostViewAdapter(context, postList);
+
+        String userId = FirebaseAuth.getInstance().getUid();
+        postViewAdapter = new PostViewAdapter(context, userId, postList);
         recyclerView.setAdapter(postViewAdapter);
 
         mUserViewModel.getCurrentUser().observe(getActivity(),user->{
@@ -67,7 +69,7 @@ public class HomeFollowingFragment extends Fragment {
 
     private ArrayList<String> getUserFollowingIdList() {
         ArrayList<String> list = new ArrayList<>();
-    String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference()
                 .child("Follow")
                 .child(currentUserId).child("following")
@@ -84,6 +86,8 @@ public class HomeFollowingFragment extends Fragment {
     }
 
     private void setPostList(ArrayList<String> userIdList) {
+        postList.clear();
+        postViewAdapter.notifyDataSetChanged();
         // get posts list
         for (String userID: userIdList) {
             FirebaseDatabase.getInstance().getReference()

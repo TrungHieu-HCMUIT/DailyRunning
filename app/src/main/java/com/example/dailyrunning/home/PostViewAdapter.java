@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.text.format.DateUtils;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,12 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
 public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder>{
     private Context mContext;
-    private ArrayList<Post> listItem;
+    private String currentUserId;
+    private ArrayList<Post> postsList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView userAvatar;
@@ -33,8 +38,11 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         public TextView duration;
         public TextView pace;
         public ImageView image;
-        public TextView like;
-        public TextView comment;
+        public Button pressToLikeBtn;
+        public Button pressToUnlikeBtn;
+        public Button commentBtn;
+        public TextView likeTv;
+        public TextView commentTv;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -47,14 +55,18 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             duration = (TextView) view.findViewById(R.id.tvDuration);
             pace = (TextView) view.findViewById(R.id.tvPace);
             image = (ImageView) view.findViewById(R.id.ivMap);
-            like = (TextView) view.findViewById(R.id.tvNumOfLike);
-            comment = (TextView) view.findViewById(R.id.tvNumOfComment);
+            pressToLikeBtn = (Button) view.findViewById(R.id.btnPressToLike);
+            pressToUnlikeBtn = (Button) view.findViewById(R.id.btnPressToUnlike);
+            commentBtn = (Button) view.findViewById(R.id.btnComment);
+            likeTv = (TextView) view.findViewById(R.id.tvNumOfLike);
+            commentTv = (TextView) view.findViewById(R.id.tvNumOfComment);
         }
     }
 
-    public PostViewAdapter(@NonNull Context context, ArrayList<Post> data) {
-        this.mContext = context;
-        listItem = data;
+    public PostViewAdapter(Context mContext, String currentUserId, ArrayList<Post> postsList) {
+        this.mContext = mContext;
+        this.currentUserId = currentUserId;
+        this.postsList = postsList;
     }
 
     @NonNull
@@ -66,33 +78,92 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(mContext).load(listItem.get(position).getOwnerAvatarUrl()).into(holder.userAvatar);
-        holder.userName.setText(listItem.get(position).getOwnerName());
-        holder.dateTime.setText(listItem.get(position).getActivity().getDateCreated());
-        holder.content.setText(listItem.get(position).getActivity().getDescribe());
-        holder.distance.setText(listItem.get(position).getActivity().getDistance() + " km");
-        holder.duration.setText(DateUtils.formatElapsedTime(listItem.get(position).getActivity().getDuration()));
-        holder.pace.setText(listItem.get(position).getActivity().getPace()+ " m/s");
-        Glide.with(mContext).load(listItem.get(position).getActivity().getPictureURI()).into(holder.image);
-        if (listItem.get(position).getComments() == null) {
-            listItem.get(position).setComments(new ArrayList<>());
+        Glide.with(mContext).load(postsList.get(position).getOwnerAvatarUrl()).into(holder.userAvatar);
+        holder.userName.setText(postsList.get(position).getOwnerName());
+        holder.dateTime.setText(postsList.get(position).getActivity().getDateCreated());
+        holder.content.setText(postsList.get(position).getActivity().getDescribe());
+        holder.distance.setText(postsList.get(position).getActivity().getDistance() + " km");
+        holder.duration.setText(DateUtils.formatElapsedTime(postsList.get(position).getActivity().getDuration()));
+        holder.pace.setText(postsList.get(position).getActivity().getPace()+ " m/s");
+        Glide.with(mContext).load(postsList.get(position).getActivity().getPictureURI()).into(holder.image);
+
+        if (postsList.get(position).getLikesUserId() == null) {
+            postsList.get(position).setLikesUserId(new ArrayList<>());
         }
-        holder.like.setText("" + listItem.get(position).getComments().size());
-        if (listItem.get(position).getLikes() == null) {
-            listItem.get(position).setLikes(new ArrayList<>());
+        holder.likeTv.setText("" + postsList.get(position).getLikesUserId().size());
+        if (postsList.get(position).getCommentsUserId() == null) {
+            postsList.get(position).setCommentsUserId(new ArrayList<>());
         }
-        holder.comment.setText("" + listItem.get(position).getLikes().size());
+
+        if (postsList.get(position).getLikesUserId().contains(currentUserId)) {
+            holder.pressToLikeBtn.setVisibility(View.INVISIBLE);
+            holder.pressToUnlikeBtn.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.pressToLikeBtn.setVisibility(View.VISIBLE);
+            holder.pressToUnlikeBtn.setVisibility(View.INVISIBLE);
+        }
+
+        holder.pressToLikeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postsList.get(position).getLikesUserId().add(currentUserId);
+                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
+                        .child("Post")
+                        .child(postsList.get(position).getOwnerID())
+                        .child(postsList.get(position).getPostID());
+                postRef.setValue(postsList.get(position));
+                setViewToUnlike(holder.pressToLikeBtn, holder.pressToUnlikeBtn);
+                postRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        int numOfLikes = task.getResult().getValue(Post.class).getLikesUserId().size();
+                        holder.likeTv.setText("" + numOfLikes);
+                    }
+                });
+            }
+        });
+        holder.pressToUnlikeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postsList.get(position).getLikesUserId().remove(currentUserId);
+                DatabaseReference postRef = FirebaseDatabase.getInstance().getReference()
+                        .child("Post")
+                        .child(postsList.get(position).getOwnerID())
+                        .child(postsList.get(position).getPostID());
+                postRef.setValue(postsList.get(position));
+                setViewToLike(holder.pressToLikeBtn, holder.pressToUnlikeBtn);
+                postRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        ArrayList<String> likeList = (ArrayList<String>) task.getResult().getValue(Post.class).getLikesUserId();
+                        if (likeList == null) {
+                            likeList = new ArrayList<>();
+                        }
+                        int numOfLikes = likeList.size();
+                        holder.likeTv.setText("" + numOfLikes);
+                    }
+                });
+            }
+        });
+
+        holder.commentTv.setText("" + postsList.get(position).getCommentsUserId().size());
     }
 
     @Override
     public int getItemCount() {
-        return listItem.size();
+        return postsList.size();
     }
     private Bitmap base64ToBitmap(String b64) {
-        //String base64String = "data:image/png;base64,"+b64;
-        //String base64Image = base64String.split(",")[1];
         byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
     }
 
+    private void setViewToLike(View like, View unlike) {
+        like.setVisibility(View.VISIBLE);
+        unlike.setVisibility(View.INVISIBLE);
+    }
+
+    private void setViewToUnlike(View like, View unlike) {
+        like.setVisibility(View.INVISIBLE);
+        unlike.setVisibility(View.VISIBLE);
+    }
 }

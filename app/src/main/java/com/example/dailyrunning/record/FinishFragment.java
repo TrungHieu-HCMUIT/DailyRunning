@@ -144,12 +144,12 @@ public class FinishFragment extends Fragment {
                     );
                     activityRef.child(newActivityID).setValue(activity);
 
-                    List<Comment> comments = new ArrayList<>();
-                    List<Like> likes = new ArrayList<>();
+                    List<String> commentsUserId = new ArrayList<>();
+                    List<String> likesUserId = new ArrayList<>();
 
                     Post post = new Post(newPostID,
-                            comments,
-                            likes,
+                            commentsUserId,
+                            likesUserId,
                             activity,
                             userInfo.getUserID(),
                             userInfo.getAvatarURI(),

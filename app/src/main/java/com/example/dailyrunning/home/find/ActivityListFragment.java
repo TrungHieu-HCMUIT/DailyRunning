@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -16,6 +17,8 @@ import android.view.ViewGroup;
 import com.example.dailyrunning.databinding.FragmentActivityListBinding;
 import com.example.dailyrunning.home.PostViewAdapter;
 import com.example.dailyrunning.model.Post;
+import com.example.dailyrunning.user.UserViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -32,6 +35,7 @@ public class ActivityListFragment extends Fragment {
 
     private ArrayList<Post> postsList = new ArrayList<>();
     private PostViewAdapter postViewAdapter;
+    private UserViewModel mUserViewModel;
 
     private FragmentActivityListBinding binding;
     @Override
@@ -49,8 +53,10 @@ public class ActivityListFragment extends Fragment {
         Bundle result = getArguments();
         userId = result.getString("userId");
 
+        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+
         // init recyclerView
-        postViewAdapter = new PostViewAdapter(getContext(), postsList);
+        postViewAdapter = new PostViewAdapter(getContext(), FirebaseAuth.getInstance().getUid(), postsList);
         binding.activitiesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.activitiesRecyclerView.setAdapter(postViewAdapter);
 

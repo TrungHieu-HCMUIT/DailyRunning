@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Post implements Comparable<Post>{
     private String postID;
-    private List<Comment> comments;
-    private List<Like> likes;
+    private List<String> commentsUserId;
+    private List<String> likesUserId;
     private Activity activity;
     private String ownerID;
     private String ownerAvatarUrl;
@@ -16,10 +16,10 @@ public class Post implements Comparable<Post>{
 
     public Post() {}
 
-    public Post(String postID, List<Comment> comments, List<Like> likes, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
+    public Post(String postID, List<String> commentsUserId, List<String> likesUserId, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
         this.postID = postID;
-        this.comments = comments;
-        this.likes = likes;
+        this.commentsUserId = commentsUserId;
+        this.likesUserId = likesUserId;
         this.activity = activity;
         this.ownerID = ownerID;
         this.ownerAvatarUrl = ownerAvatarUrl;
@@ -34,20 +34,20 @@ public class Post implements Comparable<Post>{
         this.postID = postID;
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public List<String> getCommentsUserId() {
+        return commentsUserId;
     }
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setCommentsUserId(List<String> commentsUserId) {
+        this.commentsUserId = commentsUserId;
     }
 
-    public List<Like> getLikes() {
-        return likes;
+    public List<String> getLikesUserId() {
+        return likesUserId;
     }
 
-    public void setLikes(List<Like> likes) {
-        this.likes = likes;
+    public void setLikesUserId(List<String> likesUserId) {
+        this.likesUserId = likesUserId;
     }
 
     public Activity getActivity() {

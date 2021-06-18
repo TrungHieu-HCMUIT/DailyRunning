@@ -22,6 +22,7 @@ import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserViewModel;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +35,7 @@ import java.util.Collections;
 
 public class HomeUserFragment extends Fragment {
 
-    private static final String TAG = "Home User Fragment";
+    private static final String TAG = "HomeUserFragment";
 
     private Context context;
     private ArrayList<Post> postList = new ArrayList<>();
@@ -60,7 +61,7 @@ public class HomeUserFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
         populateData();
-        postViewAdapter = new PostViewAdapter(context, postList);
+        postViewAdapter = new PostViewAdapter(context, FirebaseAuth.getInstance().getUid(), postList);
         recyclerView.setAdapter(postViewAdapter);
         mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         if(mHomeViewModel.userRecyclerViewState !=null)

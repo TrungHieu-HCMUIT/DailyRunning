@@ -178,7 +178,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/ivMap">
 
                 <Button
-                    android:id="@+id/btnUnlike"
+                    android:id="@+id/btnPressToLike"
                     android:layout_width="27.84dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="24dp"
@@ -190,7 +190,7 @@
                     app:layout_constraintTop_toBottomOf="parent" />
 
                 <Button
-                    android:id="@+id/btnLike"
+                    android:id="@+id/btnPressToUnlike"
                     android:layout_width="27.84dp"
                     android:layout_height="24dp"
                     android:layout_marginStart="24dp"
