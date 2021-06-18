@@ -59,11 +59,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cur.close();
         return task;
     }
-
+    public String getLastTask() {
+        String selectQuery = "SELECT * FROM " + TABLE + " ORDER BY ID DESC LIMIT 1";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        String str = "";
+        if (cursor.moveToFirst())
+            str = cursor.getString(cursor.getColumnIndex(ID));
+        cursor.close();
+        return str;
+    }
     public void updateTask(int id, String task) {
         ContentValues cv = new ContentValues();
         cv.put(TASK, task);
-        db.update(TABLE, cv, ID + "= ?", new String[] {String.valueOf(task)});
+        db.update(TABLE, cv, id + "= ?", new String[] {String.valueOf(task)});
     }
 
     public void deleteTask(int id){

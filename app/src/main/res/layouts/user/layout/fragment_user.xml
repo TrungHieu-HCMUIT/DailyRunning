@@ -324,8 +324,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/svn_avo"
-                android:text="7000 bước"
                 android:textColor="@color/black"
+                android:text="@{userViewModel.step}"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 

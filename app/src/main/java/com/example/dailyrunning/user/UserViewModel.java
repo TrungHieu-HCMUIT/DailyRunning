@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
 import androidx.databinding.InverseBindingListener;
@@ -48,6 +49,7 @@ import org.joda.time.LocalDate;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpCookie;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,6 +66,7 @@ import java.util.stream.Collectors;
 
 public class UserViewModel extends ViewModel {
 
+
     private MutableLiveData<UserInfo> currentUser;
     public Parcelable mMedalRecyclerViewState;
     public Parcelable mGiftRecyclerViewState;
@@ -75,7 +78,11 @@ public class UserViewModel extends ViewModel {
     private  MutableLiveData<List<GiftInfo>> gifts;
     private final DatabaseReference mUserInfoRef= FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<String> avatarUri;
+    public String step;
 
+    public void setStep(String step) {
+        this.step = step;
+    }
 
     public LiveData<UserInfo> getCurrentUser()
     {

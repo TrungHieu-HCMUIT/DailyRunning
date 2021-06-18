@@ -45,13 +45,11 @@ public class MyPeriodicWork extends Worker implements SensorEventListener, StepL
 
     private Context applicationContext = getApplicationContext();
     private DatabaseHandler db;
-    private int numSteps=0;
+    private int numSteps;
     public MyPeriodicWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         db = new DatabaseHandler(getApplicationContext());
         db.openDatabase();
-        StepModel task1 = db.getTasks("0");
-        numSteps=task1.getId();
     }
 
     @NonNull
@@ -68,9 +66,8 @@ public class MyPeriodicWork extends Worker implements SensorEventListener, StepL
             Date endDate = dateFormat.parse(DEFAULT_END_TIME);
             if (currentDate.after(startDate) && currentDate.before(endDate)) {
                 try {
-                    StepModel task = new StepModel(0, 0);
-
-                    db.insertTask(task);
+                    StepModel task1 = db.getTasks("0");
+                    numSteps=task1.getId();
                     sensorManager = (SensorManager) applicationContext.getSystemService(SENSOR_SERVICE);
                     accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
                     simpleStepDetector = new StepDetector();
@@ -124,7 +121,5 @@ public class MyPeriodicWork extends Worker implements SensorEventListener, StepL
         if (Singleton.getInstance().getTV()!=null)
             Singleton.getInstance().getTV().setText(numSteps + TEXT_NUM_STEPS);
         db.updateTask(0,numSteps+TEXT_NUM_STEPS);
-        Bundle bundle =new Bundle();
-        bundle.putInt("Step",numSteps);
     }
 }

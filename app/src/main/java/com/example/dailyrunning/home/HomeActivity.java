@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class HomeActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 1;
+    private static final String TEXT_NUM_STEPS = " bước";
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mUserInfoRef;
     private DatabaseReference mCurrentUserRef;
@@ -111,7 +113,14 @@ public class HomeActivity extends AppCompatActivity {
                 .addTag("periodicWorkRequest")
                 .build();
         WorkManager.getInstance().enqueue(mPeriodicWorkRequest);
-
+//        StepModel task = db.getTasks("0");
+//        Log.d("phu1",task.getId()+"");
+//        Log.d("phu2",task.getTask()+"");
+//        if (Singleton.getInstance().getTV()!=null)
+//            Singleton.getInstance().getTV().setText(task.getTask() + TEXT_NUM_STEPS);
+//        else mUserViewModel.setStep(task.getId()+TEXT_NUM_STEPS);
+        String task = db.getLastTask();
+        mUserViewModel.setStep(task+TEXT_NUM_STEPS);
     }
 
     public void hideNavBar()
