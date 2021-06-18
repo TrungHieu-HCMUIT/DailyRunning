@@ -23,7 +23,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 
-public class HomeFragment extends Fragment{
+public class    HomeFragment extends Fragment{
     private View rootView;
     private AppBarLayout appBarLayout;
     private SegmentTabLayout tabLayout;
