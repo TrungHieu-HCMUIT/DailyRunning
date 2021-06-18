@@ -22,6 +22,7 @@ import androidx.navigation.Navigation;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentRecordBinding;
 import com.example.dailyrunning.record.spotify.SpotifyViewModel;
+import com.example.dailyrunning.user.UserViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
-public class RecordFragment extends Fragment  {
+public class RecordFragment extends Fragment implements UserViewModel.OnTaskComplete {
 
     private static final String TAG = "RecordFragment";
 
@@ -80,7 +81,7 @@ public class RecordFragment extends Fragment  {
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mRecordViewModel.mLocationClient=getFusedLocationProviderClient(getActivity());
-
+        mRecordViewModel.onTaskComplete=this;
 
         mapFragment.getMapAsync(mRecordViewModel);
         binding.musicImageButton.setOnClickListener(v -> {
@@ -104,10 +105,9 @@ public class RecordFragment extends Fragment  {
     }
 
 
-
-
-
-
-
-
+    @Override
+    public void onComplete(boolean result) {
+        if(result)
+            mNavController.navigate(R.id.action_recordFragment_to_finishFragment);
+    }
 }

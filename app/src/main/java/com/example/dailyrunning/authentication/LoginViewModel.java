@@ -3,19 +3,26 @@ package com.example.dailyrunning.authentication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.ParseException;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.model.UserInfo;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
+import com.facebook.GraphRequest;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -34,6 +41,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import static com.example.dailyrunning.record.RecordViewModel.bitmapToByteArray;
+import static com.example.dailyrunning.user.UserViewModel.EMAIL_PROVIDER_ID;
+import static com.example.dailyrunning.user.UserViewModel.FACEBOOK_PROVIDER_ID;
+import static com.example.dailyrunning.user.UserViewModel.GOOGLE_PROVIDER_ID;
 
 public class LoginViewModel extends ViewModel {
     private MutableLiveData<UserInfo> mNewUser=new MutableLiveData<>();
@@ -56,7 +73,6 @@ public class LoginViewModel extends ViewModel {
     }
 
     public CallbackManager mCallbackManager;
-    public Boolean isFromRegister = false;
     private LoginNavigator mNavigator;
 
     public void setNavigator(LoginNavigator nav) {
@@ -277,17 +293,15 @@ public class LoginViewModel extends ViewModel {
 
     //region update info firebase user
 
-    public void onUpdateInfoClick(TaskCallBack mTaskCallback)
+    public void onUpdateInfoClick(TaskCallBack mTaskCallback,Context context)
     {
         UserInfo mNewInfo=mNewUser.getValue();
         if (mNewInfo.validateData()) {
             mUserInfoRef.child(mNewInfo.getUserID()).setValue(mNewInfo).addOnCompleteListener(task->{
                 if(task.isSuccessful())
                 {
-                    updateFirebaseUser(mNewInfo);
+                    updateFirebaseUser(mNewInfo,context);
                     mTaskCallback.onSuccess();
-
-
                 }
                 else if(!task.isSuccessful())
                 {
@@ -296,10 +310,81 @@ public class LoginViewModel extends ViewModel {
             });
         }
     }
-    private void updateFirebaseUser(UserInfo mNewInfo) {
-        FirebaseUser mUser= FirebaseAuth.getInstance().getCurrentUser();
-        UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
-        mUser.updateProfile(mRequest);
+    private void updateFirebaseUser(UserInfo mNewInfo, Context context) {
+        FirebaseUser userInfo=FirebaseAuth.getInstance().getCurrentUser();
+        switch (userInfo.getProviderData().get(1).getProviderId()) {
+            case EMAIL_PROVIDER_ID:
+            case GOOGLE_PROVIDER_ID:
+                Uri avatarUrl=userInfo.getPhotoUrl();
+                Glide.with(context).asBitmap().load(avatarUrl).into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        putAvatarToFireStorage(resource,mNewInfo);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
+                break;
+            case FACEBOOK_PROVIDER_ID:
+                //user chưa update avt thì lấy của fb
+                if (userInfo.getPhotoUrl().toString().contains("graph.facebook.com")) {
+                    //https://graph.facebook.com/2511714412307915/picture
+                    String fbUID = userInfo.getPhotoUrl().toString().
+                            replace("https://graph.facebook.com/", "")
+                            .replace("/picture", "");
+                    GraphRequest request = GraphRequest.newGraphPathRequest(
+                            AccessToken.getCurrentAccessToken(),
+                            "/" + fbUID + "/picture?redirect=0&type=normal",
+                            response -> {
+                                JSONObject res = response.getJSONObject();
+                                try {
+                                    Uri avatarUri = Uri.parse(res.getJSONObject("data").getString("url"));
+                                    Glide.with(context).asBitmap().load(avatarUri).into(new CustomTarget<Bitmap>() {
+                                        @Override
+                                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                            putAvatarToFireStorage(resource,mNewInfo);
+                                        }
+
+                                        @Override
+                                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                                        }
+                                    });
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+
+                    request.executeAsync();
+                }
+                break;
+
+        }
+
+    }
+
+    public void putAvatarToFireStorage(Bitmap image,UserInfo newInfo) {
+
+        FirebaseUser userInfo = FirebaseAuth.getInstance().getCurrentUser();
+        StorageReference mAvatarStorageReference = FirebaseStorage.getInstance().getReference().child("avatar_photos");
+
+        //tạo ref mới trong folder avatar_photos/
+        StorageReference photoRef = mAvatarStorageReference.child(userInfo.getUid());
+        //up hình lên
+        photoRef.putBytes(bitmapToByteArray(image)).addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl()
+                .addOnSuccessListener(uri -> {
+                    Uri userAvatarUri = uri;
+                    //update avatarURI trong UserInfo
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("UserInfo").child(userInfo.getUid());
+                    userRef.child("avatarURI").setValue(userAvatarUri.toString());
+                    //update profile của firebase user
+                    UserProfileChangeRequest mRequest=new UserProfileChangeRequest.Builder()
+                            .setPhotoUri(userAvatarUri)
+                            .setDisplayName(newInfo.getDisplayName()).build();
+                    userInfo.updateProfile(mRequest);
+                }));
     }
 
 

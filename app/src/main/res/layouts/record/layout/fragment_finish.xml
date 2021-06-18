@@ -1,257 +1,275 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+        <variable
+            name="recordViewModel"
+            type="com.example.dailyrunning.record.RecordViewModel" />
+        <import type="android.view.View"/>
+    </data>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp">
-
-            <TextView
-                android:id="@+id/saveRun"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:background="@drawable/rectangle_2"
-                android:fontFamily="@font/roboto_regular"
-                android:gravity="center"
-                android:text="@string/luuhoatdong"
-                android:textColor="@color/white"
-                android:textSize="19sp" />
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="16dp"
-            android:layout_marginLeft="32dp"
-            android:fontFamily="@font/svn_avo_bold"
-            android:text="Thông tin hoạt động"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            app:cardCornerRadius="10dp"
-            app:strokeWidth="1dp"
-            app:strokeColor="#afafaf"
-            app:cardElevation="30dp">
-
-            <LinearLayout
-                android:id="@+id/rectangle_1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="12dp"
-                    android:fontFamily="@font/svn_avo"
-                    android:text="Quãng đường"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/km"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="3dp"
-                    android:fontFamily="@font/svn_avo_bold"
-                    android:text="km"
-                    android:textColor="@color/black"
-                    android:textSize="18sp" />
-
-                <View
-                    android:id="@+id/line_7"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="3dp"
-                    android:background="@drawable/line_7" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/svn_avo"
-                            android:text="Thời gian di chuyển"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/time"
-                            android:layout_width="wrap_content"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/svn_avo_bold"
-                            android:text="time"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/line_6"
-                        android:layout_width="1dp"
-                        android:layout_height="41dp"
-                        android:layout_gravity="center_horizontal"
-                        android:background="@drawable/line_6" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/svn_avo"
-                            android:text="Tốc độ trung bình"
-                            android:textColor="@color/black"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:id="@+id/pace"
-                            android:layout_width="wrap_content"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/svn_avo_bold"
-                            android:text="m/ph"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/svn_avo_bold"
-            android:layout_marginBottom="16dp"
-            android:text="Mô tả"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="73dp"
-            app:cardCornerRadius="10dp"
-            android:layout_marginHorizontal="20dp"
-            app:strokeWidth="1dp"
-            android:padding="16dp"
-            app:strokeColor="#afafaf"
-            app:cardElevation="30dp">
-            <EditText
-                android:id="@+id/describe_editText"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:hint="Buổi tập của bạn như thế nào? Hãy chia sẽ với bạn bè!"
-                android:inputType="textMultiLine"
-                android:gravity="top"
-                android:maxLines="4"
-                android:textColorHint="#666666"
-                android:fontFamily="@font/svn_avo"
-                android:textFontWeight="400"
-                android:background="@null"
-                android:textSize="15dp" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="@font/svn_avo_bold"
-            android:text="Tích lũy"
-            android:textColor="@color/black"
-            android:textSize="25sp" />
-
-        <ImageView
-            android:id="@+id/running_poi"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/ic_running_point" />
-
-        <TextView
-            android:id="@+id/record_running_point_textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:fontFamily="@font/svn_avo_bold"
-            tools:text="20 điểm Running"
-            android:textColor="@color/black"
-            android:textSize="17sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/btnBack"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:backgroundTint="#DEDEDE"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Hủy"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:layout_marginEnd="24dp"
-                app:cornerRadius="18dp" />
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/btnSave"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:backgroundTint="@color/color_palette_3"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Lưu"
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp">
+
+                <TextView
+                    android:id="@+id/saveRun"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/rectangle_2"
+                    android:fontFamily="@font/roboto_regular"
+                    android:gravity="center"
+                    android:text="@string/luuhoatdong"
+                    android:textColor="@color/white"
+                    android:textSize="19sp" />
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp"
+                android:layout_marginLeft="32dp"
+                android:fontFamily="@font/svn_avo_bold"
+                android:text="Thông tin hoạt động"
                 android:textColor="@color/black"
-                android:textSize="18sp"
-                app:cornerRadius="18dp" />
+                android:textSize="25sp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                app:cardCornerRadius="10dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#afafaf"
+                app:cardElevation="30dp">
+
+                <LinearLayout
+                    android:id="@+id/rectangle_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="12dp"
+                        android:fontFamily="@font/svn_avo"
+                        android:text="Quãng đường"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/km"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="3dp"
+                        android:fontFamily="@font/svn_avo_bold"
+                        tools:text="20.30 km"
+                        android:text="@{recordViewModel.distanceString}"
+                        android:textColor="@color/black"
+                        android:textSize="18sp" />
+
+                    <View
+                        android:id="@+id/line_7"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/line_7" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/svn_avo"
+                                android:text="Thời gian di chuyển"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/svn_avo_bold"
+                                tools:text="00:40:53"
+                                android:text="@{recordViewModel.timeString}"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:id="@+id/line_6"
+                            android:layout_width="1dp"
+                            android:layout_height="41dp"
+                            android:layout_gravity="center_horizontal"
+                            android:background="@drawable/line_6" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/svn_avo"
+                                android:text="Tốc độ trung bình"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/pace"
+                                android:layout_width="wrap_content"
+                                android:layout_height="30dp"
+                                android:layout_gravity="center"
+                                android:fontFamily="@font/svn_avo_bold"
+                                tools:text="1.42 m/s"
+                                android:text="@{recordViewModel.averagePaceString}"
+                                android:textColor="@color/black"
+                                android:textSize="18sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/svn_avo_bold"
+                android:layout_marginBottom="16dp"
+                android:text="Mô tả"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="73dp"
+                app:cardCornerRadius="10dp"
+                android:layout_marginHorizontal="20dp"
+                app:strokeWidth="1dp"
+                android:padding="16dp"
+                app:strokeColor="#afafaf"
+                app:cardElevation="30dp">
+
+                <EditText
+                    android:id="@+id/describe_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:hint="Buổi tập của bạn như thế nào? Hãy chia sẽ với bạn bè!"
+                    android:inputType="textMultiLine"
+                    android:gravity="top"
+                    android:maxLines="4"
+                    android:text="@={recordViewModel.activityDescribe}"
+                    android:textColorHint="#666666"
+                    android:fontFamily="@font/svn_avo"
+                    android:textFontWeight="400"
+                    android:background="@null"
+                    android:textSize="15dp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/svn_avo_bold"
+                android:text="Tích lũy"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
+
+            <ImageView
+                android:id="@+id/running_poi"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/ic_running_point" />
+
+            <TextView
+                android:id="@+id/record_running_point_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/svn_avo_bold"
+                tools:text="20 điểm Running"
+                android:text="@{recordViewModel.runningPointAcquired.toString()+ ` điểm Running`}"
+                android:textColor="@color/black"
+                android:textSize="17sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/cancel_button"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="#DEDEDE"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Hủy"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="24dp"
+                    app:cornerRadius="18dp" />
+
+                <Button
+                    android:id="@+id/save_button"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/color_palette_3"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Lưu"
+                    android:onClick="@{()->recordViewModel.onSaveClick()}"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:cornerRadius="18dp" />
+            </LinearLayout>
+
         </LinearLayout>
 
-    </LinearLayout>
 
-
-</ScrollView>
+    </ScrollView>
+</layout>
