@@ -1,5 +1,6 @@
 package com.example.dailyrunning.record;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -7,9 +8,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
@@ -20,13 +23,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.dailyrunning.model.Activity;
+import com.example.dailyrunning.databinding.FragmentFindBinding;
+import com.example.dailyrunning.databinding.FragmentFinishBinding;
 import com.example.dailyrunning.model.Comment;
 import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.model.Like;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.model.UserInfo;
+import com.example.dailyrunning.user.UserViewModel;
+import com.google.android.datatransport.runtime.dagger.multibindings.ElementsIntoSet;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -39,157 +47,65 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
-public class FinishFragment extends Fragment {
+public class FinishFragment extends Fragment  {
 
-    private static final String TAG = "FinishFragment";
+    private RecordViewModel mRecordViewModel;
 
-    private static final String INTENT_IMAGE = "pictureURL";
-    private final String INTENT_DISTANCE_KEY = "distance";
-    private final String INTENT_TIME_KEY = "time";
-    private String INTENT_DATE_CREATED = "datecreated";
-    private String INTENT_LATLNG_LIST = "latlngarrlist";
-    EditText describeText;
-    ArrayList<LatLng> list = new ArrayList<>();
-    DatabaseReference exampleRun;
-    Button buttonSave;
-    Button buttonBack;
-    TextView distanceTextView;
-    TextView timeTextView;
-    TextView paceTextView;
-    TextView runningPointTextView;
-    Bitmap  bitmap;
-    double pace;
-    Uri downloadUrl=null;
-    private View rootView;
-    StorageReference reference;
-    String newActivityID;
-    String newPostID;
-    UserInfo userInfo;
+    FragmentFinishBinding binding;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_finish, container, false);
-        //setTitle(R.string.runCompleted);
-
-        runningPointTextView = ((TextView)rootView.findViewById(R.id.record_running_point_textView));
-
-        describeText = rootView.findViewById(R.id.describe_editText);
-        buttonSave = rootView.findViewById(R.id.btnSave);
-        buttonBack = rootView.findViewById(R.id.btnBack);
-        distanceTextView = rootView.findViewById(R.id.km);
-        timeTextView = rootView.findViewById(R.id.time);
-        paceTextView = rootView.findViewById(R.id.pace);
-
-        return rootView;
+        binding=FragmentFinishBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        Bundle resultFromRecordFragment = getArguments();
-        double completedDist = resultFromRecordFragment.getDouble(INTENT_DISTANCE_KEY);
-        long completedDuration = resultFromRecordFragment.getLong(INTENT_TIME_KEY);
-        list = (ArrayList<LatLng>) resultFromRecordFragment.get(INTENT_LATLNG_LIST);
-        String formattedDate = resultFromRecordFragment.getString(INTENT_DATE_CREATED);
-        byte[] byteArray = resultFromRecordFragment.getByteArray(INTENT_IMAGE);
-        bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-
-
-        int runningPoint= (int) completedDist;
-
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference userInfoRef = database.getReference().child("UserInfo").child(firebaseUser.getUid());
-        DatabaseReference activityRef = database.getReference().child("Activity").child(firebaseUser.getUid());
-        DatabaseReference postRef = database.getReference().child("Post").child(firebaseUser.getUid());
-
-        userInfoRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                userInfo = task.getResult().getValue(UserInfo.class);
-            }
-        });
-        newActivityID = activityRef.push().getKey();
-        newPostID = postRef.push().getKey();
-
-        reference=FirebaseStorage.getInstance().getReference().child("imageMap");
-
-        pace = getPace(completedDist, completedDuration);
-
-        distanceTextView.setText(completedDist + " km");
-        timeTextView.setText(formatDuration(completedDuration));
-        paceTextView.setText(pace + " m/s");
-        runningPointTextView.setText(runningPoint+" điểm Running");
-
-        buttonSave.setOnClickListener(v -> {
-            uploadImage(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    downloadUrl = uri;
-                    Activity activity = new Activity(newActivityID,
-                            userInfo.getUserID(),
-                            formattedDate,
-                            completedDist,
-                            completedDuration,
-                            downloadUrl.toString(),
-                            pace,
-                            describeText.getText().toString(),
-                            list
-                    );
-                    activityRef.child(newActivityID).setValue(activity);
-
-                    List<Comment> commentsUserId = new ArrayList<>();
-                    List<String> likesUserId = new ArrayList<>();
-
-                    Post post = new Post(newPostID,
-                            commentsUserId,
-                            likesUserId,
-                            activity,
-                            userInfo.getUserID(),
-                            userInfo.getAvatarURI(),
-                            userInfo.getDisplayName()
-                    );
-                    postRef.child(newPostID).setValue(post);
-
-                    Intent point = new Intent();
-                    point.putExtra("point",runningPoint);
-                    getActivity().setResult(android.app.Activity.RESULT_OK,point);
-                    getActivity().finish();
-                }
-            },newActivityID);
-
-        });
-
-        buttonBack.setOnClickListener(new View.OnClickListener() {
+        binding.setLifecycleOwner(getActivity());
+        mRecordViewModel=new ViewModelProvider(getActivity()).get(RecordViewModel.class);
+        binding.setRecordViewModel(mRecordViewModel);
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
+            public void handleOnBackPressed() {
+              confirmCancelActivity();
             }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), callback);
+        binding.cancelButton.setOnClickListener(v-> confirmCancelActivity());
+        binding.saveButton.setOnClickListener(v->{
+            mRecordViewModel.onSaveClick(new UserViewModel.OnTaskComplete() {
+                @Override
+                public void onComplete(boolean result) {
+                    if(result) {
+                        Snackbar.make(view, "Lưu hoạt động thành công", Snackbar.LENGTH_LONG).show();
+                        Intent point = new Intent();
+                        point.putExtra("point",mRecordViewModel.runningPointAcquired.getValue());
+                        getActivity().setResult(android.app.Activity.RESULT_OK,point);
+                        getActivity().finish();
+                    }
+                    else
+                    {
+                        Snackbar.make(view, "Lưu hoạt động thất bại", Snackbar.LENGTH_LONG).show();
+                        getActivity().setResult(Activity.RESULT_CANCELED);
+                        getActivity().finish();
+                    }
+
+                }
+            });
         });
     }
 
-    public byte[] bitmapToByteArray(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        return bytes.toByteArray();
-    }
-    private void uploadImage(OnSuccessListener<Uri> mSuccessCallback,String imagePath) {
-        reference.child(imagePath).putBytes(bitmapToByteArray(getContext(),bitmap))
-       .addOnSuccessListener(taskSnapshot -> reference.child(imagePath).getDownloadUrl().addOnSuccessListener(mSuccessCallback));
+    void confirmCancelActivity()
+    {
+        mRecordViewModel.confirmDialog.show("Hủy bỏ hoạt động","Bạn có muốn hủy bỏ hoạt động hiện tại ?"
+                ,v->{ },v->{
+                    getActivity().finish();
+                });
     }
 
-    public String formatDuration(long pDuration) {
-        return DateUtils.formatElapsedTime(pDuration);
-    }
 
-    public double getPace(double distance, long time) {
-        double speed = (double) (distance * 1000 / time);
-        return  speed * 3.6;
-    }
 }

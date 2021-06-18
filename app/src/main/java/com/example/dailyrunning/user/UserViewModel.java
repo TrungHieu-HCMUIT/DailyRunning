@@ -29,12 +29,12 @@ import com.bumptech.glide.Glide;
 import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.GiftInfo;
-import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,7 +62,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -74,9 +74,9 @@ public class UserViewModel extends ViewModel {
     public Parcelable mGiftRecyclerViewState;
     public Integer mScrollViewPosition;
     private UserNavigator mUserNavigator;
-    private static final String EMAIL_PROVIDER_ID = "password";
-    private static final String GOOGLE_PROVIDER_ID = "google.com";
-    private static final String FACEBOOK_PROVIDER_ID = "facebook.com";
+    public static final String EMAIL_PROVIDER_ID = "password";
+    public static final String GOOGLE_PROVIDER_ID = "google.com";
+    public static final String FACEBOOK_PROVIDER_ID = "facebook.com";
     private MutableLiveData<List<GiftInfo>> gifts;
     private final DatabaseReference mUserInfoRef = FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<String> avatarUri;
@@ -134,7 +134,28 @@ public class UserViewModel extends ViewModel {
                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setPhotoUri(userAvatarUri).build();
                     assert userInfo != null;
                     userInfo.updateProfile(profileUpdates).addOnCompleteListener(task -> avatarUri.postValue(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString()));
+                    UserInfo newInfo=currentUser.getValue();
+                    newInfo.setAvatarURI(avatarUri.toString());
+                    currentUser.setValue(newInfo);
+                    ((Runnable) () -> updatePostData()).run();
                 }));
+
+    }
+    public void updatePostData()
+    {
+        DatabaseReference postRef=FirebaseDatabase.getInstance().getReference()
+                .child("Post").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        postRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                dataSnapshot.getChildren().forEach(snapshot->{
+                    Map<String,Object> newData=new HashMap<>();
+                    newData.put("ownerAvatarUrl",currentUser.getValue().getAvatarURI());
+                    newData.put("ownerName",currentUser.getValue().getDisplayName());
+                    snapshot.getRef().updateChildren(newData);
+                });
+            }
+        });
     }
 
     public void onChangeAvatarClick() {
@@ -299,7 +320,7 @@ public class UserViewModel extends ViewModel {
         LoginManager.getInstance().logOut();
     }
 
-    public void updateInfo(UserInfo mNewInfo, onUpdateCallback callBack) {
+    public void updateInfo(UserInfo mNewInfo, OnTaskComplete callBack) {
         mUserInfoRef.child(mNewInfo.getUserID()).setValue(mNewInfo).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 currentUser.postValue(mNewInfo);
@@ -330,7 +351,7 @@ public class UserViewModel extends ViewModel {
         mUserInfoRef.child(tempU.getUserID()).child("point").setValue(tempU.getPoint());
     }
 
-    public interface onUpdateCallback {
+    public interface OnTaskComplete {
         void onComplete(boolean result);
 
     }

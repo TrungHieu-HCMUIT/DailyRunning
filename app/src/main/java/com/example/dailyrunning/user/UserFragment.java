@@ -59,9 +59,7 @@ import static android.content.Context.JOB_SCHEDULER_SERVICE;
 public class UserFragment extends Fragment implements UserNavigator{
 
     private static final int RC_PHOTO_PICKER = 101;
-    private static final String EMAIL_PROVIDER_ID = "password";
-    private static final String GOOGLE_PROVIDER_ID = "google.com";
-    private static final String FACEBOOK_PROVIDER_ID = "facebook.com";
+
 
     private FirebaseAuth mFirebaseAuth;
 
@@ -129,7 +127,8 @@ public class UserFragment extends Fragment implements UserNavigator{
             mUserViewModel.fetchActivities();
             setUpTabLayout();
             setFollowCount();
-
+            //TODO TEST THIS
+            mUserViewModel.updatePostData();
             updateUI();
 
         });

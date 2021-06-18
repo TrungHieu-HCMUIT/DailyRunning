@@ -169,7 +169,7 @@ public class RegisterAddInfoFragment extends Fragment {
                     Toast.makeText(getContext(), "Cập nhật thông tin thất bại"+ exception.toString(), Toast.LENGTH_SHORT).show();
                     exception.printStackTrace();
                 }
-            });
+            },getContext());
         });
 
 

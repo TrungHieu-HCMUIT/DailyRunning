@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
@@ -111,29 +112,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     //region firebaseAuth
-/*
-    private void showEmailVerificationDialog() {
-        new AlertDialog.Builder(mContext)
-                .setTitle("Verify your email")
-                .setMessage("Please verify your email to continue using our app")
 
-
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        mFirebaseAuth.getCurrentUser().sendEmailVerification();
-                    }
-                })
-
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mFirebaseAuth.signOut();
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -154,10 +133,8 @@ public class HomeActivity extends AppCompatActivity {
                 });
                 bottomNavigationViewEx.setSelectedItemId(R.id.homeFragment);
 
-                //update ui
-                //Toast.makeText(this, "Welcome " + mUserViewModel.currentUser.getValue().getDisplayName(), Toast.LENGTH_SHORT).show();
-            } else if (resultCode == RESULT_CANCELED) {
-                //Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
+                } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
                 finish();
             }
         } else if (requestCode == MapsActivity.RECORD_CODE) {
@@ -165,7 +142,7 @@ public class HomeActivity extends AppCompatActivity {
                 int pointAcquired=data.getIntExtra("point",0);
                 mUserViewModel.addPoint(pointAcquired);
             } else if (resultCode == RESULT_CANCELED) {
-                //Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
 
             }
 
