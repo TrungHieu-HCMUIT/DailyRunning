@@ -75,7 +75,11 @@ public class UserViewModel extends ViewModel {
     private  MutableLiveData<List<GiftInfo>> gifts;
     private final DatabaseReference mUserInfoRef= FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<String> avatarUri;
+    public MutableLiveData<Integer> step=new MutableLiveData<>();
 
+    {
+        step.setValue(0);
+    }
 
     public LiveData<UserInfo> getCurrentUser()
     {

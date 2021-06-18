@@ -119,6 +119,7 @@ public class UserFragment extends Fragment implements UserNavigator {
             mUserViewModel.fetchActivities();
             setUpTabLayout();
             updateUI();
+            setFollowCount();
 
         });
 
@@ -126,7 +127,6 @@ public class UserFragment extends Fragment implements UserNavigator {
 
         mNavController = Navigation.findNavController(view);
         restoreState();
-        setFollowCount();
     }
 
 
@@ -158,7 +158,9 @@ public class UserFragment extends Fragment implements UserNavigator {
         setUpTabLayout();
         setUpGiftRecyclerView();
 
-        Singleton.getInstance().setTV(binding.textView9);
+
+
+        Singleton.getInstance().setTV(binding.stepTextView);
 
         db = new DatabaseHandler(mContext.getContext());
         db.openDatabase();
@@ -166,9 +168,10 @@ public class UserFragment extends Fragment implements UserNavigator {
         Log.d("phu1",task.getTask()+"");
         Log.d("phu2",task.getId()+"");
         Bundle bundle= getArguments();
-        if (bundle!=null)
-            binding.textView9.setText(bundle.getInt("Step"));
-
+        if (bundle!=null) {
+            //binding.stepTextView.setText(bundle.getInt("Step"));
+            mUserViewModel.step.setValue(bundle.getInt("Step"));
+        }
         Singleton.getInstance().getTV().setText(task.getId() + TEXT_NUM_STEPS);
     }
 
