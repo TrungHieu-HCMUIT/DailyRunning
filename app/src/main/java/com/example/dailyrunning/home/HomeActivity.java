@@ -1,34 +1,40 @@
 package com.example.dailyrunning.home;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.record.MapsActivity;
-import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.user.UserViewModel;
+import com.example.dailyrunning.user.stepcounter.DatabaseHandler;
+import com.example.dailyrunning.user.stepcounter.MyPeriodicWork;
+import com.example.dailyrunning.user.stepcounter.Singleton;
+import com.example.dailyrunning.user.stepcounter.StepModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+
+import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -48,6 +54,9 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView image;
     private HomeViewModel mHomeViewModel;
     private BottomNavigationViewEx bottomNavigationViewEx;
+
+    private PeriodicWorkRequest mPeriodicWorkRequest;
+    private DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,10 +98,18 @@ public class HomeActivity extends AppCompatActivity {
         // Binding views by its id
         initWidgets();
 
+        db = new DatabaseHandler(this);
+        db.openDatabase();
 
         // Enable BottomNavigationViewEx
         setupBottomNavView();
 
+        // This is PeriodicWorkRequest it repeats every 10 Hours.
+        mPeriodicWorkRequest = new PeriodicWorkRequest.Builder(MyPeriodicWork.class,
+                15, TimeUnit.MINUTES)
+                .addTag("periodicWorkRequest")
+                .build();
+        WorkManager.getInstance().enqueue(mPeriodicWorkRequest);
 
     }
 

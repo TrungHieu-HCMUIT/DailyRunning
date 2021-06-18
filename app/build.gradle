@@ -164,13 +164,10 @@ dependencies {
     //lottie animation
     implementation 'com.airbnb.android:lottie:3.7.0'
 
-
-
-
-
-
-
-
+    //workmamager
+    def versions_work = "2.5.0"
+    implementation "androidx.work:work-runtime:$versions_work"
+    
 
 
 

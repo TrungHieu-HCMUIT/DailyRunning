@@ -1,7 +1,10 @@
+
 package com.example.dailyrunning.user;
 
 
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.text.Editable;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.InverseBindingAdapter;
@@ -19,15 +23,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.bumptech.glide.Glide;
 import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.GiftInfo;
-import com.example.dailyrunning.user.UserViewModel;
-import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.model.UserInfo;
-
-import com.bumptech.glide.Glide;
+import com.example.dailyrunning.user.stepcounter.StepDetector;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
@@ -73,6 +75,7 @@ public class UserViewModel extends ViewModel {
     private  MutableLiveData<List<GiftInfo>> gifts;
     private final DatabaseReference mUserInfoRef= FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<String> avatarUri;
+
 
     public LiveData<UserInfo> getCurrentUser()
     {
@@ -178,23 +181,23 @@ public class UserViewModel extends ViewModel {
     @BindingAdapter({"dobTextAttrChanged"})
     public static void setListener(TextInputEditText view, InverseBindingListener listener)
     {
-       if (listener!=null)
-           view.addTextChangedListener(new TextWatcher() {
-               @Override
-               public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        if (listener!=null)
+            view.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-               }
+                }
 
-               @Override
-               public void onTextChanged(CharSequence s, int start, int before, int count) {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-               }
+                }
 
-               @Override
-               public void afterTextChanged(Editable s) {
+                @Override
+                public void afterTextChanged(Editable s) {
                     listener.onChange();
-               }
-           });
+                }
+            });
     }
     @InverseBindingAdapter(attribute = "dobText")
     public static Date getText(View view)
@@ -233,12 +236,12 @@ public class UserViewModel extends ViewModel {
     public static void setNumberPickerListener(NumberPicker view, InverseBindingListener listener)
     {
         if (listener!=null)
-           view.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-               @Override
-               public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                   listener.onChange();
-               }
-           });
+            view.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                @Override
+                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                    listener.onChange();
+                }
+            });
     }
     @InverseBindingAdapter(attribute = "pickerValue")
     public static  int getPickerValue(NumberPicker view)
@@ -328,10 +331,10 @@ public class UserViewModel extends ViewModel {
     }
 
     public void addPoint(int pointAcquired) {
-       UserInfo tempU= currentUser.getValue();
-       tempU.addPoint(pointAcquired);
-       currentUser.setValue(tempU);
-       mUserInfoRef.child(tempU.getUserID()).child("point").setValue(tempU.getPoint());
+        UserInfo tempU= currentUser.getValue();
+        tempU.addPoint(pointAcquired);
+        currentUser.setValue(tempU);
+        mUserInfoRef.child(tempU.getUserID()).child("point").setValue(tempU.getPoint());
     }
 
     public interface onUpdateCallback{
@@ -402,7 +405,6 @@ public class UserViewModel extends ViewModel {
                 map.get("pictureURI").toString(),
                 pace,
                 map.get("describe").toString(),
-                // TODO: chỗ này tự sửa nha
                 (ArrayList<LatLng>) map.get("latLngArrayList")
         );
     }
