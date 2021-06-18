@@ -19,7 +19,6 @@ import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.generated.callback.OnClickListener;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.Comment;
-import com.example.dailyrunning.model.Like;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.user.UserViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -342,7 +341,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         String key = postRef.push().getKey();
         Post newPost = new Post(key,
                 new ArrayList<Comment>(),
-                new ArrayList<Like>(),
+                new ArrayList<String>(),
                 activity,
                 user.getUid(),
                 user.getPhotoUrl().toString(),

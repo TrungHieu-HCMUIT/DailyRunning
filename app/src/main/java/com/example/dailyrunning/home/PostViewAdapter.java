@@ -134,12 +134,13 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.pressToLikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                postsList.get(position).getLikesUserId().add(currentUserId);
                 DatabaseReference likesUserRef = FirebaseDatabase.getInstance().getReference()
                         .child("Post")
                         .child(postsList.get(position).getOwnerID())
                         .child(postsList.get(position).getPostID())
                         .child("likesUserId");
-                likesUserRef.child(currentUserId).setValue(currentUserId);
+                likesUserRef.setValue(postsList.get(position).getLikesUserId());
                 setViewToUnlike(holder.pressToLikeBtn, holder.pressToUnlikeBtn);
                 likesUserRef.get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -152,12 +153,13 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.pressToUnlikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                postsList.get(position).getLikesUserId().removeIf(userID-> userID.equals(currentUserId));
                 DatabaseReference likesUserRef = FirebaseDatabase.getInstance().getReference()
                         .child("Post")
                         .child(postsList.get(position).getOwnerID())
                         .child(postsList.get(position).getPostID())
                         .child("likesUserId");
-                likesUserRef.child(currentUserId).removeValue();
+                likesUserRef.setValue(postsList.get(position).getLikesUserId());
                 setViewToLike(holder.pressToLikeBtn, holder.pressToUnlikeBtn);
                 likesUserRef.get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

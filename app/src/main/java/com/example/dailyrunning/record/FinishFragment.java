@@ -28,7 +28,6 @@ import com.example.dailyrunning.databinding.FragmentFinishBinding;
 import com.example.dailyrunning.model.Comment;
 import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.R;
-import com.example.dailyrunning.model.Like;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.user.UserViewModel;
