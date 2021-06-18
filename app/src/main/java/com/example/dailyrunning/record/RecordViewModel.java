@@ -330,6 +330,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         {
             Log.e("Save Activity Err",e.getMessage());
             onTaskComplete.onComplete(false);
+            loadingDialog.dismissDialog();
         }
 
 
