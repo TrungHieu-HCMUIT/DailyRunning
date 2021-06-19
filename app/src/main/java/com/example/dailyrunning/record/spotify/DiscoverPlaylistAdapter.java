@@ -1,5 +1,7 @@
 package com.example.dailyrunning.record.spotify;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,10 +27,10 @@ import kaaes.spotify.webapi.android.models.PlaylistSimple;
 public class DiscoverPlaylistAdapter extends RecyclerView.Adapter<DiscoverPlaylistAdapter.ViewHolder> {
     private SpotifyViewModel mSpotifyViewModel;
     private NavController mNavController;
-    DiscoverPlaylistAdapter(List<PlaylistSimple> data, DiscoverFragment callFragment) {
+    DiscoverPlaylistAdapter(List<PlaylistSimple> data, Context context) {
         playlists = data;
-        mNavController= Navigation.findNavController(callFragment.getActivity(),R.id.spotify_fragment_container);
-        mSpotifyViewModel=new ViewModelProvider(callFragment.getActivity()).get(SpotifyViewModel.class);
+        mNavController= Navigation.findNavController((Activity) context,R.id.spotify_fragment_container);
+        mSpotifyViewModel=new ViewModelProvider((ViewModelStoreOwner) context).get(SpotifyViewModel.class);
     }
 
     List<PlaylistSimple> playlists;

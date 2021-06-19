@@ -2,7 +2,9 @@ package com.example.dailyrunning.home.post;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,13 +14,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.dailyrunning.home.HomeActivity;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -26,7 +34,7 @@ import org.joda.time.Period;
 
 import java.util.ArrayList;
 
-public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder>{
+public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder> {
     private HomeActivity homeActivity;
     private String currentUserId;
     private ArrayList<Post> postsList;
@@ -46,6 +54,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         public Button commentBtn;
         public TextView likeTv;
         public TextView commentTv;
+        public ShimmerFrameLayout shimmerFrameLayout;
 
         public ViewHolder(@NonNull View view) {
             super(view);
@@ -63,6 +72,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             commentBtn = (Button) view.findViewById(R.id.btnComment);
             likeTv = (TextView) view.findViewById(R.id.tvNumOfLike);
             commentTv = (TextView) view.findViewById(R.id.tvNumOfComment);
+            shimmerFrameLayout = view.findViewById(R.id.act_image_shimmer);
         }
     }
 
@@ -76,7 +86,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_post,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_post, parent, false);
         return new ViewHolder(view);
     }
 
@@ -88,15 +98,31 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.content.setText(postsList.get(position).getActivity().getDescribe());
         holder.distance.setText(String.format("%.2f", postsList.get(position).getActivity().getDistance() / 1000) + " Km");
         holder.duration.setText(getTimeWorkingString(postsList.get(position).getActivity().getDuration()));
-        holder.pace.setText(postsList.get(position).getActivity().getPace()+ " m/s");
-        Glide.with(holder.itemView.getContext()).load(postsList.get(position).getActivity().getPictureURI()).into(holder.image);
-        holder.image.setOnClickListener(v->{
+        holder.pace.setText(postsList.get(position).getActivity().getPace() + " m/s");
+        Glide.with(holder.itemView.getContext())
+                .load(postsList.get(position).getActivity().getPictureURI())
+                .addListener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable @org.jetbrains.annotations.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.shimmerFrameLayout.hideShimmer();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+
+                        holder.shimmerFrameLayout.hideShimmer();
+                        return false;
+                    }
+                })
+                .into(holder.image);
+        holder.image.setOnClickListener(v -> {
             homeActivity.hideNavBar();
-            homeActivity.onPostSelected(postsList.get(position),true);
+            homeActivity.onPostSelected(postsList.get(position), true);
         });
-        holder.commentBtn.setOnClickListener(v->{
+        holder.commentBtn.setOnClickListener(v -> {
             homeActivity.hideNavBar();
-            homeActivity.onPostSelected(postsList.get(position),false);
+            homeActivity.onPostSelected(postsList.get(position), false);
 
         });
 
@@ -111,8 +137,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         if (postsList.get(position).getLikesUserId().contains(currentUserId)) {
             holder.pressToLikeBtn.setVisibility(View.INVISIBLE);
             holder.pressToUnlikeBtn.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             holder.pressToLikeBtn.setVisibility(View.VISIBLE);
             holder.pressToUnlikeBtn.setVisibility(View.INVISIBLE);
         }
@@ -161,7 +186,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.pressToUnlikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postsList.get(position).getLikesUserId().removeIf(userID-> userID.equals(currentUserId));
+                postsList.get(position).getLikesUserId().removeIf(userID -> userID.equals(currentUserId));
                 DatabaseReference likesUserRef = FirebaseDatabase.getInstance().getReference()
                         .child("Post")
                         .child(postsList.get(position).getOwnerID())
@@ -185,6 +210,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
     public int getItemCount() {
         return postsList.size();
     }
+
     private Bitmap base64ToBitmap(String b64) {
         byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
         return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
@@ -200,9 +226,10 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         unlike.setVisibility(View.VISIBLE);
     }
 
-    public interface PostUtils{
-        void onPostSelected(Post post,boolean isMap);
+    public interface PostUtils {
+        void onPostSelected(Post post, boolean isMap);
     }
+
     String getTimeWorkingString(long timeWorkingInSec) {
         Period period = new Period(timeWorkingInSec * 1000L);
         String time = String.format("%02d:%02d:%02d", period.getHours(), period.getMinutes(), period.getSeconds());

@@ -29,14 +29,14 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.ViewHo
     private List<PlaylistSimple> playlistInfos_copy;
     private SpotifyViewModel mSpotifyViewModel;
     private NavController mNavController;
-    private MyMusicFragment parentFragment;
+    private Context context;
 
-    public PlaylistAdapter(List<PlaylistSimple> data, MyMusicFragment parentFragment) {
+    public PlaylistAdapter(List<PlaylistSimple> data, Context context) {
         playlistInfos = data;
         playlistInfos_copy = new ArrayList<>();
         playlistInfos_copy.addAll(data);
-        this.parentFragment=parentFragment;
-        mSpotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) parentFragment.getActivity()).get(SpotifyViewModel.class);
+        this.context=context;
+        mSpotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(SpotifyViewModel.class);
     }
 
 

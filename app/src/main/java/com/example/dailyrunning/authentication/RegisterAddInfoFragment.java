@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -65,11 +66,11 @@ public class RegisterAddInfoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mParent=getActivity();
+        mParent= (FragmentActivity) getContext();
         rootView = view;
         initView();
         mUserInfoRef= FirebaseDatabase.getInstance().getReference().child("UserInfo");
-        mLoginViewModel=new ViewModelProvider(getActivity()).get(LoginViewModel.class);
+        mLoginViewModel=new ViewModelProvider(mParent).get(LoginViewModel.class);
         binding.setLoginViewModel(mLoginViewModel);
         binding.setLifecycleOwner(getActivity());
         mNavController=Navigation.findNavController(getActivity(),R.id.login_fragment_container);

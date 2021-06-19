@@ -1,5 +1,6 @@
 package com.example.dailyrunning.record.spotify;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -23,6 +26,7 @@ import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,15 +64,25 @@ public class MyMusicFragment extends Fragment {
     private TextInputLayout mSearchTextInputLayout;
     private View root;
     private RestoreStateViewModel mRestoreStateViewModel;
-
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        root = inflater.inflate(R.layout.fragment_my_music, container, false);
+
+        // Inflate the layout for this fragment
+        return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mContext=getContext();
         spotifyViewModel = new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
         mRestoreStateViewModel= new ViewModelProvider(getActivity()).get(RestoreStateViewModel.class);
-        root = inflater.inflate(R.layout.fragment_my_music, container, false);
+
         mSearchTextInputLayout = root.findViewById(R.id.search_text_input_layout);
         mNavController = Navigation.findNavController(getActivity(), R.id.spotify_fragment_container);
 
@@ -77,8 +91,6 @@ public class MyMusicFragment extends Fragment {
         });
         initRecyclerView();
         spotifyAPI();
-        // Inflate the layout for this fragment
-        return root;
     }
 
     private void initRecyclerView()
@@ -90,7 +102,7 @@ public class MyMusicFragment extends Fragment {
     }
     private void workWithPlaylistRecyclerView() {
 
-        playlistAdapter = new PlaylistAdapter(playlistSimples, this);
+        playlistAdapter = new PlaylistAdapter(playlistSimples,mContext);
         mRestoreStateViewModel.mPlaylistAdapter.setValue(playlistAdapter);
         mMyPlaylistRecyclerView.setAdapter(playlistAdapter);
     }

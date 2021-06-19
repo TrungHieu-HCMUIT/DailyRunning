@@ -1,5 +1,6 @@
 package com.example.dailyrunning.record.spotify;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyrunning.R;
 import com.google.android.material.textfield.TextInputLayout;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -34,17 +39,23 @@ public class DiscoverFragment extends Fragment {
     private DiscoverPlaylistAdapter mDiscoverPlaylistAdapter;
     public SpotifyViewModel mSpotifyViewModel;
     private RestoreStateViewModel mRestoreStateViewModel;
-
+    private Context mContext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_discover, container, false);
-        findView();
-        init();
+
         return rootView;
     }
 
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mContext=getContext();
+        findView();
+        init();
+    }
 
     private void init() {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
@@ -122,7 +133,7 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void updateRecyclerView(List<PlaylistSimple> data) {
-        mDiscoverPlaylistAdapter = new DiscoverPlaylistAdapter(data, this);
+        mDiscoverPlaylistAdapter = new DiscoverPlaylistAdapter(data, mContext);
         mRecyclerView.setAdapter(mDiscoverPlaylistAdapter);
     }
 
