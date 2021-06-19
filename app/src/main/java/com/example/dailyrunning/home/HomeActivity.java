@@ -25,6 +25,9 @@ import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.record.MapsActivity;
 import com.example.dailyrunning.user.UserViewModel;
 import com.example.dailyrunning.utils.RunningLoadingDialog;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -41,7 +44,8 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-
+    public static BitmapDescriptor startMarker;
+    public static BitmapDescriptor endMarker;
     //Viewmodel to exchange data between fragment or activity
     private UserViewModel mUserViewModel;
     private Context mContext = HomeActivity.this;
@@ -78,7 +82,10 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
         // Binding views by its id
         initWidgets();
+        MapsInitializer.initialize(this);
 
+        startMarker= BitmapDescriptorFactory.fromResource(R.drawable.marker_start);
+        endMarker=BitmapDescriptorFactory.fromResource(R.drawable.marker_end);
 
         // Enable BottomNavigationViewEx
         setupBottomNavView();

@@ -101,13 +101,13 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         final LatLngBounds bounds = builder.build();
         mMap.addMarker(new MarkerOptions()
-                .icon(MapsActivity.startMarker)
+                .icon(HomeActivity.startMarker)
                 .position(listDraw.get(0))
                 .zIndex(2)
                 .draggable(false)
                 .anchor(0.5f, 1));
         mMap.addMarker(new MarkerOptions()
-                .icon(MapsActivity.endMarker)
+                .icon(HomeActivity.endMarker)
                 .position(listDraw.get(listDraw.size() - 1))
                 .zIndex(2)
                 .draggable(false)

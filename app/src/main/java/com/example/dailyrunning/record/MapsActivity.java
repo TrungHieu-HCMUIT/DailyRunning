@@ -66,8 +66,8 @@ public class MapsActivity extends FragmentActivity implements RecordViewModel.Wo
     private SpotifyViewModel mSpotifyViewModel;
     private RecordViewModel mRecordViewModel;
     final int CHECK_PERMISSION=3003;
-    public static BitmapDescriptor startMarker=BitmapDescriptorFactory.fromResource(R.drawable.marker_start);
-    public static BitmapDescriptor endMarker=BitmapDescriptorFactory.fromResource(R.drawable.marker_end);
+    public static BitmapDescriptor startMarker;
+    public static BitmapDescriptor endMarker;
     private RunningLoadingDialog loadingDialog;
     private ConfirmDialog confirmDialog;
 
@@ -84,7 +84,8 @@ public class MapsActivity extends FragmentActivity implements RecordViewModel.Wo
         mRecordViewModel.loadingDialog=this;
         mRecordViewModel.confirmDialog=this;
         MapsInitializer.initialize(this);
-
+        startMarker=BitmapDescriptorFactory.fromResource(R.drawable.marker_start);
+        endMarker=BitmapDescriptorFactory.fromResource(R.drawable.marker_end);
 
     }
 
