@@ -20,10 +20,13 @@ import android.widget.Toast;
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginViewModel;
+import com.example.dailyrunning.home.post.PostViewAdapter;
+import com.example.dailyrunning.home.post.PostViewModel;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.record.MapsActivity;
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.user.UserViewModel;
+import com.example.dailyrunning.utils.RunningLoadingDialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,7 +38,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements PostViewAdapter.PostUtils, LoginViewModel.LoadingDialog {
 
     private static final int RC_SIGN_IN = 1;
     private FirebaseDatabase mFirebaseDatabase;
@@ -53,7 +56,8 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView image;
     private HomeViewModel mHomeViewModel;
     private BottomNavigationViewEx bottomNavigationViewEx;
-
+    private PostViewModel mPostViewModel;
+    private RunningLoadingDialog mLoadingDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //init firebaseAuth
@@ -61,24 +65,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        List<Post> list = new ArrayList<>();
-
-      /*  // Add code to print out the key hash
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.example.dailyrunning",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }*/
-
+        mLoadingDialog=new RunningLoadingDialog();
+        showDialog();
         //init firebase database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUserInfoRef = mFirebaseDatabase.getReference().child("UserInfo");
@@ -87,8 +75,10 @@ public class HomeActivity extends AppCompatActivity {
         //init viewmodel
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mHomeViewModel=new ViewModelProvider(this).get(HomeViewModel.class);
+        mPostViewModel=new ViewModelProvider(this).get(PostViewModel.class);
         //
         mHomeViewModel.mHomeActivity.setValue(this);
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         setUpAuthStateListener();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
@@ -229,4 +219,39 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onPostSelected(Post post,boolean isMap) {
+        mPostViewModel.selectedPost.setValue(post);
+        Log.i("OnMapSelected",post.getPostID());
+    }
+
+    @Override
+    public void showDialog() {
+        mLoadingDialog.show(getSupportFragmentManager(),"HomeActivityLoading");
+    }
+
+    @Override
+    public void dismissDialog() {
+        mLoadingDialog.dismiss();
+    }
 }
+
+
+
+
+
+/*  // Add code to print out the key hash
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.example.dailyrunning",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }*/

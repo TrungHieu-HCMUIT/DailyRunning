@@ -156,8 +156,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tvPace"
                 app:layout_constraintTop_toBottomOf="@+id/tvPace" />
 
-            <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+            <ImageView
                 android:id="@+id/ivMap"
                 android:layout_width="0dp"
                 android:layout_height="180dp"

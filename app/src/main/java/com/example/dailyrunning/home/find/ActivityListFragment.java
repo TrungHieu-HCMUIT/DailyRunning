@@ -10,13 +10,13 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dailyrunning.databinding.FragmentActivityListBinding;
-import com.example.dailyrunning.home.PostViewAdapter;
+import com.example.dailyrunning.home.HomeActivity;
+import com.example.dailyrunning.home.post.PostViewAdapter;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.user.UserViewModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,7 +60,7 @@ public class ActivityListFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
 
         // init recyclerView
-        postViewAdapter = new PostViewAdapter(getContext(), FirebaseAuth.getInstance().getUid(), postsList, mNavController);
+        postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), FirebaseAuth.getInstance().getUid(), postsList, mNavController);
         binding.activitiesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.activitiesRecyclerView.setAdapter(postViewAdapter);
 

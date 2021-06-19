@@ -18,7 +18,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.dailyrunning.model.Activity;
+import com.example.dailyrunning.home.post.PostViewAdapter;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserViewModel;
@@ -61,7 +61,7 @@ public class HomeUserFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
         populateData();
-        postViewAdapter = new PostViewAdapter(context, FirebaseAuth.getInstance().getUid(), postList, mNavController);
+        postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), FirebaseAuth.getInstance().getUid(), postList, mNavController);
         recyclerView.setAdapter(postViewAdapter);
         mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         if(mHomeViewModel.userRecyclerViewState !=null)
@@ -89,7 +89,7 @@ public class HomeUserFragment extends Fragment {
                                 // TODO: handle the post
                                 Post post = postSnapshot.getValue(Post.class);
                                 postList.add(post);
-                                postViewAdapter.notifyDataSetChanged();
+                                postViewAdapter.notifyItemChanged(postList.size()-1);
                                 Collections.reverse(postList);
                             }
                         }

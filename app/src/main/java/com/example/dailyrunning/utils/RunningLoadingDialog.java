@@ -52,8 +52,11 @@ public class RunningLoadingDialog extends DialogFragment {
     }
 
     @Override
-    public void onDismiss(@NonNull @NotNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-
+    public void dismiss() {
+        Dialog dialogFrg=getDialog();
+        if (dialogFrg != null && dialogFrg.isShowing()) {
+            super.dismiss();
+        }
     }
+
 }

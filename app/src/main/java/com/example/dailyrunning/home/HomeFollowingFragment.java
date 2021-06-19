@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.dailyrunning.home.post.PostViewAdapter;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserViewModel;
@@ -24,7 +25,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class HomeFollowingFragment extends Fragment {
@@ -56,7 +56,7 @@ public class HomeFollowingFragment extends Fragment {
         mNavController = Navigation.findNavController(getActivity().findViewById(R.id.home_fragment_container));
 
         String userId = FirebaseAuth.getInstance().getUid();
-        postViewAdapter = new PostViewAdapter(context, userId, postList, mNavController);
+        postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), userId, postList, mNavController);
         recyclerView.setAdapter(postViewAdapter);
 
         mUserViewModel.getCurrentUser().observe(getActivity(),user->{
@@ -94,6 +94,8 @@ public class HomeFollowingFragment extends Fragment {
         postList.clear();
         postViewAdapter.notifyDataSetChanged();
         // get posts list
+        if(userIdList.isEmpty())
+            ((HomeActivity)getActivity()).dismissDialog();
         for (String userID: userIdList) {
             FirebaseDatabase.getInstance().getReference()
                     .child("Post")
@@ -107,6 +109,8 @@ public class HomeFollowingFragment extends Fragment {
                    }
                    postViewAdapter.notifyDataSetChanged();
                    sortPostList();
+                   ((HomeActivity)getActivity()).dismissDialog();
+
                }
             });
         }

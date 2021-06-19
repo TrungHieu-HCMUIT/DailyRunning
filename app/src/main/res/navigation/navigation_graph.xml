@@ -58,7 +58,7 @@
         tools:layout="@layout/fragment_update_info" />
     <fragment
         android:id="@+id/postDetailFragment"
-        android:name="com.example.dailyrunning.home.PostDetailFragment"
+        android:name="com.example.dailyrunning.home.post.PostDetailFragment"
         android:label="fragment_post_detail"
         tools:layout="@layout/fragment_post_detail" >
         <action

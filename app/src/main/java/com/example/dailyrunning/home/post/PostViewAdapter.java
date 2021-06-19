@@ -1,12 +1,10 @@
-package com.example.dailyrunning.home;
+package com.example.dailyrunning.home.post;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +17,16 @@ import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.dailyrunning.home.HomeActivity;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder>{
-    private Context mContext;
+    private HomeActivity homeActivity;
     private String currentUserId;
     private ArrayList<Post> postsList;
     private NavController navController;
@@ -67,8 +65,8 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         }
     }
 
-    public PostViewAdapter(Context mContext, String currentUserId, ArrayList<Post> postsList, NavController navController) {
-        this.mContext = mContext;
+    public PostViewAdapter(HomeActivity homeActivity, String currentUserId, ArrayList<Post> postsList, NavController navController) {
+        this.homeActivity = homeActivity;
         this.currentUserId = currentUserId;
         this.postsList = postsList;
         this.navController = navController;
@@ -83,14 +81,18 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Glide.with(mContext).load(postsList.get(position).getOwnerAvatarUrl()).into(holder.userAvatar);
+        Glide.with(holder.itemView.getContext()).load(postsList.get(position).getOwnerAvatarUrl()).into(holder.userAvatar);
         holder.userName.setText(postsList.get(position).getOwnerName());
         holder.dateTime.setText(postsList.get(position).getActivity().getDateCreated());
         holder.content.setText(postsList.get(position).getActivity().getDescribe());
         holder.distance.setText(postsList.get(position).getActivity().getDistance() + " km");
         holder.duration.setText(DateUtils.formatElapsedTime(postsList.get(position).getActivity().getDuration()));
         holder.pace.setText(postsList.get(position).getActivity().getPace()+ " m/s");
-        Glide.with(mContext).load(postsList.get(position).getActivity().getPictureURI()).into(holder.image);
+        Glide.with(holder.itemView.getContext()).load(postsList.get(position).getActivity().getPictureURI()).into(holder.image);
+        holder.image.setOnClickListener(v->{
+            homeActivity.hideNavBar();
+            homeActivity.onPostSelected(postsList.get(position),true);
+        });
 
         if (postsList.get(position).getLikesUserId() == null) {
             postsList.get(position).setLikesUserId(new ArrayList<>());
@@ -190,5 +192,9 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
     private void setViewToUnlike(View like, View unlike) {
         like.setVisibility(View.INVISIBLE);
         unlike.setVisibility(View.VISIBLE);
+    }
+
+    public interface PostUtils{
+        void onPostSelected(Post post,boolean isMap);
     }
 }

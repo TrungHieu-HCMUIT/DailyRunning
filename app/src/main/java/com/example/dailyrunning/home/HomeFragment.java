@@ -23,6 +23,9 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
+
 public class HomeFragment extends Fragment{
     private View rootView;
     private AppBarLayout appBarLayout;
@@ -73,13 +76,26 @@ public class HomeFragment extends Fragment{
                 userInfo -> {
                     if (userInfo == null)
                         return;
-                    mTopToolBar.setTitle("Good morning, " + userInfo.getDisplayName());
+
+                    mTopToolBar.setTitle(getGreet() + userInfo.getDisplayName());
                     Log.v("Home Fragment", "user updated " + mTopToolBar.getTitle() + "\n" + userInfo.getDisplayName());
 
                     //TODO: update post for new user
                 });
     }
 
+    private String getGreet()
+    {
+        int now=DateTime.now().get(DateTimeFieldType.clockhourOfDay());
+        if(now>=0 && now<12)
+
+            return "Good morning, ";
+
+        else if(now>=12 && now<=18)
+            return "Good afternoon, ";
+        else return "Good evening, ";
+
+    }
 
     // Handle tap and swipe
     private void setUpViewPager() {
@@ -124,7 +140,6 @@ public class HomeFragment extends Fragment{
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 super.onPageScrolled(mHomeViewModel.tabPosition, positionOffset, positionOffsetPixels);
-                Log.v("Error state", String.valueOf(viewPager2.getCurrentItem()) + " " + mHomeViewModel.tabPosition + " " + position);
 
             }
 

@@ -1,4 +1,4 @@
-package com.example.dailyrunning.home;
+package com.example.dailyrunning.home.post;
 
 import android.os.Bundle;
 
