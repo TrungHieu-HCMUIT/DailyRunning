@@ -111,7 +111,7 @@ public class UserViewModel extends ViewModel {
                 taskCallBack.onError(new Exception("Current user is null"));
                 return;
             }
-            currentUser.setValue(taskRes.getValue(UserInfo.class));
+            currentUser.postValue(taskRes.getValue(UserInfo.class));
             taskCallBack.onSuccess();
         });
     }

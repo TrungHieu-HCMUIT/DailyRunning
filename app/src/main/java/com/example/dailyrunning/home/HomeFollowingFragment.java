@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.dailyrunning.home.post.PostViewAdapter;
+import com.example.dailyrunning.home.post.PostViewModel;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserViewModel;
@@ -44,6 +45,7 @@ public class HomeFollowingFragment extends Fragment {
     private PostViewAdapter postViewAdapter;
     private HomeViewModel mHomeViewModel;
     private UserViewModel mUserViewModel;
+    private PostViewModel mPostViewModel;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class HomeFollowingFragment extends Fragment {
         context = getContext();
         recyclerView = (RecyclerView) view.findViewById(R.id.home_following_recycleView);
         mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(UserViewModel.class);
+        mPostViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(PostViewModel.class);
 
         mNavController = Navigation.findNavController((Activity) context,R.id.home_fragment_container);
 

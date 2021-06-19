@@ -15,6 +15,7 @@ import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.Comment;
 import com.example.dailyrunning.model.Post;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -29,14 +30,21 @@ import org.joda.time.Period;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.stream.IntStream;
 
 import static com.example.dailyrunning.record.RecordViewModel.activityDateFormat;
 
 public class PostViewModel extends ViewModel {
     private MutableLiveData<Post> selectedPost=new MutableLiveData<>();
+    public MutableLiveData<ArrayList<Post>> myPosts=new MutableLiveData<>();
+    private MutableLiveData<ArrayList<Post>> followingPosts=new MutableLiveData<>();
     DatabaseReference postRef;
+    ChildEventListener mMyPostEventListener;
     ValueEventListener postChangeListener;
+
     {
+        myPosts.setValue(new ArrayList<>());
+        followingPosts.setValue(new ArrayList<>());
         postChangeListener=new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -47,6 +55,7 @@ public class PostViewModel extends ViewModel {
                         temp.setComments(new ArrayList<>());
                         selectedPost.setValue(temp);
 
+
                 }
             }
 
@@ -55,7 +64,48 @@ public class PostViewModel extends ViewModel {
 
             }
         };
+        mMyPostEventListener=new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                ArrayList<Post> temp=myPosts.getValue();
+                temp.add(snapshot.getValue(Post.class));
+                myPosts.postValue(temp);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                ArrayList<Post> temp=myPosts.getValue();
+                Post changedPost=snapshot.getValue(Post.class);
+                if(temp!=null && changedPost!=null)
+                {
+                    Post postInMyPost=temp.stream()
+                            .filter(post -> post.getPostID().equals(changedPost.getPostID()))
+                            .findFirst().orElse(new Post());
+                    if(postInMyPost.getPostID()!=null)
+                    {
+                        temp.set(temp.indexOf(postInMyPost),changedPost);
+                    }
+                }
+                myPosts.postValue(temp);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        };
     }
+    //region selected post
     public LiveData<Post> getSelectedPost()
     {return selectedPost;}
     public void selectPost(Post newSelectedPost)
@@ -122,5 +172,16 @@ public class PostViewModel extends ViewModel {
             return;
         view.setText(newText);
     }
+
+    //endregion
+
+    //region my posts
+    public void getMyPosts()
+    {
+        DatabaseReference myPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        myPostRef.addChildEventListener(mMyPostEventListener);
+    }
+    //endregion
 
 }

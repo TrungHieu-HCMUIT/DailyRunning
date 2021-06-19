@@ -1,5 +1,6 @@
 package com.example.dailyrunning.home.post;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -41,6 +43,7 @@ public class PostDetailFragment extends Fragment {
 
     FragmentPostDetailBinding binding;
     PostViewModel mPostViewModel;
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +60,7 @@ public class PostDetailFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
+        mContext=getContext();
         initRecyclerView();
         loadContent();
         setUpPostCommentClick();
@@ -106,12 +109,14 @@ public class PostDetailFragment extends Fragment {
     private void initRecyclerView()
     {
         CommentAdapter adapter=new CommentAdapter((ArrayList<Comment>) mPostViewModel.getSelectedPost().getValue().getComments());
+
         binding.rvComment.setAdapter(adapter);
         binding.backButton.setOnClickListener(v->{getActivity().onBackPressed();});
 
-        mPostViewModel.getSelectedPost().observe(getActivity(),updatedPost->{
-            if(updatedPost!=null)
-            adapter.updateComment((ArrayList<Comment>) updatedPost.getComments());
+        mPostViewModel.getSelectedPost().observe((LifecycleOwner) mContext, updatedPost->{
+            if(updatedPost!=null && updatedPost.getComments().size()!=0) {
+                adapter.updateComment((ArrayList<Comment>) updatedPost.getComments());
+            }
         });
 
     }

@@ -1,6 +1,7 @@
 package com.example.dailyrunning.home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,12 +14,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyrunning.home.post.PostViewAdapter;
+import com.example.dailyrunning.home.post.PostViewModel;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserViewModel;
@@ -43,6 +47,7 @@ public class HomeUserFragment extends Fragment {
     private PostViewAdapter postViewAdapter;
     private UserViewModel mUserViewModel;
     private HomeViewModel mHomeViewModel;
+    private PostViewModel mPostViewModel;
     private NavController mNavController;
 
     @Override
@@ -58,11 +63,13 @@ public class HomeUserFragment extends Fragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.home_user_recycleView);
 
-        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        mNavController= Navigation.findNavController(getActivity(),R.id.home_fragment_container);
-        populateData();
+        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(UserViewModel.class);
+        mPostViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(PostViewModel.class);
+        mNavController= Navigation.findNavController((Activity) context,R.id.home_fragment_container);
+        //populateData();
         postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), FirebaseAuth.getInstance().getUid(), postList, mNavController);
         recyclerView.setAdapter(postViewAdapter);
+        listenMyPostChange();
         mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         if(mHomeViewModel.userRecyclerViewState !=null)
         {
@@ -71,7 +78,15 @@ public class HomeUserFragment extends Fragment {
         }
     }
 
-    @SuppressLint("RestrictedApi")
+    void listenMyPostChange()
+    {
+        mPostViewModel.myPosts.observe((LifecycleOwner) context, posts -> {
+            if(posts!=null)
+            {
+                postViewAdapter.setPost(posts);
+            }
+        });
+    }
     private void populateData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference rt = database.getReference();

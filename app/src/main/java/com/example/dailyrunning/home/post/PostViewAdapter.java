@@ -34,6 +34,8 @@ import org.joda.time.Period;
 
 import java.util.ArrayList;
 
+import io.square1.richtextlib.v2.parser.handlers.Markers;
+
 public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder> {
     private HomeActivity homeActivity;
     private String currentUserId;
@@ -82,6 +84,11 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         this.postsList = postsList;
         this.navController = navController;
     }
+    public void  setPost(ArrayList<Post> data)
+    {
+        this.postsList=data;
+        notifyDataSetChanged();
+    }
 
     @NonNull
     @Override
@@ -107,10 +114,8 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
                         holder.shimmerFrameLayout.hideShimmer();
                         return false;
                     }
-
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-
                         holder.shimmerFrameLayout.hideShimmer();
                         return false;
                     }
@@ -123,7 +128,6 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.commentBtn.setOnClickListener(v -> {
             homeActivity.hideNavBar();
             homeActivity.onPostSelected(postsList.get(position), false);
-
         });
 
         if (postsList.get(position).getLikesUserId() == null) {

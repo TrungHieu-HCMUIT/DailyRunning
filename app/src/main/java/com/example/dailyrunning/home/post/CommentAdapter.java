@@ -41,8 +41,7 @@ public class CommentAdapter extends   RecyclerView.Adapter<CommentAdapter.ViewHo
     }
     public void updateComment( ArrayList<Comment> newComment)
     {
-        comments.clear();
-        comments.addAll(newComment);
+       comments=newComment;
         notifyDataSetChanged();
     }
     @NonNull

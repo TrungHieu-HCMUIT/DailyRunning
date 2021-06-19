@@ -113,7 +113,6 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
                 mUserViewModel.getUserInfo(new LoginViewModel.TaskCallBack() {
                     @Override
                     public void onSuccess() {
-
                     }
 
                     @Override
@@ -133,7 +132,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
                 int pointAcquired=data.getIntExtra("point",0);
                 mUserViewModel.addPoint(pointAcquired);
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Canceled Record", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -158,6 +157,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
             mUserViewModel.getUserInfo(new LoginViewModel.TaskCallBack() {
                 @Override
                 public void onSuccess() {
+                    mPostViewModel.getMyPosts();
 
                 }
 
