@@ -5,18 +5,16 @@ public class Comment {
     private String content;
     private String dateCreated;
     private String ownerID;
-    private String ownerName;
-    private String avatarUrl;
+
 
     public Comment() { }
 
-    public Comment(String commentID, String content, String dateCreated, String ownerID, String ownerName, String avatarUrl) {
+    public Comment(String commentID, String content, String dateCreated, String ownerID) {
         this.commentID = commentID;
         this.content = content;
         this.dateCreated = dateCreated;
         this.ownerID = ownerID;
-        this.ownerName = ownerName;
-        this.avatarUrl = avatarUrl;
+
     }
 
     public String getCommentID() {
@@ -51,19 +49,4 @@ public class Comment {
         this.ownerID = ownerID;
     }
 
-    public String getOwnerName() {
-        return ownerName;
-    }
-
-    public void setOwnerName(String ownerName) {
-        this.ownerName = ownerName;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
 }

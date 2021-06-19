@@ -88,6 +88,8 @@ public class HomeUserFragment extends Fragment {
                             for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
                                 // TODO: handle the post
                                 Post post = postSnapshot.getValue(Post.class);
+                                if(post.getComments()==null)
+                                    post.setComments(new ArrayList<>());
                                 postList.add(post);
                                 postViewAdapter.notifyItemChanged(postList.size()-1);
                                 Collections.reverse(postList);

@@ -3,12 +3,11 @@ package com.example.dailyrunning.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class Post implements Comparable<Post>{
     private String postID;
-    private List<Comment> commentsUserId;
+    private List<Comment> comments;
     private List<String> likesUserId;
     private Activity activity;
     private String ownerID;
@@ -17,9 +16,9 @@ public class Post implements Comparable<Post>{
 
     public Post() {}
 
-    public Post(String postID, List<Comment> commentsUserId, List<String> likesUserId, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
+    public Post(String postID, List<Comment> comments, List<String> likesUserId, Activity activity, String ownerID, String ownerAvatarUrl, String ownerName) {
         this.postID = postID;
-        this.commentsUserId = commentsUserId;
+        this.comments = comments;
         this.likesUserId = likesUserId;
         this.activity = activity;
         this.ownerID = ownerID;
@@ -35,12 +34,12 @@ public class Post implements Comparable<Post>{
         this.postID = postID;
     }
 
-    public List<Comment> getCommentsUserId() {
-        return commentsUserId;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setCommentsUserId(List<Comment> commentsUserId) {
-        this.commentsUserId = commentsUserId;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public List<String> getLikesUserId() {

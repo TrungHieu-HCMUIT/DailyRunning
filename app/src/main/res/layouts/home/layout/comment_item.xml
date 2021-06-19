@@ -1,0 +1,85 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data></data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/avatar_shimmer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:clipChildren="true"
+            app:shimmer_auto_start="true"
+            app:shimmer_base_color="@color/color_palette_4"
+            app:shimmer_colored="true"
+            app:shimmer_highlight_color="@color/lighter_grey">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/avatar_image_view"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@mipmap/ic_launcher"
+                app:layout_constraintStart_toStartOf="parent"
+
+                tools:srcCompat="@tools:sample/avatars" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/comment_date_shimmer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/content_shimmer"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@id/avatar_shimmer"
+            android:clipChildren="true"
+            app:shimmer_auto_start="true"
+            app:shimmer_base_color="@color/color_palette_4"
+            app:shimmer_colored="true"
+            app:shimmer_highlight_color="@color/lighter_grey">
+
+            <TextView
+                android:id="@+id/comment_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/svn_avo"
+                android:text="TextView"
+                android:textColor="@color/primary_text"
+                android:textSize="13sp"
+                tools:text="31 may 2021" />
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/content_shimmer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_toEndOf="@id/avatar_shimmer"
+            android:clipChildren="true"
+            app:shimmer_auto_start="true"
+            app:shimmer_base_color="@color/color_palette_4"
+            app:shimmer_colored="true"
+            app:shimmer_highlight_color="@color/lighter_grey">
+            <io.square1.richtextlib.ui.RichContentView
+                android:id="@+id/content_rich_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/avatar_shimmer"
+
+                android:textSize="14sp"
+                />
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+    </RelativeLayout>
+</layout>

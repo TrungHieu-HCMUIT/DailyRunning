@@ -80,7 +80,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        List<LatLng> locations=mPostViewModel.selectedPost.getActivity()
+        List<LatLng> locations=mPostViewModel.getSelectedPost().getValue().getActivity()
                 .getLatLngArrayList().stream().map(item->new LatLng(item.getLatitude(),item.getLongitude())).collect(Collectors.toList());
         drawing(locations);
     }

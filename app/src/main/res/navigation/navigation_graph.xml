@@ -67,6 +67,7 @@
         <action
             android:id="@+id/action_postDetailFragment_to_otherUserProfile"
             app:destination="@id/otherUserProfile" />
+        <deepLink app:uri="android-app://com.example.dailyrunning/comment_view" />
     </fragment>
     <fragment
         android:id="@+id/mapViewFragment"
@@ -74,7 +75,7 @@
         android:label="fragment_map_view"
 
         tools:layout="@layout/fragment_map_view" >
-        <deepLink app:uri="android-app://com.example.dailyrunning" />
+        <deepLink app:uri="android-app://com.example.dailyrunning/map_view" />
     </fragment>
     <fragment
         android:id="@+id/otherUserProfile"

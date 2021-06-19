@@ -169,8 +169,12 @@ dependencies {
     //circle button
     implementation 'com.github.markushi:circlebutton:1.1'
 
+    //shimmer effect
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 
 
+    //rich text
+    implementation 'io.square1:richtext:5.0.3'
 
 
 

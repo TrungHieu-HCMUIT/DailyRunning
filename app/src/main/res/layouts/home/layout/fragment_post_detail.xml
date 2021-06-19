@@ -1,138 +1,196 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="postViewModel"
+            type="com.example.dailyrunning.home.post.PostViewModel" />
+    </data>
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/topAppBar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="42dp"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/comment"
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/rectangle_2"
-            android:fontFamily="@font/roboto_regular"
-            android:gravity="center"
-            android:text="@string/binhluan"
-            android:textColor="@color/white"
-            android:textSize="19sp" />
+            android:layout_height="56dp"
+            android:background="@color/color_palette_3"
+            android:layoutDirection="ltr"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:titleTextColor="@color/white">
 
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_margin="16dp"
+                android:background="@null"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_left" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Thông tin cá nhân"
+                android:textColor="@android:color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.Toolbar>
 
-    <TextView
-        android:id="@+id/post__detail_owner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/svn_avo_bold"
-        android:lineSpacingExtra="4dp"
-        android:text="TextView"
-
-        android:textColor="@android:color/black"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toEndOf="@+id/post__detail_owner_avatar"
-        app:layout_constraintTop_toBottomOf="@+id/topAppBar" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/post__detail_owner_avatar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@mipmap/ic_launcher"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topAppBar"
-        tools:srcCompat="@tools:sample/avatars" />
-
-
-    <TextView
-        android:id="@+id/post__detail_date_created"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="4dp"
-        android:fontFamily="@font/svn_avo"
-        android:text="TextView"
-        android:textColor="@color/primary_text"
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/post__detail_owner_avatar"
-        app:layout_constraintTop_toBottomOf="@+id/post__detail_owner"
-        tools:text="31 may 2021" />
-
-    <TextView
-
-        android:id="@+id/post_detail_describe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/svn_avo"
-        android:lineSpacingExtra="8dp"
-        android:text="Lorem ipsum dolor "
-        android:textColor="#666666"
-        android:textSize="10sp"
-        app:layout_constraintStart_toEndOf="@+id/post__detail_date_created"
-        app:layout_constraintTop_toBottomOf="@+id/topAppBar" />
-
-    <View
-        android:id="@+id/divider_top"
-        android:layout_width="0dp"
-        android:layout_height="0.6dp"
-        android:layout_marginTop="16dp"
-        android:background="#666666"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/post__detail_date_created" />
-
-
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/divider_top">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_comment"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <io.square1.richtextlib.ui.RichContentView
+                        android:id="@+id/post_detail_describe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/avatar_shimmer"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:textSize="14sp"
+                        />
+                    <!--<TextView
+                        android:id="@+id/post_detail_owner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_toEndOf="@id/post__detail_owner_avatar"
+                        android:fontFamily="@font/svn_avo_bold"
+                        android:lineSpacingExtra="4dp"
+                        android:text="@{postViewModel.selectedPost.ownerName}"
+                        tools:text="owner owner owner "
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/post_detail_describe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_toEndOf="@id/post_detail_owner"
+                        android:fontFamily="@font/svn_avo"
+                        android:textColor="#666666"
+                        android:textSize="14sp"
+                        tools:text="Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor Lorem ipsum dolor " />
+-->
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/avatar_shimmer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        android:clipChildren="true"
+                        app:shimmer_auto_start="true"
+                        app:shimmer_base_color="@color/color_palette_4"
+                        app:shimmer_colored="true"
+                        app:shimmer_highlight_color="@color/lighter_grey">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/post_detail_owner_avatar"
+                            android:layout_width="42dp"
+                            android:layout_height="42dp"
+                            android:src="@mipmap/ic_launcher"
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:srcCompat="@tools:sample/avatars" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+
+                    <TextView
+                        android:id="@+id/post_detail_date_created"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/post_detail_describe"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_toEndOf="@id/avatar_shimmer"
+                        android:fontFamily="@font/svn_avo"
+                        postDate="@{postViewModel.selectedPost.activity.dateCreated}"
+                        android:textColor="@color/primary_text"
+                        android:textSize="12sp"
+                        tools:text="31 may 2021" />
+
+                    </RelativeLayout>
+
+                <View
+                    android:id="@+id/divider_top"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.6dp"
+                    android:layout_marginTop="16dp"
+                    android:background="#666666" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="16dp"
+                        android:nestedScrollingEnabled="false"
+                        android:orientation="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+        </androidx.core.widget.NestedScrollView>
         <View
             android:id="@+id/divider_bottom"
             android:layout_width="match_parent"
             android:layout_height="0.6dp"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="96dp"
             android:background="#666666" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_gravity="bottom"
             android:orientation="horizontal">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/post_detail_currentuser_img"
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/current_user_avatar_shimmer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:clipChildren="true"
+                app:shimmer_auto_start="true"
                 android:layout_gravity="center_vertical"
-                android:src="@mipmap/ic_launcher"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:shimmer_base_color="@color/color_palette_4"
+                app:shimmer_colored="true"
+                app:shimmer_highlight_color="@color/lighter_grey">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/current_user_avatar"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:src="@mipmap/ic_launcher"
+                    tools:srcCompat="@tools:sample/avatars" />
+            </com.facebook.shimmer.ShimmerFrameLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/comment_box"
@@ -144,43 +202,37 @@
                 android:layout_marginEnd="16dp"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="0dp"
-                app:strokeColor="#666666"
-                app:strokeWidth="0.5dp">
-
-
+                app:strokeColor="@color/color_palette_3"
+                app:strokeWidth="2dp">
                 <EditText
                     android:id="@+id/comment_edt"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginEnd="56dp"
                     android:layout_weight="8"
                     android:background="@android:color/transparent"
-                    android:layout_marginEnd="56dp"
                     android:ems="10"
                     android:fontFamily="@font/svn_avo"
                     android:hint="Thêm bình luận..."
-                    android:inputType="textPersonName"
+                    android:inputType="textMultiLine"
                     android:paddingLeft="8dp"
                     android:textColor="#333333"
                     android:textSize="14sp" />
-
                 <TextView
                     android:id="@+id/publish_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
                     android:layout_gravity="right"
+                    android:layout_marginEnd="8dp"
                     android:fontFamily="@font/svn_avo_bold"
                     android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
                     android:paddingStart="8dp"
                     android:text="Đăng"
                     android:textColor="#666666"
                     android:textSize="14sp" />
-
-
             </com.google.android.material.card.MaterialCardView>
-
         </LinearLayout>
-    </FrameLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</layout>

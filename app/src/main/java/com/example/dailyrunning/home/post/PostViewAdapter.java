@@ -3,7 +3,6 @@ package com.example.dailyrunning.home.post;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.format.DateUtils;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,13 +94,18 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             homeActivity.hideNavBar();
             homeActivity.onPostSelected(postsList.get(position),true);
         });
+        holder.commentBtn.setOnClickListener(v->{
+            homeActivity.hideNavBar();
+            homeActivity.onPostSelected(postsList.get(position),false);
+
+        });
 
         if (postsList.get(position).getLikesUserId() == null) {
             postsList.get(position).setLikesUserId(new ArrayList<>());
         }
         holder.likeTv.setText("" + postsList.get(position).getLikesUserId().size());
-        if (postsList.get(position).getCommentsUserId() == null) {
-            postsList.get(position).setCommentsUserId(new ArrayList<>());
+        if (postsList.get(position).getComments() == null) {
+            postsList.get(position).setComments(new ArrayList<>());
         }
 
         if (postsList.get(position).getLikesUserId().contains(currentUserId)) {
@@ -174,7 +178,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             }
         });
 
-        holder.commentTv.setText("" + postsList.get(position).getCommentsUserId().size());
+        holder.commentTv.setText("" + postsList.get(position).getComments().size());
     }
 
     @Override

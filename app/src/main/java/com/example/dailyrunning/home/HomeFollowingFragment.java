@@ -1,12 +1,15 @@
 package com.example.dailyrunning.home;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +27,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -39,7 +44,6 @@ public class HomeFollowingFragment extends Fragment {
     private PostViewAdapter postViewAdapter;
     private HomeViewModel mHomeViewModel;
     private UserViewModel mUserViewModel;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,25 +51,31 @@ public class HomeFollowingFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(@NonNull @NotNull Context context) {
+        super.onAttach(context);
+
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         context = getContext();
         recyclerView = (RecyclerView) view.findViewById(R.id.home_following_recycleView);
-        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(UserViewModel.class);
 
-        mNavController = Navigation.findNavController(getActivity().findViewById(R.id.home_fragment_container));
+        mNavController = Navigation.findNavController((Activity) context,R.id.home_fragment_container);
 
         String userId = FirebaseAuth.getInstance().getUid();
-        postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), userId, postList, mNavController);
+        postViewAdapter = new PostViewAdapter((HomeActivity) context, userId, postList, mNavController);
         recyclerView.setAdapter(postViewAdapter);
 
-        mUserViewModel.getCurrentUser().observe(getActivity(),user->{
+        mUserViewModel.getCurrentUser().observe((LifecycleOwner) context, user->{
             if(user!=null)
-            userFollowingIdList = getUserFollowingIdList();
+                userFollowingIdList = getUserFollowingIdList();
 
         });
 
-        mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        mHomeViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(HomeViewModel.class);
         if (mHomeViewModel.followingRecyclerViewState != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(mHomeViewModel.followingRecyclerViewState);
             mHomeViewModel.followingRecyclerViewState = null;
@@ -95,7 +105,7 @@ public class HomeFollowingFragment extends Fragment {
         postViewAdapter.notifyDataSetChanged();
         // get posts list
         if(userIdList.isEmpty())
-            ((HomeActivity)getActivity()).dismissDialog();
+            ((HomeActivity)context).dismissDialog();
         for (String userID: userIdList) {
             FirebaseDatabase.getInstance().getReference()
                     .child("Post")
@@ -105,11 +115,13 @@ public class HomeFollowingFragment extends Fragment {
                    for (DataSnapshot ds: task.getResult().getChildren()) {
                        Post post = ds.getValue(Post.class);
                        Log.d(TAG, post.getPostID());
+                       if(post.getComments()==null)
+                           post.setComments(new ArrayList<>());
                        postList.add(post);
                    }
                    postViewAdapter.notifyDataSetChanged();
                    sortPostList();
-                   ((HomeActivity)getActivity()).dismissDialog();
+                   ((HomeActivity)context).dismissDialog();
 
                }
             });
