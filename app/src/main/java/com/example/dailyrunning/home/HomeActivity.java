@@ -11,23 +11,16 @@ import androidx.work.WorkManager;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.record.MapsActivity;
 import com.example.dailyrunning.user.UserViewModel;
-import com.example.dailyrunning.user.stepcounter.DatabaseHandler;
 import com.example.dailyrunning.user.stepcounter.MyPeriodicWork;
-import com.example.dailyrunning.user.stepcounter.Singleton;
-import com.example.dailyrunning.user.stepcounter.StepModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -58,7 +51,6 @@ public class HomeActivity extends AppCompatActivity {
     private BottomNavigationViewEx bottomNavigationViewEx;
 
     private PeriodicWorkRequest mPeriodicWorkRequest;
-    private DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,27 +92,17 @@ public class HomeActivity extends AppCompatActivity {
         // Binding views by its id
         initWidgets();
 
-        db = new DatabaseHandler(this);
-        db.openDatabase();
-        StepModel stepModel = new StepModel(0,0);
-        db.insertTask(stepModel);
         // Enable BottomNavigationViewEx
         setupBottomNavView();
 
-        // This is PeriodicWorkRequest it repeats every 10 Hours.
+        // This is PeriodicWorkRequest it repeats every 5 seconds.
         mPeriodicWorkRequest = new PeriodicWorkRequest.Builder(MyPeriodicWork.class,
-                15, TimeUnit.MINUTES)
+                5, TimeUnit.SECONDS)
                 .addTag("periodicWorkRequest")
                 .build();
         WorkManager.getInstance().enqueue(mPeriodicWorkRequest);
-//        StepModel task = db.getTasks("0");
-//        Log.d("phu1",task.getId()+"");
-//        Log.d("phu2",task.getTask()+"");
-//        if (Singleton.getInstance().getTV()!=null)
-//            Singleton.getInstance().getTV().setText(task.getTask() + TEXT_NUM_STEPS);
-//        else mUserViewModel.setStep(task.getId()+TEXT_NUM_STEPS);
-        String task = db.getLastTask();
-        mUserViewModel.setStep(task+TEXT_NUM_STEPS);
+
+
     }
 
     public void hideNavBar()

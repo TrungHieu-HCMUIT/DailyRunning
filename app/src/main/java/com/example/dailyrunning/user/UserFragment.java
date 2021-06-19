@@ -1,12 +1,10 @@
 package com.example.dailyrunning.user;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -14,8 +12,6 @@ import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +21,7 @@ import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
-import com.example.dailyrunning.user.stepcounter.DatabaseHandler;
 import com.example.dailyrunning.user.stepcounter.Singleton;
-import com.example.dailyrunning.user.stepcounter.StepModel;
 import com.example.dailyrunning.utils.GiftAdapter;
 import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.utils.MedalAdapter;
@@ -41,11 +35,12 @@ import com.google.firebase.storage.StorageReference;
 import com.ramotion.cardslider.CardSliderLayoutManager;
 import com.ramotion.cardslider.CardSnapHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
-import static android.content.Context.MODE_PRIVATE;
 
 public class UserFragment extends Fragment implements UserNavigator {
 
@@ -69,7 +64,11 @@ public class UserFragment extends Fragment implements UserNavigator {
     private HomeViewModel mHomeViewModel;
     FragmentUserBinding binding;
     private MedalDialog mMedalDialog;
-    private DatabaseHandler db;
+
+    Calendar c = Calendar.getInstance();;
+    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy");
+    String formattedDate = df.format(c.getTime());
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -120,7 +119,7 @@ public class UserFragment extends Fragment implements UserNavigator {
             setUpTabLayout();
             updateUI();
             setFollowCount();
-
+            setStep();
         });
 
         mHomeViewModel.mHomeActivity.getValue().showNavBar();
@@ -162,22 +161,6 @@ public class UserFragment extends Fragment implements UserNavigator {
 
         Singleton.getInstance().setTV(binding.stepTextView);
 
-        db = new DatabaseHandler(mContext.getContext());
-        db.openDatabase();
-<<<<<<< HEAD
-
-
-=======
-        StepModel task = db.getTasks("1");
-        Log.d("phu1",task.getTask()+"");
-        Log.d("phu2",task.getId()+"");
-        Bundle bundle= getArguments();
-        if (bundle!=null) {
-            //binding.stepTextView.setText(bundle.getInt("Step"));
-            mUserViewModel.step.setValue(bundle.getInt("Step"));
-        }
-        Singleton.getInstance().getTV().setText(task.getId() + TEXT_NUM_STEPS);
->>>>>>> b5f0a54651b2bf677f20be5b6a6d8a692b98ac8a
     }
 
     private void setUpRingChart() {
@@ -238,6 +221,16 @@ public class UserFragment extends Fragment implements UserNavigator {
 
     }
 
+    private void setStep()
+    {
+        FirebaseDatabase.getInstance().getReference()
+                .child("Step")
+                .child(mUserViewModel.getCurrentUser().getValue().getUserID())
+                .get().addOnCompleteListener(task -> {
+            long step = (long) task.getResult().child(formattedDate).getValue();
+           mUserViewModel.step.setValue(Integer.parseInt(String.valueOf(step)));
+        });
+    }
     private void setFollowCount() {
         FirebaseDatabase.getInstance().getReference()
                 .child("Follow")

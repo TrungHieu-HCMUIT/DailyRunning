@@ -324,12 +324,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/svn_avo"
-<<<<<<< HEAD
-=======
-                android:text="@{userViewModel.step +` bước`}"
->>>>>>> b5f0a54651b2bf677f20be5b6a6d8a692b98ac8a
+
                 android:textColor="@color/black"
-                android:text="@{userViewModel.step}"
+                android:text="@{userViewModel.step+` bước`}"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 

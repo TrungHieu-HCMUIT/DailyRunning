@@ -19,24 +19,26 @@ import androidx.work.WorkerParameters;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.user.UserFragment;
+import com.example.dailyrunning.user.UserViewModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static android.content.Context.SENSOR_SERVICE;
 
 public class MyPeriodicWork extends Worker implements SensorEventListener, StepListener{
-    private static final String DEFAULT_START_TIME = "00:00";
-    private static final String DEFAULT_END_TIME = "23:59";
-
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     private StepDetector simpleStepDetector;
     private SensorManager sensorManager;
@@ -44,46 +46,33 @@ public class MyPeriodicWork extends Worker implements SensorEventListener, StepL
     private static final String TEXT_NUM_STEPS = " bước";
 
     private Context applicationContext = getApplicationContext();
-    private DatabaseHandler db;
+
+    private Calendar c = Calendar.getInstance();;
+    private  SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy");
+    private  String formattedDate = df.format(c.getTime());
+
+    private  FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference step = database.getReference().child("Step");
+
     private int numSteps;
     public MyPeriodicWork(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        db = new DatabaseHandler(getApplicationContext());
-        db.openDatabase();
+
     }
 
     @NonNull
     @Override
     public Result doWork() {
-        DateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-
-        Calendar c = Calendar.getInstance();
-        Date date = c.getTime();
-        String formattedDate = dateFormat.format(date);
-        try {
-            Date currentDate = dateFormat.parse(formattedDate);
-            Date startDate = dateFormat.parse(DEFAULT_START_TIME);
-            Date endDate = dateFormat.parse(DEFAULT_END_TIME);
-            if (currentDate.after(startDate) && currentDate.before(endDate)) {
-                try {
-                    StepModel task1 = db.getTasks("0");
-                    numSteps=task1.getId();
-                    sensorManager = (SensorManager) applicationContext.getSystemService(SENSOR_SERVICE);
-                    accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                    simpleStepDetector = new StepDetector();
-                    simpleStepDetector.registerListener(this);
-                    sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
-                    // Sending Data to MainActivity.
-                } catch (Throwable throwable) {
-
-                    return Result.failure();
-                }
-            }
-        } catch (ParseException ignored) {
-
-        }
+        step.child(user.getUid()).get().addOnCompleteListener(task -> {
+            if (task.getResult().child(formattedDate).getValue()!=null){
+            long step = (long) task.getResult().child(formattedDate).getValue();
+            numSteps= Integer.parseInt(String.valueOf(step));}
+        });
+        stepCount();
         return Result.success();
     }
+
     private void sendNotification(String title, String message) {
         NotificationManager notificationManager = (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -117,9 +106,19 @@ public class MyPeriodicWork extends Worker implements SensorEventListener, StepL
     @Override
     public void step(long timeNs) {
         numSteps++;
-        Log.d("Step",numSteps+TEXT_NUM_STEPS);
+        Log.d("step",numSteps+"");
         if (Singleton.getInstance().getTV()!=null)
             Singleton.getInstance().getTV().setText(numSteps + TEXT_NUM_STEPS);
-        db.updateTask(0,numSteps+TEXT_NUM_STEPS);
+        Map<String, Object> stepUpdates = new HashMap<>();
+        stepUpdates.put(formattedDate, numSteps);
+        step.child(user.getUid()).updateChildren(stepUpdates);
+    }
+    void stepCount()
+    {
+        sensorManager = (SensorManager) applicationContext.getSystemService(SENSOR_SERVICE);
+        accel = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        simpleStepDetector = new StepDetector();
+        simpleStepDetector.registerListener(this);
+        sensorManager.registerListener(this, accel, SensorManager.SENSOR_DELAY_FASTEST);
     }
 }
