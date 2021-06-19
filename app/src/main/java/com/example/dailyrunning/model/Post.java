@@ -101,6 +101,6 @@ public class Post implements Comparable<Post>{
     }
 
     public Date convertStringToDate(String date) throws ParseException {
-        return new SimpleDateFormat("dd-MM-yyy HH:mm:ss").parse(date);
+        return new SimpleDateFormat("dd-MM-yyy HH:mm").parse(date);
     }
 }

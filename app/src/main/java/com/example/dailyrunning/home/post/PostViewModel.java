@@ -8,6 +8,6 @@ import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.Post;
 
 public class PostViewModel extends ViewModel {
-    public MutableLiveData<Post> selectedPost=new MutableLiveData<>();
+    public Post selectedPost;
 
 }

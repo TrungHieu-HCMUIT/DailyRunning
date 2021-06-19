@@ -23,6 +23,8 @@ import com.example.dailyrunning.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.joda.time.Period;
+
 import java.util.ArrayList;
 
 public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHolder>{
@@ -85,8 +87,8 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         holder.userName.setText(postsList.get(position).getOwnerName());
         holder.dateTime.setText(postsList.get(position).getActivity().getDateCreated());
         holder.content.setText(postsList.get(position).getActivity().getDescribe());
-        holder.distance.setText(postsList.get(position).getActivity().getDistance() + " km");
-        holder.duration.setText(DateUtils.formatElapsedTime(postsList.get(position).getActivity().getDuration()));
+        holder.distance.setText(String.format("%.2f", postsList.get(position).getActivity().getDistance() / 1000) + " Km");
+        holder.duration.setText(getTimeWorkingString(postsList.get(position).getActivity().getDuration()));
         holder.pace.setText(postsList.get(position).getActivity().getPace()+ " m/s");
         Glide.with(holder.itemView.getContext()).load(postsList.get(position).getActivity().getPictureURI()).into(holder.image);
         holder.image.setOnClickListener(v->{
@@ -196,5 +198,10 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
 
     public interface PostUtils{
         void onPostSelected(Post post,boolean isMap);
+    }
+    String getTimeWorkingString(long timeWorkingInSec) {
+        Period period = new Period(timeWorkingInSec * 1000L);
+        String time = String.format("%02d:%02d:%02d", period.getHours(), period.getMinutes(), period.getSeconds());
+        return time;
     }
 }

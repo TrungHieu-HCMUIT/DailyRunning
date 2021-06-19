@@ -11,6 +11,7 @@ import androidx.navigation.ui.NavigationUI;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -221,8 +222,12 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
 
     @Override
     public void onPostSelected(Post post,boolean isMap) {
-        mPostViewModel.selectedPost.setValue(post);
-        Log.i("OnMapSelected",post.getPostID());
+        mPostViewModel.selectedPost=post;
+        if(isMap) {
+            Log.i("OnMapSelected", post.getPostID());
+            mNavController.navigate(Uri.parse("android-app://com.example.dailyrunning"));
+        }
+
     }
 
     @Override
