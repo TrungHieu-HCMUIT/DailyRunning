@@ -30,6 +30,7 @@ import org.joda.time.Period;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.example.dailyrunning.record.RecordViewModel.activityDateFormat;
@@ -37,10 +38,11 @@ import static com.example.dailyrunning.record.RecordViewModel.activityDateFormat
 public class PostViewModel extends ViewModel {
     private MutableLiveData<Post> selectedPost=new MutableLiveData<>();
     public MutableLiveData<ArrayList<Post>> myPosts=new MutableLiveData<>();
-    private MutableLiveData<ArrayList<Post>> followingPosts=new MutableLiveData<>();
+    public MutableLiveData<ArrayList<Post>> followingPosts=new MutableLiveData<>();
     DatabaseReference postRef;
     ChildEventListener mMyPostEventListener;
     ValueEventListener postChangeListener;
+    ChildEventListener mfollowingPostEventListener;
 
     {
         myPosts.setValue(new ArrayList<>());
@@ -181,6 +183,91 @@ public class PostViewModel extends ViewModel {
         DatabaseReference myPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         myPostRef.addChildEventListener(mMyPostEventListener);
+    }
+
+    private void removeFollowing(String userID)
+    {
+
+        ArrayList<Post> temp=followingPosts.getValue();
+        temp= (ArrayList<Post>) temp.stream().filter(post -> !post.getOwnerID().equals(userID)).collect(Collectors.toList());
+        followingPosts.setValue(temp);
+    }
+    private void addFollowingPost(String userID)
+    {
+        DatabaseReference myPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
+                .child(userID);
+        myPostRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                ArrayList<Post> temp=followingPosts.getValue();
+                temp.add(snapshot.getValue(Post.class));
+                followingPosts.postValue(temp);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                ArrayList<Post> temp=followingPosts.getValue();
+                Post changedPost=snapshot.getValue(Post.class);
+                if(temp!=null && changedPost!=null)
+                {
+                    Post postInMyPost=temp.stream()
+                            .filter(post -> post.getPostID().equals(changedPost.getPostID()))
+                            .findFirst().orElse(new Post());
+                    if(postInMyPost.getPostID()!=null)
+                    {
+                        temp.set(temp.indexOf(postInMyPost),changedPost);
+                    }
+                }
+                followingPosts.postValue(temp);
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+    }
+    public void getFollowingUser()
+    {
+        FirebaseDatabase.getInstance().getReference()
+                .child("Follow")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("following").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                ((Runnable) () -> addFollowingPost(snapshot.getValue(String.class))).run();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+                removeFollowing(snapshot.getValue(String.class));
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
     }
     //endregion
 

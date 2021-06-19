@@ -148,6 +148,11 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         startActivityForResult(new Intent(this, LoginActivity.class), RC_SIGN_IN);
 
     }
+    private void onLoadData()
+    {
+        mPostViewModel.getMyPosts();
+        mPostViewModel.getFollowingUser();
+    }
     private void checkAuthenticationState() {
         FirebaseUser mCurrentUser = mFirebaseAuth.getCurrentUser();
         if (mCurrentUser == null) {
@@ -157,8 +162,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
             mUserViewModel.getUserInfo(new LoginViewModel.TaskCallBack() {
                 @Override
                 public void onSuccess() {
-                    mPostViewModel.getMyPosts();
-
+                    onLoadData();
                 }
 
                 @Override

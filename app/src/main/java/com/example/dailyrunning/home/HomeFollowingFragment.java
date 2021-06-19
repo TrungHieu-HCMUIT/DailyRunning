@@ -73,11 +73,16 @@ public class HomeFollowingFragment extends Fragment {
         recyclerView.setAdapter(postViewAdapter);
 
         mUserViewModel.getCurrentUser().observe((LifecycleOwner) context, user->{
-            if(user!=null)
-                userFollowingIdList = getUserFollowingIdList();
-
+         /*   if(user!=null)
+               userFollowingIdList = getUserFollowingIdList();*/
         });
-
+        mPostViewModel.followingPosts.observe((LifecycleOwner) context, posts -> {
+            if(posts!=null)
+            {
+                postViewAdapter.setPost(posts);
+                ((HomeActivity)context).dismissDialog();
+            }
+        });
         mHomeViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(HomeViewModel.class);
         if (mHomeViewModel.followingRecyclerViewState != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(mHomeViewModel.followingRecyclerViewState);
@@ -85,7 +90,7 @@ public class HomeFollowingFragment extends Fragment {
         }
     }
 
-    private ArrayList<String> getUserFollowingIdList() {
+    /*private ArrayList<String> getUserFollowingIdList() {
         ArrayList<String> list = new ArrayList<>();
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference()
@@ -133,7 +138,7 @@ public class HomeFollowingFragment extends Fragment {
 
     private void sortPostList() {
         Collections.sort(postList, Collections.reverseOrder());
-    }
+    }*/
 
     //region savestate
 
