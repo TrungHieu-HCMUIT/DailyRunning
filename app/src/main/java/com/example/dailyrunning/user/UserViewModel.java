@@ -473,9 +473,9 @@ public class UserViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        //weekDistance /= 1000;
-        String distanceFormat = df.format(weekDistance);
-        weekDistance = Double.parseDouble(distanceFormat);
+        weekDistance /= 1000;
+        weekDistance = parseDistance(weekDistance);
+
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
@@ -521,9 +521,9 @@ public class UserViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        //monthDistance /= 1000;
-        String distanceFormat = df.format(monthDistance);
-        monthDistance = Double.parseDouble(distanceFormat);
+        monthDistance /= 1000;
+        monthDistance = parseDistance(monthDistance);
+
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
@@ -590,36 +590,44 @@ public class UserViewModel extends ViewModel {
         if (acquired)
             switch (rank) {
                 case 1:
-                    return new MedalInfo(R.drawable.medal_1, "medal 1 name", "medal 1 description");
+                    return new MedalInfo(R.drawable.medal_1, "Huy chương đồng", "Bạn là một người tập chạy bộ để rèn luyện sức khỏe.");
                 case 2:
-                    return new MedalInfo(R.drawable.medal_2, "medal 2 name", "medal 2 description");
+                    return new MedalInfo(R.drawable.medal_2, "Huy chương bạc", "Bạn là một người có hứng thú chạy bộ.");
                 case 3:
-                    return new MedalInfo(R.drawable.medal_3, "medal 3 name", "medal 3 description");
+                    return new MedalInfo(R.drawable.medal_3, "Huy chương vàng", "Bạn là một người có sức khỏe và thể lực rất tốt.");
                 case 4:
-                    return new MedalInfo(R.drawable.medal_4, "medal 4 name", "medal 4 description");
+                    return new MedalInfo(R.drawable.medal_4, "Huy chương đam mê", "Bạn là một người thực sự có niềm đam mê chạy bộ.");
                 case 5:
-                    return new MedalInfo(R.drawable.medal_5, "medal 5 name", "medal 5 description");
+                    return new MedalInfo(R.drawable.medal_5, "Huy chương vận động viên", "Bạn là một người có tình yêu mãnh liệt với chạy bộ.");
                 default:
                     return null;
             }
         else
             switch (rank) {
                 case 1:
-                    return new MedalInfo(R.drawable.medal_1_greyscale, "medal 1 name", "medal 1 description");
+                    return new MedalInfo(R.drawable.medal_1_greyscale
+                            , "Huy chương đồng", "Bạn là một người tập chạy bộ để rèn luyện sức khỏe.");
                 case 2:
-                    return new MedalInfo(R.drawable.medal_2_greyscale, "medal 2 name", "medal 2 description");
+                    return new MedalInfo(R.drawable.medal_2_greyscale, "Huy chương bạc", "Bạn là một người có hứng thú chạy bộ.");
                 case 3:
-                    return new MedalInfo(R.drawable.medal_3_greyscale, "medal 3 name", "medal 3 description");
+                    return new MedalInfo(R.drawable.medal_3_greyscale, "Huy chương vàng", "Bạn là một người có sức khỏe và thể lực rất tốt.");
                 case 4:
-                    return new MedalInfo(R.drawable.medal_4_greyscale, "medal 4 name", "medal 4 description");
+                    return new MedalInfo(R.drawable.medal_4_greyscale, "Huy chương đam mê", "Bạn là một người thực sự có niềm đam mê chạy bộ.");
                 case 5:
-                    return new MedalInfo(R.drawable.medal_5_greyscale, "medal 5 name", "medal 5 description");
+                    return new MedalInfo(R.drawable.medal_5_greyscale, "Huy chương vận động viên", "Bạn là một người có tình yêu mãnh liệt với chạy bộ.");
                 default:
                     return null;
             }
 
     }
 
+    static public double parseDistance(double distance)
+    {
+
+        String distanceFormat = String.format("%.2f",distance);
+        distanceFormat=distanceFormat.replace(",",".");
+        return Double.parseDouble(distanceFormat);
+    }
     public void getYearStatistic() {
         LocalDate lastDay = now.dayOfYear().withMaximumValue().plusDays(1);
         LocalDate firstDay = now.dayOfYear().withMinimumValue().minusDays(1);
@@ -645,9 +653,8 @@ public class UserViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        //yearDistance /= 1000;
-        String distanceFormat = df.format(yearDistance);
-        yearDistance = Double.parseDouble(distanceFormat);
+        yearDistance /= 1000;
+        yearDistance = parseDistance(yearDistance);
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));

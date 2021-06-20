@@ -49,6 +49,7 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import static com.example.dailyrunning.user.UserViewModel.getMedal;
+import static com.example.dailyrunning.user.UserViewModel.parseDistance;
 
 
 public class OtherUserProfileViewModel extends ViewModel {
@@ -281,8 +282,10 @@ public class OtherUserProfileViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        String distanceFormat = df.format(weekDistance);
-        weekDistance = Double.parseDouble(distanceFormat);
+
+        weekDistance/=1000;
+        weekDistance = parseDistance(weekDistance);
+
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
@@ -328,8 +331,10 @@ public class OtherUserProfileViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        String distanceFormat = df.format(monthDistance);
-        monthDistance = Double.parseDouble(distanceFormat);
+
+        monthDistance/=1000;
+        monthDistance = parseDistance(monthDistance);
+
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
@@ -374,8 +379,9 @@ public class OtherUserProfileViewModel extends ViewModel {
             secWorking += act.getDuration();
         }
         _timeWorking = timeConvert(secWorking);
-        String distanceFormat = df.format(yearDistance);
-        yearDistance = Double.parseDouble(distanceFormat);
+        yearDistance/=1000;
+        yearDistance = parseDistance(yearDistance);
+
         ArrayList<String> workingTime = timeWorking.getValue();
         if (workingTime == null)
             workingTime = new ArrayList<>(Arrays.asList("00:00:00", "00:00:00", "00:00:00"));
