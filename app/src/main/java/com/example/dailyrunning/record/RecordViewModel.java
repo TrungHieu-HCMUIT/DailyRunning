@@ -266,7 +266,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
                     builder.include(loc);
                 }
                 LatLngBounds bounds = builder.build();
-                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 500);
+                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, 100);
                 map.moveCamera(cu);
                 averagePace = distance / timeWorkingInSec;
                 averagePaceString.setValue(String.format("%.2f", averagePace) + " m/s");
