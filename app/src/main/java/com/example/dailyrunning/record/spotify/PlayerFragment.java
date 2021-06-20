@@ -1,5 +1,7 @@
 package com.example.dailyrunning.record.spotify;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -18,7 +20,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.ImageViewCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -27,6 +31,7 @@ import com.example.dailyrunning.R;
 import com.spotify.android.appremote.api.PlayerApi;
 import com.spotify.protocol.types.Repeat;
 
+import org.jetbrains.annotations.NotNull;
 
 
 public class PlayerFragment extends Fragment {
@@ -50,19 +55,28 @@ public class PlayerFragment extends Fragment {
     private long mDurationTime;
     private boolean isPlaying = false;
     private Handler updateHandler;
-private Runnable timerRunnable;
+    private Context mContext;
+    private Runnable timerRunnable;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_player, container, false);
-        mRestoreStateViewModel = new ViewModelProvider(getActivity()).get(RestoreStateViewModel.class);
-        mSpotifyViewModel = new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
+       
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mContext=getContext();
+        mRestoreStateViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(RestoreStateViewModel.class);
+        mSpotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(SpotifyViewModel.class);
 
         findView();
         initState();
         playerFunction();
-        return rootView;
     }
+
     private void marqueeAnimationForTextView()
     {
         mTitleTextView.setSelected(true);
@@ -95,7 +109,7 @@ private Runnable timerRunnable;
                 mPlaybackPosition+= 1000;
                 mSeekBar.setProgress((int) mPlaybackPosition);
                 try {
-                    getActivity().runOnUiThread(() -> mCurrentTime.setText("" + TrackAdapter.getDuration(mPlaybackPosition)));
+                    ((Activity)mContext).runOnUiThread(() -> mCurrentTime.setText("" + TrackAdapter.getDuration(mPlaybackPosition)));
                 }
                 catch (Exception f){}
 
@@ -198,7 +212,7 @@ private Runnable timerRunnable;
     private void playerFunction() {
 
 
-        mSpotifyViewModel.mCurrentTrack.observe(getActivity(), currentTrack -> {
+        mSpotifyViewModel.mCurrentTrack.observe((LifecycleOwner) mContext, currentTrack -> {
             //region check like status of current track
             mSpotifyViewModel.spotifyAppRemote.getValue().getUserApi().getLibraryState(currentTrack.uri).setResultCallback(libraryState -> {
                 if (libraryState.isAdded)
@@ -256,7 +270,7 @@ private Runnable timerRunnable;
             }
         });
 
-        mSpotifyViewModel.mPlayerState.observe(getActivity(), state -> {
+        mSpotifyViewModel.mPlayerState.observe((LifecycleOwner) mContext, state -> {
             mPlaybackPosition=state.playbackPosition;
             mSeekBar.setProgress((int) mPlaybackPosition);
 
@@ -270,7 +284,7 @@ private Runnable timerRunnable;
             }
             mCurrentTime.setText("" + TrackAdapter.getDuration(mPlaybackPosition));
         });
-        mRestoreStateViewModel.mThumbnailImage.observe(getActivity(), image -> {
+        mRestoreStateViewModel.mThumbnailImage.observe((LifecycleOwner) mContext, image -> {
             if (image != null)
                 mThumbnailImageView.setImageDrawable(image);
         });

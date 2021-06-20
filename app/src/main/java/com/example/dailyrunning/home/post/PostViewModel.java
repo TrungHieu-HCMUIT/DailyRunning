@@ -180,6 +180,7 @@ public class PostViewModel extends ViewModel {
     //region my posts
     public void getMyPosts()
     {
+        myPosts.setValue(new ArrayList<>());
         DatabaseReference myPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         myPostRef.addChildEventListener(mMyPostEventListener);
@@ -240,6 +241,7 @@ public class PostViewModel extends ViewModel {
     }
     public void getFollowingUser()
     {
+        followingPosts.setValue(new ArrayList<>());
         FirebaseDatabase.getInstance().getReference()
                 .child("Follow")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("following").addChildEventListener(new ChildEventListener() {

@@ -12,7 +12,9 @@ import android.view.inputmethod.EditorInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,14 +60,14 @@ public class DiscoverFragment extends Fragment {
     }
 
     private void init() {
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        mRestoreStateViewModel = new ViewModelProvider(getActivity()).get(RestoreStateViewModel.class);
-        mSpotifyViewModel = new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
+        mRestoreStateViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(RestoreStateViewModel.class);
+        mSpotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(SpotifyViewModel.class);
         if (mRestoreStateViewModel.mDiscoverPlaylistAdapter.getValue() == null)
             if (mRestoreStateViewModel.featuredPlaylist.getValue() != null)
                 updateRecyclerView(mRestoreStateViewModel.featuredPlaylist.getValue());
             else
-                mSpotifyViewModel.spotifyService.observe(getActivity(), spotifyService -> {
+                mSpotifyViewModel.spotifyService.observe((LifecycleOwner) mContext, spotifyService -> {
                     spotifyService.getFeaturedPlaylists(new Callback<FeaturedPlaylists>() {
                         @Override
                         public void success(FeaturedPlaylists featuredPlaylists, Response response) {

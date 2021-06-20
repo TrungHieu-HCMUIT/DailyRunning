@@ -1,5 +1,7 @@
 package com.example.dailyrunning.record.spotify;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +15,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -23,6 +27,8 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.record.RecordFragment;
 import com.spotify.android.appremote.api.PlayerApi;
+
+import org.jetbrains.annotations.NotNull;
 
 
 public class BottomPlayerFragment extends Fragment {
@@ -38,33 +44,41 @@ public class BottomPlayerFragment extends Fragment {
     private ImageButton mPreviousButton;
     private NavController mNavController;
     private RestoreStateViewModel mRestoreStateViewModel;
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_bottom_player, container, false);
-        mSpotifyViewModel = new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
-        mRestoreStateViewModel = new ViewModelProvider(getActivity()).get(RestoreStateViewModel.class);
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mContext=getContext();
+        mSpotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(SpotifyViewModel.class);
+        mRestoreStateViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(RestoreStateViewModel.class);
         Fragment parentFragment = this.getParentFragment();
         rootView.setOnClickListener(v -> {
             if (parentFragment instanceof RecordFragment) {
-                mNavController = Navigation.findNavController(getActivity(), R.id.record_fragment_container);
+                mNavController = Navigation.findNavController((Activity) mContext, R.id.record_fragment_container);
                 mNavController.navigate(R.id.action_recordFragment_to_playerFragment2);
             }
             else if (parentFragment instanceof PlaylistViewFragment) {
-                mNavController = Navigation.findNavController(getActivity(), R.id.spotify_fragment_container);
+                mNavController = Navigation.findNavController((Activity) mContext, R.id.spotify_fragment_container);
 
                 mNavController.navigate(R.id.action_playlistViewFragment_to_playerFragment);
             }
             else if (parentFragment instanceof MusicMainFragment) {
-                mNavController = Navigation.findNavController(getActivity(), R.id.spotify_fragment_container);
+                mNavController = Navigation.findNavController((Activity) mContext, R.id.spotify_fragment_container);
                 mNavController.navigate(R.id.action_musicMainFragment_to_playerFragment);
             }
         });
         findView();
         marqueeAnimationForTextView();
         initUI();
-        return rootView;
     }
 
     private void marqueeAnimationForTextView() {
@@ -82,7 +96,7 @@ public class BottomPlayerFragment extends Fragment {
     }
 
     private void initUI() {
-        mSpotifyViewModel.spotifyAppRemote.observe(getActivity(), remote -> {
+        mSpotifyViewModel.spotifyAppRemote.observe((LifecycleOwner) mContext, remote -> {
             PlayerApi mPlayerApi = remote.getPlayerApi();
             mNextButton.setOnClickListener(v -> {
                 mPlayerApi.skipNext();
@@ -105,7 +119,7 @@ public class BottomPlayerFragment extends Fragment {
                     mPlayerApi.resume();
                 }
             });
-            mSpotifyViewModel.mPlayerState.observe(getActivity(), playerState -> {
+            mSpotifyViewModel.mPlayerState.observe((LifecycleOwner) mContext, playerState -> {
                 if (playerState==null) {
                     Log.e("SpotifyIn","playstate is null");
                     return;
@@ -120,7 +134,7 @@ public class BottomPlayerFragment extends Fragment {
 
             });
 
-            mSpotifyViewModel.mCurrentTrack.observe(getActivity(), currentTrack -> {
+            mSpotifyViewModel.mCurrentTrack.observe((LifecycleOwner) mContext, currentTrack -> {
                 if (currentTrack != null) {
                     rootView.setVisibility(View.VISIBLE);
 

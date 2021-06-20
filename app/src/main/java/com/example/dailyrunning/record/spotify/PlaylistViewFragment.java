@@ -1,5 +1,7 @@
 package com.example.dailyrunning.record.spotify;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -42,19 +46,21 @@ public class PlaylistViewFragment extends Fragment {
     private PlaylistSimple mThisPlaylist;
     private TrackAdapter mTrackAdapter;
     private SpotifyViewModel mSpotifyViewModel;
+    private Context mContext;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_playlist_view, container, false);
-        findView();
         return rootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mContext=getContext();
+        findView();
         init();
 
     }
@@ -76,7 +82,7 @@ public class PlaylistViewFragment extends Fragment {
     }
     private void init() {
 
-        mSpotifyViewModel = new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
+        mSpotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(SpotifyViewModel.class);
         mThisPlaylist = getArguments().getParcelable("playlist");
         checkBottomPlayerState();
         if (mThisPlaylist.images.size() != 0)
@@ -87,7 +93,7 @@ public class PlaylistViewFragment extends Fragment {
             mSpotifyViewModel.spotifyAppRemote.getValue().getPlayerApi().play(mThisPlaylist.uri);
         });
 
-        mSpotifyViewModel.spotifyService.observe(getActivity(), spotifyService -> {
+        mSpotifyViewModel.spotifyService.observe((LifecycleOwner) mContext, spotifyService -> {
             spotifyService.getPlaylistTracks(mSpotifyViewModel.mCurrentUser.getValue().id
                     , mThisPlaylist.uri.replace("spotify:playlist:",""), new Callback<Pager<PlaylistTrack>>() {
                 @Override
@@ -108,7 +114,7 @@ public class PlaylistViewFragment extends Fragment {
     }
 
     private void workingWithRecyclerView(List<Track> data) {
-        mTrackAdapter = new TrackAdapter(data,mThisPlaylist.uri, getActivity());
+        mTrackAdapter = new TrackAdapter(data,mThisPlaylist.uri, (Activity) mContext);
         mRecyclerView.setAdapter(mTrackAdapter);
     }
 

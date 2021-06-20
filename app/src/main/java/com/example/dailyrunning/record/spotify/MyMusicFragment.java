@@ -1,5 +1,6 @@
 package com.example.dailyrunning.record.spotify;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,7 +14,9 @@ import android.view.inputmethod.EditorInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -80,11 +83,11 @@ public class MyMusicFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mContext=getContext();
-        spotifyViewModel = new ViewModelProvider(getActivity()).get(SpotifyViewModel.class);
-        mRestoreStateViewModel= new ViewModelProvider(getActivity()).get(RestoreStateViewModel.class);
+        spotifyViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(SpotifyViewModel.class);
+        mRestoreStateViewModel= new ViewModelProvider((ViewModelStoreOwner) mContext).get(RestoreStateViewModel.class);
 
         mSearchTextInputLayout = root.findViewById(R.id.search_text_input_layout);
-        mNavController = Navigation.findNavController(getActivity(), R.id.spotify_fragment_container);
+        mNavController = Navigation.findNavController((Activity) mContext, R.id.spotify_fragment_container);
 
         root.findViewById(R.id.recently_plays_text_view).setOnClickListener(vi -> {
             mNavController.navigate(R.id.action_musicMainFragment_to_playerFragment);
@@ -96,9 +99,9 @@ public class MyMusicFragment extends Fragment {
     private void initRecyclerView()
     {
         mMyPlaylistRecyclerView = root.findViewById(R.id.my_playlist_recycler_view);
-        mMyPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+        mMyPlaylistRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.VERTICAL, false));
         mRecentlyPlayedRecyclerView = root.findViewById(R.id.recently_plays_recycler_view);
-        mRecentlyPlayedRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+        mRecentlyPlayedRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, RecyclerView.VERTICAL, false));
     }
     private void workWithPlaylistRecyclerView() {
 
@@ -109,9 +112,8 @@ public class MyMusicFragment extends Fragment {
 
     private void workWithRecentlyPlaysRecyclerView(List<Track> tracks) {
 
-        trackAdapter = new TrackAdapter(tracks,null, getActivity());
+        trackAdapter = new TrackAdapter(tracks,null, (Activity) mContext);
         mRestoreStateViewModel.mRecentlyPlayedTrackAdapter.setValue(trackAdapter);
-
         mRecentlyPlayedRecyclerView.setAdapter(trackAdapter);
     }
 
@@ -135,7 +137,7 @@ public class MyMusicFragment extends Fragment {
     }
     private void spotifyAPI() {
 
-        spotifyViewModel.spotifyService.observe(getActivity(), spotifyService -> {
+        spotifyViewModel.spotifyService.observe((LifecycleOwner) mContext, spotifyService -> {
             spotifyService.getMe(new Callback<UserPrivate>() {
                 @Override
                 public void success(UserPrivate userPrivate, Response response) {
