@@ -67,13 +67,12 @@ public class FinishFragment extends Fragment  {
         binding.setLifecycleOwner(getActivity());
         mRecordViewModel=new ViewModelProvider(getActivity()).get(RecordViewModel.class);
         binding.setRecordViewModel(mRecordViewModel);
-        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-              confirmCancelActivity();
+                confirmCancelActivity();
             }
-        };
-        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), callback);
+        });
         binding.cancelButton.setOnClickListener(v-> confirmCancelActivity());
         binding.saveButton.setOnClickListener(v->{
             mRecordViewModel.onSaveClick(new UserViewModel.OnTaskComplete() {

@@ -79,7 +79,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         mMap = googleMap;
 
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
+        mMap.getUiSettings().setCompassEnabled(false);
         List<LatLng> locations=mPostViewModel.getSelectedPost().getValue().getActivity()
                 .getLatLngArrayList().stream().map(item->new LatLng(item.getLatitude(),item.getLongitude())).collect(Collectors.toList());
         drawing(locations);

@@ -142,6 +142,8 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
             map.setMyLocationEnabled(true);
         map.getUiSettings().setScrollGesturesEnabled(false);
         map.getUiSettings().setRotateGesturesEnabled(false);
+        map.getUiSettings().setCompassEnabled(false);
+
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         map.setMinZoomPreference(ZOOM);
 
@@ -176,7 +178,6 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         if (timeWorkingInSec - lastPaceUpdateTime >= 1) {
             lastPaceUpdateTime = timeWorkingInSec;
             paceString.setValue(String.format("%.2f", newDistance) + " m/s");
-            Log.i("current pace",paceString.getValue());
         }
     }
 
@@ -197,6 +198,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
 
     void updatePolyline() {
 
+        if(!isPaused.getValue())
         map.addPolyline(new PolylineOptions()
                 .addAll(locations)
                 .width(10)

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -78,9 +79,20 @@ public class RecordFragment extends Fragment implements UserViewModel.OnTaskComp
             mNavController.navigate(R.id.action_recordFragment_to_spotifyFragment);
         });
         checkBottomPlayerState();
+        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                confirmCancelActivity();
+            }
+        });
 
-
-
+    }
+    void confirmCancelActivity()
+    {
+        mRecordViewModel.confirmDialog.show("Hủy bỏ hoạt động","Bạn có muốn hủy bỏ hoạt động hiện tại ?"
+                ,v->{ },v->{
+                    getActivity().finish();
+                });
     }
 
     private void checkBottomPlayerState() {
