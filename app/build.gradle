@@ -168,6 +168,10 @@ dependencies {
 
     //circle button
     implementation 'com.github.markushi:circlebutton:1.1'
+    //workmamager
+    def versions_work = "2.5.0"
+    implementation "androidx.work:work-runtime:$versions_work"
+
 
     //shimmer effect
     implementation 'com.facebook.shimmer:shimmer:0.5.0'

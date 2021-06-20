@@ -3,7 +3,6 @@ package com.example.dailyrunning.user;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,8 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 
-import com.example.dailyrunning.R;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.BindingAdapter;
@@ -23,12 +20,13 @@ import androidx.databinding.InverseBindingListener;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.navigation.Navigation;
 
 import com.bumptech.glide.Glide;
+import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.GiftInfo;
+import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
 import com.facebook.AccessToken;
@@ -44,10 +42,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.json.JSONException;
@@ -63,6 +61,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -81,9 +80,18 @@ public class UserViewModel extends ViewModel {
     private final DatabaseReference mUserInfoRef = FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<String> avatarUri;
 
-    public LiveData<UserInfo> getCurrentUser() {
-        if (currentUser == null) {
-            currentUser = new MutableLiveData<>();
+    public MutableLiveData<Integer> step=new MutableLiveData<>();
+
+    {
+        step.setValue(0);
+
+    }
+
+    public LiveData<UserInfo> getCurrentUser()
+    {
+        if(currentUser==null)
+        {
+            currentUser=new MutableLiveData<>();
         }
         return currentUser;
     }

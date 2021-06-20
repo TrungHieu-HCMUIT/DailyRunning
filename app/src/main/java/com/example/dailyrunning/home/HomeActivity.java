@@ -1,13 +1,17 @@
 package com.example.dailyrunning.home;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,7 +27,9 @@ import com.example.dailyrunning.home.post.PostViewAdapter;
 import com.example.dailyrunning.home.post.PostViewModel;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.record.MapsActivity;
+import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.user.UserViewModel;
+import com.example.dailyrunning.user.stepcounter.MyPeriodicWork;
 import com.example.dailyrunning.utils.RunningLoadingDialog;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -31,13 +37,17 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
+import java.util.concurrent.TimeUnit;
+
 public class HomeActivity extends AppCompatActivity implements PostViewAdapter.PostUtils, LoginViewModel.LoadingDialog {
 
     private static final int RC_SIGN_IN = 1;
+    private static final String TEXT_NUM_STEPS = " bước";
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mUserInfoRef;
     private DatabaseReference mCurrentUserRef;
@@ -54,6 +64,9 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
     private ImageView image;
     private HomeViewModel mHomeViewModel;
     private BottomNavigationViewEx bottomNavigationViewEx;
+
+    private PeriodicWorkRequest mPeriodicWorkRequest;
+
     private PostViewModel mPostViewModel;
     private RunningLoadingDialog mLoadingDialog;
     @Override
@@ -85,10 +98,17 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         MapsInitializer.initialize(this);
 
         startMarker= BitmapDescriptorFactory.fromResource(R.drawable.marker_start);
-        endMarker=BitmapDescriptorFactory.fromResource(R.drawable.marker_end);
+        endMarker= BitmapDescriptorFactory.fromResource(R.drawable.marker_end);
 
         // Enable BottomNavigationViewEx
         setupBottomNavView();
+
+        // This is PeriodicWorkRequest it repeats every 5 seconds.
+        mPeriodicWorkRequest = new PeriodicWorkRequest.Builder(MyPeriodicWork.class,
+                5, TimeUnit.SECONDS)
+                .addTag("periodicWorkRequest")
+                .build();
+        WorkManager.getInstance().enqueue(mPeriodicWorkRequest);
 
 
     }
@@ -225,7 +245,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
 
 
     @Override
-    public void onPostSelected(Post post,boolean isMap) {
+    public void onPostSelected(Post post, boolean isMap) {
         mPostViewModel.selectPost(post);
         if(isMap) {
             Log.i("OnMapSelected", post.getPostID());

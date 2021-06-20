@@ -316,14 +316,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
-                android:id="@+id/textView9"
+                android:id="@+id/step_text_View"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/svn_avo"
-                android:text="7000 bước"
+
                 android:textColor="@color/black"
+                android:text="@{userViewModel.step+` bước`}"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
