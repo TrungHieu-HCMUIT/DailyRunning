@@ -16,6 +16,7 @@
     <color name="color_palette_4">#02C39A</color>
     <color name="color_palette_5">#F0F3BD</color>
     <color name="describe_color">#666666</color>
+    <color name="transparentWhite">#cccccc</color>
 
     <!--cardview background color-->
     <color name="color_cardview_register">#F2F2F2</color>

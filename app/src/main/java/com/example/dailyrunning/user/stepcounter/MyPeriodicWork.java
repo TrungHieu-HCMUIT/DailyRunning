@@ -65,9 +65,16 @@ public class MyPeriodicWork extends Worker implements SensorEventListener, StepL
     @Override
     public Result doWork() {
         step.child(user.getUid()).get().addOnCompleteListener(task -> {
-            if (task.getResult().child(formattedDate).getValue()!=null){
-            long step = (long) task.getResult().child(formattedDate).getValue();
-            numSteps= Integer.parseInt(String.valueOf(step));}
+            try{
+                if (task.getResult().child(formattedDate).getValue()!=null){
+                    long step = (long) task.getResult().child(formattedDate).getValue();
+                    numSteps= Integer.parseInt(String.valueOf(step));}
+            }
+            catch (Exception e)
+            {
+                Log.v("Cant update step",e.getMessage());
+            }
+
         });
         stepCount();
         return Result.success();

@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -77,7 +78,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         setContentView(R.layout.activity_home);
 
         mLoadingDialog=new RunningLoadingDialog();
-        showDialog();
+        (new Handler()).postDelayed(this::showDialog,100);
         //init firebase database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUserInfoRef = mFirebaseDatabase.getReference().child("UserInfo");

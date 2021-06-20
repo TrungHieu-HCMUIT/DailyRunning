@@ -9,7 +9,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 public class HomeScreenAdapter extends FragmentStateAdapter {
     public HomeScreenAdapter(@NonNull FragmentManager fragmentManager, Lifecycle lifecycle) {
         super(fragmentManager,lifecycle);
-
     }
 
     @NonNull

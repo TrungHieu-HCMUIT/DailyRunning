@@ -116,7 +116,9 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
                     }
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.shimmerFrameLayout.hideShimmer();
+                        (new Handler()).postDelayed(()->{
+                            holder.shimmerFrameLayout.hideShimmer();
+                        },1000);
                         return false;
                     }
                 })

@@ -22,9 +22,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DailyRunning">
-        <activity android:name=".splashScreen.SplashActivity"
-            android:theme="@style/AnimatedSplashScreen"
-            >
+        <activity android:name=".splashScreen.OnBoardingScreenActivity"></activity>
+        <activity
+            android:name=".splashScreen.SplashActivity"
+            android:theme="@style/AnimatedSplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,7 +39,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".authentication.LoginActivity"></activity>
+        <activity android:name=".authentication.LoginActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
