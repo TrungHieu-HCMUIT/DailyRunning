@@ -84,12 +84,13 @@
 
             <TextView
                 android:id="@+id/tvContent"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/svn_avo"
-                android:text="Mô tả"
+                tools:text="Mô tảMô tảMô tảMô tảMô tảMô tảMô tảMô tảMô tảMô tảMô tảMô tảMô tả"
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivUserAvatar" />
