@@ -103,12 +103,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         // Enable BottomNavigationViewEx
         setupBottomNavView();
 
-        // This is PeriodicWorkRequest it repeats every 5 seconds.
-        mPeriodicWorkRequest = new PeriodicWorkRequest.Builder(MyPeriodicWork.class,
-                5, TimeUnit.SECONDS)
-                .addTag("periodicWorkRequest")
-                .build();
-        WorkManager.getInstance().enqueue(mPeriodicWorkRequest);
+
 
 
     }
@@ -172,6 +167,12 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
     {
         mPostViewModel.getMyPosts();
         mPostViewModel.getFollowingUser();
+        // This is PeriodicWorkRequest it repeats every 5 seconds.
+        mPeriodicWorkRequest = new PeriodicWorkRequest.Builder(MyPeriodicWork.class,
+                5, TimeUnit.SECONDS)
+                .addTag("periodicWorkRequest")
+                .build();
+        WorkManager.getInstance().enqueue(mPeriodicWorkRequest);
     }
     private void checkAuthenticationState() {
         FirebaseUser mCurrentUser = mFirebaseAuth.getCurrentUser();

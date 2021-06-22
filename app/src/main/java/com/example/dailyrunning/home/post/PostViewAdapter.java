@@ -75,6 +75,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             likeTv = (TextView) view.findViewById(R.id.tvNumOfLike);
             commentTv = (TextView) view.findViewById(R.id.tvNumOfComment);
             shimmerFrameLayout = view.findViewById(R.id.act_image_shimmer);
+
         }
     }
 
@@ -208,6 +209,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         });
 
         holder.commentTv.setText("" + postsList.get(position).getComments().size());
+
     }
 
     @Override
