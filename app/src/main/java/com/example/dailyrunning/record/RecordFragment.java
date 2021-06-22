@@ -79,12 +79,12 @@ public class RecordFragment extends Fragment implements UserViewModel.OnTaskComp
             mNavController.navigate(R.id.action_recordFragment_to_spotifyFragment);
         });
         checkBottomPlayerState();
-        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+      /*  requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 confirmCancelActivity();
             }
-        });
+        });*/
 
     }
     void confirmCancelActivity()

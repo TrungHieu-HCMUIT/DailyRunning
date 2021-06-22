@@ -350,7 +350,7 @@ public class UserViewModel extends ViewModel {
         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
         UserProfileChangeRequest mRequest = new UserProfileChangeRequest.Builder().setDisplayName(mNewInfo.getDisplayName()).build();
         mUser.updateProfile(mRequest);
-
+        updatePostData();
     }
 
     public void onBackPress() {

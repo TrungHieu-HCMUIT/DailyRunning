@@ -156,7 +156,7 @@ public class FindFragment extends Fragment {
 
         for (UserInfo user: mUserList_original) {
             String name = user.getDisplayName();
-            if (name.contains(binding.searchUserEdt.getText().toString().trim())
+            if (name.toLowerCase().contains(binding.searchUserEdt.getText().toString().toLowerCase().trim())
                 && !name.equals(mUserViewModel.getCurrentUser().getValue().getDisplayName())) {
                         mUserList_result.add(user);
             }

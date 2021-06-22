@@ -151,9 +151,6 @@ public class RegisterAddInfoFragment extends Fragment {
     }
 
     private void viewFunctional() {
-        rootView.findViewById(R.id.back_button).setOnClickListener(v -> {
-            getActivity().onBackPressed();
-        });
 
         binding.saveButton.setOnClickListener(v -> {
 

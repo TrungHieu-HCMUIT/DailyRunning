@@ -102,6 +102,25 @@ public class MapsActivity extends FragmentActivity implements RecordViewModel.Wo
 
     }
 
+    public Fragment getForegroundFragment(){
+        Fragment navHostFragment = getSupportFragmentManager().findFragmentById(R.id.record_fragment_container);
+        return navHostFragment == null ? null : navHostFragment.getChildFragmentManager().getFragments().get(0);
+    }
+    @Override
+    public void onBackPressed() {
+
+        Fragment currentFrag=getForegroundFragment();
+        if(currentFrag instanceof RecordFragment) {
+            mRecordViewModel.confirmDialog.show("Hủy bỏ hoạt động", "Bạn có muốn hủy bỏ hoạt động hiện tại ?"
+                    , v -> {
+                    }, v -> {
+                        super.onBackPressed();
+                    });
+        }
+        else{
+            super.onBackPressed();
+        }
+    }
 
     public void startSpotifyService() {
         spotifyAuth();

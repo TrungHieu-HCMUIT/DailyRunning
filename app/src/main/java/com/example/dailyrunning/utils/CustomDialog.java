@@ -57,7 +57,6 @@ public class CustomDialog extends DialogFragment {
             super.show(manager, tag);
             handler.postDelayed(runnable,3000);
         }
-
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.example.dailyrunning.authentication;
 
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,21 +16,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dailyrunning.databinding.FragmentRegisterBinding;
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.R;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class RegisterFragment extends Fragment {
@@ -72,8 +66,22 @@ public class RegisterFragment extends Fragment {
         setupOnClickListener();
         binding.registerButton.setOnClickListener(mRegisterButtonOnClickListener);
 
+
     }
 
+    public boolean isValidPassword(final String password) {
+
+        Pattern pattern;
+        Matcher matcher;
+
+        final String PASSWORD_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4,}$";
+
+        pattern = Pattern.compile(PASSWORD_PATTERN);
+        matcher = pattern.matcher(password);
+        Log.v("Password Validate",String.valueOf(matcher.matches()));
+        return matcher.matches();
+
+    }
     private void textChangeCheck() {
         //region password
         //kiểm tra 2 password có giống nhau không
@@ -90,8 +98,18 @@ public class RegisterFragment extends Fragment {
                 String retypePasswordString = Objects.requireNonNull(binding.reTypePasswordOutlinedTextField.getEditText().getText()).toString().trim();
                 if (!passwordString.equals(retypePasswordString) && !retypePasswordString.isEmpty() && !passwordString.isEmpty()) {
                     binding.reTypePasswordOutlinedTextField.setError("Mật khẩu không trùng khớp");
-                } else {
+                }
+                else {
                     binding.reTypePasswordOutlinedTextField.setError(null);
+                }
+
+                if(!isValidPassword(passwordString))
+                {
+                    binding.passwordOutlinedTextField.setError("Mật khẩu không hợp lệ");
+                }
+                else if(isValidPassword(passwordString))
+                {
+                    binding.passwordOutlinedTextField.setError(null);
                 }
             }
 

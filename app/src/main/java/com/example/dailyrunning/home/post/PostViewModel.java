@@ -27,8 +27,10 @@ import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -43,7 +45,6 @@ public class PostViewModel extends ViewModel {
     ChildEventListener mMyPostEventListener;
     ValueEventListener postChangeListener;
     ChildEventListener mfollowingPostEventListener;
-
     {
         myPosts.setValue(new ArrayList<>());
         followingPosts.setValue(new ArrayList<>());
@@ -71,6 +72,7 @@ public class PostViewModel extends ViewModel {
             public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 ArrayList<Post> temp=myPosts.getValue();
                 temp.add(snapshot.getValue(Post.class));
+                temp.sort(Post::compareTo);
                 myPosts.postValue(temp);
             }
 
@@ -88,6 +90,7 @@ public class PostViewModel extends ViewModel {
                         temp.set(temp.indexOf(postInMyPost),changedPost);
                     }
                 }
+                temp.sort(Post::compareTo);
                 myPosts.postValue(temp);
             }
 
@@ -126,6 +129,7 @@ public class PostViewModel extends ViewModel {
         updatedComment.add(comment);
         postRef.child("comments").setValue(updatedComment);
     }
+
 
     @BindingAdapter({"postDate"})
     public static void getCommentDuration(TextView view, String date) {
@@ -203,6 +207,7 @@ public class PostViewModel extends ViewModel {
 
                 ArrayList<Post> temp=followingPosts.getValue();
                 temp.add(snapshot.getValue(Post.class));
+                temp.sort(Post::compareTo);
                 followingPosts.postValue(temp);
             }
 
@@ -220,6 +225,7 @@ public class PostViewModel extends ViewModel {
                         temp.set(temp.indexOf(postInMyPost),changedPost);
                     }
                 }
+                temp.sort(Post::compareTo);
                 followingPosts.postValue(temp);
             }
 

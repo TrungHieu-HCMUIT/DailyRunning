@@ -385,7 +385,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         return distance * meterConversion;
     }
 
-    interface ShowConfirmDialog {
+    public interface ShowConfirmDialog {
         void show(String title, String description, View.OnClickListener onCancel, View.OnClickListener onConfirm);
     }
 

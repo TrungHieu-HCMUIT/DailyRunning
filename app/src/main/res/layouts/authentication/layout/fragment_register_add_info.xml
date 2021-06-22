@@ -31,14 +31,7 @@
                 android:theme="?attr/actionBarTheme"
                 app:titleTextColor="@color/white">
 
-                <ImageButton
-                    android:id="@+id/back_button"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:layout_margin="16dp"
-                    android:background="@null"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_arrow_left" />
+
 
                 <TextView
                     android:layout_width="wrap_content"

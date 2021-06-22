@@ -99,6 +99,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         Glide.with(holder.itemView.getContext()).load(postsList.get(position).getOwnerAvatarUrl()).into(holder.userAvatar);
         holder.userName.setText(postsList.get(position).getOwnerName());
         holder.dateTime.setText(postsList.get(position).getActivity().getDateCreated());

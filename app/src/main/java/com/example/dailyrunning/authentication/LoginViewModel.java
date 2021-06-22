@@ -20,6 +20,8 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.model.UserInfo;
+import com.example.dailyrunning.record.RecordViewModel;
+import com.example.dailyrunning.utils.ConfirmDialog;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.GraphRequest;
@@ -29,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -57,6 +60,7 @@ public class LoginViewModel extends ViewModel {
     private DatabaseReference mUserInfoRef = FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<UserInfo> mRegisterUser=new MutableLiveData<>();
     public LoadingDialog loadingDialog;
+    public RecordViewModel.ShowConfirmDialog confirmDialog;
 
     {
         mRegisterUser.setValue(new UserInfo());
@@ -278,7 +282,6 @@ public class LoginViewModel extends ViewModel {
                             if (!upTask.isSuccessful())
                                 upTask.getException().printStackTrace();
                         });
-                        //TODO : nav to update info
                         mNewUser.setValue(newUser);
                         mTaskCallBack.onSuccess();//nav here
 
@@ -308,6 +311,9 @@ public class LoginViewModel extends ViewModel {
                     mTaskCallback.onError(task.getException());
                 }
             });
+        }
+        else{
+            Toast.makeText(context, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
         }
     }
     private void updateFirebaseUser(UserInfo mNewInfo, Context context) {

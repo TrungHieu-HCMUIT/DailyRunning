@@ -88,10 +88,10 @@ public class Post implements Comparable<Post>{
             Date thisDate = convertStringToDate(this.activity.getDateCreated());
             Date otherDate = convertStringToDate(o.activity.getDateCreated());
             if (thisDate.before(otherDate)) {
-                return -1;
+                return 1;
             }
             else {
-                return 1;
+                return -1;
             }
         } catch (ParseException e) {
             e.printStackTrace();
