@@ -54,7 +54,7 @@ public class FollowingListFragment extends Fragment {
         mNavController = Navigation.findNavController(getView());
 
         // init recyclerView
-        mAdapter = new UserRowAdapter(mNavController, getContext(), mUserRowList);
+//        mAdapter = new UserRowAdapter(mNavController, getContext(), mUserRowList);
         binding.followingUserRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.followingUserRecyclerView.setAdapter(mAdapter);
 

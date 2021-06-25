@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginViewModel;
+import com.example.dailyrunning.home.find.OtherUserProfileViewModel;
 import com.example.dailyrunning.home.post.PostViewAdapter;
 import com.example.dailyrunning.home.post.PostViewModel;
 import com.example.dailyrunning.model.Post;
@@ -65,6 +66,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
     private ImageView image;
     private HomeViewModel mHomeViewModel;
     private BottomNavigationViewEx bottomNavigationViewEx;
+    public OtherUserProfileViewModel mOtherUserProfileViewModel;
 
     private PeriodicWorkRequest mPeriodicWorkRequest;
 
@@ -88,6 +90,8 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mHomeViewModel=new ViewModelProvider(this).get(HomeViewModel.class);
         mPostViewModel=new ViewModelProvider(this).get(PostViewModel.class);
+        mOtherUserProfileViewModel = new ViewModelProvider(this).get(OtherUserProfileViewModel.class);
+
         //
         mHomeViewModel.mHomeActivity.setValue(this);
 

@@ -88,6 +88,7 @@ public class UserFragment extends Fragment implements UserNavigator{
     Calendar c = Calendar.getInstance();;
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy");
     String formattedDate = df.format(c.getTime());
+    private ListUserViewModel mListUserViewModel;
 
     @Nullable
     @Override
@@ -118,6 +119,8 @@ public class UserFragment extends Fragment implements UserNavigator{
         //init viewmodel
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        mListUserViewModel = new ViewModelProvider(getActivity()).get(ListUserViewModel.class);
+
         mUserViewModel.setNavigator(this);
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
@@ -254,46 +257,32 @@ public class UserFragment extends Fragment implements UserNavigator{
                     mUserViewModel.step.setValue(Integer.parseInt(String.valueOf(step)));
                 }
             }
-
             @Override
             public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
             }
         });
-                /*.get().addOnCompleteListener(task -> {
-                    if(task.getResult()!=null) {
 
-                    }*/
     }
     private void setFollowCount() {
-        FirebaseDatabase.getInstance().getReference()
-                .child("Follow")
-                .child(mUserViewModel.getCurrentUser().getValue().getUserID())
-                .get().addOnCompleteListener(task -> {
-            int follower = (int) task.getResult().child("followed").getChildrenCount();
-            binding.followerTextView.setText("" + follower);
-            int following = (int) task.getResult().child("following").getChildrenCount();
-            binding.followingTextView.setText("" + following);
-        });
+
 
         // region FollowerCountTextView
-        binding.followerTextView.setOnClickListener(new View.OnClickListener() {
+        binding.followerLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle userIdBundle = new Bundle();
-                userIdBundle.putString("userId", mCurrentUser.getUserID());
-                Navigation.findNavController(getView()).navigate(R.id.action_userFragment_to_followerListFragment, userIdBundle);
+                mListUserViewModel.showUserList(mUserViewModel.followerUid.getValue(), "Người theo dõi");
+                Navigation.findNavController(getView()).navigate(R.id.action_userFragment_to_listUserFragment);
             }
         });
         // endregion
 
         // region FollowingCountTextView
-        binding.followingTextView.setOnClickListener(new View.OnClickListener() {
+        binding.followingLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle userIdBundle = new Bundle();
-                userIdBundle.putString("userId", mCurrentUser.getUserID());
-                Navigation.findNavController(getView()).navigate(R.id.action_userFragment_to_followingListFragment, userIdBundle);
+                mListUserViewModel.showUserList(mUserViewModel.followingUid.getValue(), "Đang theo dõi");
+                Navigation.findNavController(getView()).navigate(R.id.action_userFragment_to_listUserFragment);
             }
         });
         // endregion

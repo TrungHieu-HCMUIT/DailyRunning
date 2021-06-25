@@ -25,10 +25,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class UserRowAdapter extends RecyclerView.Adapter<UserRowAdapter.ViewHolder>{
-    private NavController mNavController;
-    private Context mContext;
     private ArrayList<UserInfo> mUserList;
+    private OnUserClick onUserClick;
 
+    public void updateUserList(ArrayList<UserInfo> data)
+    {
+        mUserList=data;
+        notifyDataSetChanged();
+    }
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public ImageView userAvatar;
@@ -55,9 +59,9 @@ public class UserRowAdapter extends RecyclerView.Adapter<UserRowAdapter.ViewHold
 
     }
 
-    public UserRowAdapter(NavController mNavController, Context mContext, ArrayList<UserInfo> mUserList) {
-        this.mNavController = mNavController;
-        this.mContext = mContext;
+    public UserRowAdapter(OnUserClick onUserClick, ArrayList<UserInfo> mUserList) {
+        this.onUserClick = onUserClick;
+
         this.mUserList = mUserList;
     }
 
@@ -72,14 +76,14 @@ public class UserRowAdapter extends RecyclerView.Adapter<UserRowAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ViewHolder holder, int position) {
-        Glide.with(mContext).load(mUserList.get(position).getAvatarURI()).into(holder.userAvatar);
+        Glide.with(holder.itemView.getContext()).load(mUserList.get(position).getAvatarURI()).into(holder.userAvatar);
         holder.userName.setText(mUserList.get(position).getDisplayName());
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position) {
                 Bundle resultOnClick = new Bundle();
                 resultOnClick.putString("userID", mUserList.get(position).getUserID());
-                mNavController.navigate(R.id.action_findFragment_to_otherUserProfile, resultOnClick);
+                onUserClick.onUserClick(mUserList.get(position));
             }
         });
     }
@@ -87,5 +91,9 @@ public class UserRowAdapter extends RecyclerView.Adapter<UserRowAdapter.ViewHold
     @Override
     public int getItemCount() {
         return mUserList.size();
+    }
+
+    public interface OnUserClick{
+        void onUserClick(UserInfo user);
     }
 }

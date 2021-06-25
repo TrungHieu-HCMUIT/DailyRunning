@@ -116,6 +116,7 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/follower_linear_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -128,7 +129,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/svn_avo"
-                        android:text="@{String.valueOf(otherUserViewModel.followerCount)}"
+                        android:text="@{String.valueOf(otherUserViewModel.followerUid.size())}"
                         android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold"
@@ -154,6 +155,7 @@
                     android:background="#AFAFAF" />
 
                 <LinearLayout
+                    android:id="@+id/following_linear_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
@@ -166,7 +168,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="8dp"
                         android:fontFamily="@font/svn_avo"
-                        android:text="@{String.valueOf(otherUserViewModel.followingCount)}"
+                        android:text="@{String.valueOf(otherUserViewModel.followingUid.size())}"
                         android:textColor="@color/black"
 
                         android:textSize="20sp"

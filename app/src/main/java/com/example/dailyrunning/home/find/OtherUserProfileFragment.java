@@ -18,6 +18,7 @@ import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentOtherUserProfileBinding;
 import com.example.dailyrunning.home.HomeActivity;
 import com.example.dailyrunning.model.MedalInfo;
+import com.example.dailyrunning.user.ListUserViewModel;
 import com.example.dailyrunning.user.MedalDialog;
 import com.example.dailyrunning.user.StatisticalViewPagerAdapter;
 import com.example.dailyrunning.user.UserViewModel;
@@ -41,13 +42,14 @@ public class OtherUserProfileFragment extends Fragment {
     private FragmentOtherUserProfileBinding binding;
     private UserViewModel mUserViewModel;
     private OtherUserProfileViewModel mOtherUserProfileViewModel;
+    private ListUserViewModel mListUserViewModel;
     private MedalDialog mMedalDialog;
 
     private DatabaseReference mFollowRef_currentUserSide;
     private DatabaseReference mFollowRef_otherUserSide;
+    String otherUserID;
 
     private String currentUserID;
-    private String otherUserID;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -59,22 +61,21 @@ public class OtherUserProfileFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Bundle result = getArguments();
-        otherUserID = result.getString("userID");
+
         ((HomeActivity)getActivity()).hideNavBar();
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
         currentUserID = mUserViewModel.getCurrentUser().getValue().getUserID();
+        mOtherUserProfileViewModel = new ViewModelProvider(getActivity()).get(OtherUserProfileViewModel.class);
+        mListUserViewModel = new ViewModelProvider(getActivity()).get(ListUserViewModel.class);
 
         // init database ref
+        otherUserID=mOtherUserProfileViewModel.userID;
         mFollowRef_currentUserSide = FirebaseDatabase.getInstance().getReference()
                 .child("Follow")
                 .child(currentUserID);
         mFollowRef_otherUserSide = FirebaseDatabase.getInstance().getReference()
                 .child("Follow")
                 .child(otherUserID);
-
-        mOtherUserProfileViewModel = new ViewModelProvider(getActivity()).get(OtherUserProfileViewModel.class);
-        mOtherUserProfileViewModel.init(otherUserID);
         binding.setOtherUserViewModel(mOtherUserProfileViewModel);
         binding.setLifecycleOwner(getActivity());
         mMedalDialog = new MedalDialog();
@@ -149,7 +150,7 @@ public class OtherUserProfileFragment extends Fragment {
         checkIsFollowing();
 
         // region UserInfo
-        mOtherUserProfileViewModel.setOtherUserInfo();
+
         FirebaseDatabase.getInstance().getReference()
                 .child("Activity")
                 .child(otherUserID)
@@ -165,7 +166,7 @@ public class OtherUserProfileFragment extends Fragment {
             public void onClick(View v) {
                 mFollowRef_currentUserSide.child("following").child(otherUserID).setValue(otherUserID);
                 mFollowRef_otherUserSide.child("followed").child(currentUserID).setValue(currentUserID);
-                mOtherUserProfileViewModel.setFollowCount();
+                mOtherUserProfileViewModel.getFollowInfo();
                 binding.followButton.setVisibility(View.INVISIBLE);
                 binding.unfollowButton.setVisibility(View.VISIBLE);
             }
@@ -178,7 +179,7 @@ public class OtherUserProfileFragment extends Fragment {
             public void onClick(View v) {
                 mFollowRef_currentUserSide.child("following").child(otherUserID).removeValue();
                 mFollowRef_otherUserSide.child("followed").child(currentUserID).removeValue();
-                mOtherUserProfileViewModel.setFollowCount();
+                mOtherUserProfileViewModel.getFollowInfo();
                 binding.unfollowButton.setVisibility(View.INVISIBLE);
                 binding.followButton.setVisibility(View.VISIBLE);
             }
@@ -197,23 +198,21 @@ public class OtherUserProfileFragment extends Fragment {
         // endregion
 
         // region FollowerCountTextView
-        binding.followerCountTextView.setOnClickListener(new View.OnClickListener() {
+        binding.followerLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle userIdBundle = new Bundle();
-                userIdBundle.putString("userId", otherUserID);
-                Navigation.findNavController(getView()).navigate(R.id.action_otherUserProfile_to_followerListFragment, userIdBundle);
+                mListUserViewModel.showUserList(mOtherUserProfileViewModel.followerUid.getValue(),"Người theo dõi");
+                Navigation.findNavController(getView()).navigate(R.id.action_otherUserProfile_to_listUserFragment);
             }
         });
         // endregion
 
         // region FollowingCountTextView
-        binding.followingCountTextView.setOnClickListener(new View.OnClickListener() {
+        binding.followingLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle userIdBundle = new Bundle();
-                userIdBundle.putString("userId", otherUserID);
-                Navigation.findNavController(getView()).navigate(R.id.action_otherUserProfile_to_followingListFragment, userIdBundle);
+                mListUserViewModel.showUserList(mOtherUserProfileViewModel.followingUid.getValue(),"Đang theo dõi");
+                Navigation.findNavController(getView()).navigate(R.id.action_otherUserProfile_to_listUserFragment);
             }
         });
         // endregion

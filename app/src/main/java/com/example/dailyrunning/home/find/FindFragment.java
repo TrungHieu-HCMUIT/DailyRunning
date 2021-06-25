@@ -47,7 +47,7 @@ public class FindFragment extends Fragment {
     private ArrayList<UserInfo> mUserList_original = new ArrayList<>();
     private ArrayList<UserInfo> mUserList_result = new ArrayList<>();
     private UserRowAdapter mAdapter;
-
+    private OtherUserProfileViewModel mOtherUserProfileViewModel;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class FindFragment extends Fragment {
         // Init ViewModel
         mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-
+        mOtherUserProfileViewModel = new ViewModelProvider(getActivity()).get(OtherUserProfileViewModel.class);
         mNavController = Navigation.findNavController(view);
 
         initWidget();
@@ -134,7 +134,13 @@ public class FindFragment extends Fragment {
     }
 
     private void initRecyclerView() {
-        mAdapter = new UserRowAdapter(mNavController, getContext(), mUserList_result);
+        mAdapter = new UserRowAdapter(new UserRowAdapter.OnUserClick() {
+            @Override
+            public void onUserClick(UserInfo user) {
+                mOtherUserProfileViewModel.onUserSelected(user);
+                mNavController.navigate(R.id.action_findFragment_to_otherUserProfile);
+            }
+        }, mUserList_result);
         binding.resultRv.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.resultRv.setAdapter(mAdapter);
 

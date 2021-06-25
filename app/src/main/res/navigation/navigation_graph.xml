@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_homeFragment_to_mapViewFragment"
             app:destination="@id/mapViewFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_listUserFragment"
+            app:destination="@id/listUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/findFragment"
@@ -43,11 +46,8 @@
             android:id="@+id/action_userFragment_to_updateInfoFragment"
             app:destination="@id/updateInfoFragment" />
         <action
-            android:id="@+id/action_userFragment_to_followerListFragment"
-            app:destination="@id/followerListFragment" />
-        <action
-            android:id="@+id/action_userFragment_to_followingListFragment"
-            app:destination="@id/followingListFragment" />
+            android:id="@+id/action_userFragment_to_listUserFragment"
+            app:destination="@id/listUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/giftFragment"
@@ -85,22 +85,19 @@
             android:id="@+id/action_otherUserProfile_to_activityListFragment"
             app:destination="@id/activityListFragment" />
         <action
-            android:id="@+id/action_otherUserProfile_to_followerListFragment"
-            app:destination="@id/followerListFragment" />
-        <action
-            android:id="@+id/action_otherUserProfile_to_followingListFragment"
-            app:destination="@id/followingListFragment" />
+            android:id="@+id/action_otherUserProfile_to_listUserFragment"
+            app:destination="@id/listUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/activityListFragment"
         android:name="com.example.dailyrunning.home.find.ActivityListFragment"
         android:label="ActivityListFragment" />
     <fragment
-        android:id="@+id/followerListFragment"
-        android:name="com.example.dailyrunning.utils.FollowerListFragment"
-        android:label="FollowerListFragment" />
-    <fragment
-        android:id="@+id/followingListFragment"
-        android:name="com.example.dailyrunning.utils.FollowingListFragment"
-        android:label="FollowingListFragment" />
+        android:id="@+id/listUserFragment"
+        android:name="com.example.dailyrunning.user.ListUserFragment"
+        android:label="ListUserFragment" >
+        <action
+            android:id="@+id/action_listUserFragment_to_otherUserProfile"
+            app:destination="@id/otherUserProfile" />
+    </fragment>
 </navigation>

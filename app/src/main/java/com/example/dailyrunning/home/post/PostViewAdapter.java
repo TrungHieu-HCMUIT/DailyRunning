@@ -149,27 +149,18 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             holder.pressToUnlikeBtn.setVisibility(View.INVISIBLE);
         }
 
-        holder.userName.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onUserClickListener=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (postsList.get(position).getOwnerID().equals(currentUserId))
                     return;
-                Bundle bundle = new Bundle();
-                bundle.putString("userID", postsList.get(position).getOwnerID());
-                navController.navigate(R.id.action_homeFragment_to_otherUserProfile, bundle);
+                homeActivity.mOtherUserProfileViewModel.onUserSelected(postsList.get(position).getOwnerID());
+                navController.navigate(R.id.action_homeFragment_to_otherUserProfile);
             }
-        });
+        };
+        holder.userName.setOnClickListener(onUserClickListener);
 
-        holder.userAvatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (postsList.get(position).getOwnerID().equals(currentUserId))
-                    return;
-                Bundle bundle = new Bundle();
-                bundle.putString("userID", postsList.get(position).getOwnerID());
-                navController.navigate(R.id.action_homeFragment_to_otherUserProfile, bundle);
-            }
-        });
+        holder.userAvatar.setOnClickListener(onUserClickListener);
 
         holder.pressToLikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override

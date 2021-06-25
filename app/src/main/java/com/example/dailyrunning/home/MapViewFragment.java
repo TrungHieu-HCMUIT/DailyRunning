@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -87,7 +88,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
     public void drawing(List<LatLng> listDraw) {
         PolylineOptions polyOptions = new PolylineOptions();
-        polyOptions.color(Color.RED);
+        polyOptions.color(ResourcesCompat.getColor(getResources(), R.color.color_palette_3, null)); //without theme
         polyOptions.width(10);
         polyOptions.addAll(listDraw);
 

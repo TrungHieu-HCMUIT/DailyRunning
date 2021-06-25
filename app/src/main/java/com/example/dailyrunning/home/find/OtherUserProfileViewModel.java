@@ -1,6 +1,5 @@
 package com.example.dailyrunning.home.find;
 
-import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -11,29 +10,20 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bumptech.glide.Glide;
-import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginActivity;
 import com.example.dailyrunning.model.Activity;
-import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
-import com.example.dailyrunning.user.UserViewModel;
-import com.example.dailyrunning.utils.MedalAdapter;
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -42,9 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
@@ -53,31 +41,94 @@ import static com.example.dailyrunning.user.UserViewModel.parseDistance;
 
 
 public class OtherUserProfileViewModel extends ViewModel {
-    private String userID;
+    public String userID;
     private MutableLiveData<String> avatarUrl=new MutableLiveData<>();
     private MutableLiveData<String> userName=new MutableLiveData<>();
-    private MutableLiveData<Integer> followerCount=new MutableLiveData<>();
-    private MutableLiveData<Integer> followingCount=new MutableLiveData<>();
     private MutableLiveData<Integer> runningPoint=new MutableLiveData<>();
-    //Huy hiệu cập nhật sau
-    private MutableLiveData<UserInfo> user=new MutableLiveData<>();
+    private MutableLiveData<UserInfo> selectedUser =new MutableLiveData<>();
+    public MutableLiveData<ArrayList<String>> followerUid =new MutableLiveData<>();
+    public MutableLiveData<ArrayList<String>> followingUid =new MutableLiveData<>();
+    public MutableLiveData<String> title =new MutableLiveData<>();
     private ChildEventListener mChildEventListener;
-
-    public void init(String userID) {
+    /*public void init(String userID) {
         this.userID = userID;
         if(mChildEventListener!=null)
-        activityRef.child(user.getValue().getUserID()).removeEventListener(mChildEventListener);
+        activityRef.child(selectedUser.getValue().getUserID()).removeEventListener(mChildEventListener);
         FirebaseDatabase.getInstance().getReference()
                 .child("UserInfo")
                 .child(userID)
                 .get().addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
                         // Statistic
-                        user.setValue(task.getResult().getValue(UserInfo.class));
+                        selectedUser.setValue(task.getResult().getValue(UserInfo.class));
                         fetchActivities();
-                        setFollowCount();
+                        //setFollowCount();
                     }
                 }) ;
+    }*/
+
+    public void getFollowInfo()
+    {
+
+        FirebaseDatabase.getInstance().getReference()
+                .child("Follow")
+                .child(userID).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                if(!dataSnapshot.exists())
+                    return;
+                ArrayList<String> followerID=new ArrayList<>();
+                ArrayList<String> followingID=new ArrayList<>();
+                ((Runnable) () -> {
+                    dataSnapshot.child("followed").getChildren().forEach(follower->{
+                    followerID.add(follower.getValue().toString());
+                    });
+                    followerUid.postValue(followerID);
+                }).run();
+                ((Runnable) () -> {
+                    dataSnapshot.child("following").getChildren().forEach(follower->{
+                        followingID.add(follower.getValue().toString());
+                    });
+                    followingUid.postValue(followingID);
+                }).run();
+
+            }
+        });
+
+    }
+
+
+    public void onUserSelected(UserInfo userInfo)
+    {
+        this.userID=userInfo.getUserID();
+        selectedUser.setValue(userInfo);
+        fetchActivities();
+        avatarUrl.setValue(userInfo.getAvatarURI());
+        userName.setValue(userInfo.getDisplayName());
+        //setFollowCount();
+        getFollowInfo();
+    }
+    public void onUserSelected(String uid)
+    {
+        this.userID = uid;
+        if(mChildEventListener!=null)
+            activityRef.child(selectedUser.getValue().getUserID()).removeEventListener(mChildEventListener);
+        FirebaseDatabase.getInstance().getReference()
+                .child("UserInfo")
+                .child(uid)
+                .get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                // Statistic
+                selectedUser.setValue(task.getResult().getValue(UserInfo.class));
+                this.userID=selectedUser.getValue().getUserID();
+                fetchActivities();
+                avatarUrl.setValue(selectedUser.getValue().getAvatarURI());
+                userName.setValue(selectedUser.getValue().getDisplayName());
+                getFollowInfo();
+            }
+        });
+
+
     }
 
     @BindingAdapter({"avatarUrl"})
@@ -97,19 +148,12 @@ public class OtherUserProfileViewModel extends ViewModel {
         return userName;
     }
 
-    public LiveData<Integer> getFollowerCount() {
-        return followerCount;
-    }
-
-    public LiveData<Integer> getFollowingCount() {
-        return followingCount;
-    }
 
     public LiveData<Integer> getRunningPoint() {
         return runningPoint;
     }
 
-    public void setOtherUserInfo() {
+/*    public void setOtherUserInfo() {
         FirebaseDatabase.getInstance().getReference()
                 .child("UserInfo")
                 .child(userID)
@@ -119,21 +163,9 @@ public class OtherUserProfileViewModel extends ViewModel {
                         userName.postValue((String) task.getResult().child("displayName").getValue());
             }
         });
-    }
+    }*/
 
-    public void setFollowCount() {
-        FirebaseDatabase.getInstance().getReference()
-                .child("Follow")
-                .child(userID)
-                .get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                int follower = (int) task.getResult().child("followed").getChildrenCount();
-                followerCount.postValue(follower);
-                int following = (int) task.getResult().child("following").getChildrenCount();
-                followingCount.postValue(following);
-            }
-        });
-    }
+
 
 
     //region statistic
@@ -239,7 +271,7 @@ public class OtherUserProfileViewModel extends ViewModel {
 
             }
         };
-        activityRef.child(user.getValue().getUserID()).addChildEventListener(mChildEventListener);
+        activityRef.child(selectedUser.getValue().getUserID()).addChildEventListener(mChildEventListener);
     }
 
 

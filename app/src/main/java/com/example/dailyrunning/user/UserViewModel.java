@@ -79,7 +79,8 @@ public class UserViewModel extends ViewModel {
     private MutableLiveData<List<GiftInfo>> gifts;
     private final DatabaseReference mUserInfoRef = FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<String> avatarUri;
-
+    public MutableLiveData<ArrayList<String>> followerUid =new MutableLiveData<>();
+    public MutableLiveData<ArrayList<String>> followingUid =new MutableLiveData<>();
     public MutableLiveData<Integer> step=new MutableLiveData<>();
 
     {
@@ -87,6 +88,33 @@ public class UserViewModel extends ViewModel {
 
     }
 
+    public void getFollowInfo()
+    {
+        followerUid.postValue(new ArrayList<>());
+        followingUid.postValue(new ArrayList<>());
+        FirebaseDatabase.getInstance().getReference()
+                .child("Follow")
+                .child(currentUser.getValue().getUserID()).get().addOnSuccessListener(dataSnapshot -> {
+                    if(!dataSnapshot.exists())
+                        return;
+                    ArrayList<String> followerID=new ArrayList<>();
+                    ArrayList<String> followingID=new ArrayList<>();
+                    ((Runnable) () -> {
+                        dataSnapshot.child("followed").getChildren().forEach(follower->{
+                            followerID.add(follower.getValue().toString());
+                        });
+                        followerUid.postValue(followerID);
+                    }).run();
+                    ((Runnable) () -> {
+                        dataSnapshot.child("following").getChildren().forEach(follower->{
+                            followingID.add(follower.getValue().toString());
+                        });
+                        followingUid.postValue(followingID);
+                    }).run();
+
+                });
+
+    }
     public LiveData<UserInfo> getCurrentUser()
     {
         if(currentUser==null)
@@ -119,7 +147,8 @@ public class UserViewModel extends ViewModel {
                 taskCallBack.onError(new Exception("Current user is null"));
                 return;
             }
-            currentUser.postValue(taskRes.getValue(UserInfo.class));
+            currentUser.setValue(taskRes.getValue(UserInfo.class));
+            getFollowInfo();
             taskCallBack.onSuccess();
         });
     }

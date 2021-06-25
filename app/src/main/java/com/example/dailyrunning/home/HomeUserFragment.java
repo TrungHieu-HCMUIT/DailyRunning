@@ -21,6 +21,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.dailyrunning.home.find.OtherUserProfileViewModel;
 import com.example.dailyrunning.home.post.PostViewAdapter;
 import com.example.dailyrunning.home.post.PostViewModel;
 import com.example.dailyrunning.model.Post;
