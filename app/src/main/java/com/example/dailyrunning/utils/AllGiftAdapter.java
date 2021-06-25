@@ -32,7 +32,11 @@ public class AllGiftAdapter  extends RecyclerView.Adapter<AllGiftAdapter.ViewHol
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public ImageView mGiftImageView;
+        public ImageView mExpandImageView;
         public TextView mProviderNameTextView;
+        public TextView mExpandProviderNameTextView;
+        public TextView mExpandRunningPointTextView;
+        public TextView mExpandGiftDetailTextView;
         public TextView mGiftDetailTextView;
         public TextView mPointTextView;
         public FoldingCell mFoldingCell;
@@ -52,6 +56,10 @@ public class AllGiftAdapter  extends RecyclerView.Adapter<AllGiftAdapter.ViewHol
             mGiftDetailTextView=itemView.findViewById(R.id.gift_detail_textView);
             mPointTextView=itemView.findViewById(R.id.point_textView);
             mExchangeButton=itemView.findViewById(R.id.exchange_button);
+            mExpandProviderNameTextView=itemView.findViewById(R.id.expand_provider_text_view);
+            mExpandRunningPointTextView=itemView.findViewById(R.id.expand_running_point);
+            mExpandGiftDetailTextView=itemView.findViewById(R.id.expand_gift_detail);
+            mExpandImageView=itemView.findViewById(R.id.expand_image_view);
             mFoldingCell.initialize(1000, Color.WHITE,0);
 
 
@@ -59,12 +67,10 @@ public class AllGiftAdapter  extends RecyclerView.Adapter<AllGiftAdapter.ViewHol
         }
     }
     private List<GiftInfo> mGifts;
-    private final StorageReference mGiftImageReference;
     private OnGiftClickListener mOnGiftClickListener;
     public AllGiftAdapter(List<GiftInfo> mGifts,OnGiftClickListener mOnGiftClickListener)
     {
         this.mGifts=mGifts;
-        mGiftImageReference=FirebaseStorage.getInstance().getReference().child("gift_images");
         this.mOnGiftClickListener=mOnGiftClickListener;
     }
 
@@ -84,15 +90,14 @@ public class AllGiftAdapter  extends RecyclerView.Adapter<AllGiftAdapter.ViewHol
     @Override
     public void onBindViewHolder(@NonNull AllGiftAdapter.ViewHolder holder, int position) {
         GiftInfo currentGift=mGifts.get(position);
-        mGiftImageReference.child("place_holder_picture.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(holder.mGiftImageView.getContext()).load(uri).into(holder.mGiftImageView);
-            }
-        });
+        Glide.with(holder.mGiftImageView.getContext()).load(currentGift.getPhotoUri()).into(holder.mGiftImageView);
+        Glide.with(holder.mExpandImageView.getContext()).load(currentGift.getPhotoUri()).into(holder.mExpandImageView);
         holder.mGiftDetailTextView.setText(currentGift.getGiftDetail());
+        holder.mExpandGiftDetailTextView.setText(currentGift.getGiftDetail());
         holder.mProviderNameTextView.setText(currentGift.getProviderName());
+        holder.mExpandProviderNameTextView.setText(currentGift.getProviderName());
         holder.mPointTextView.setText(String.valueOf(currentGift.getPoint()));
+        holder.mExpandRunningPointTextView.setText(String.valueOf(currentGift.getPoint()));
         holder.mExchangeButton.setOnClickListener(v->{
             mOnGiftClickListener.onGiftClick(currentGift);
         });

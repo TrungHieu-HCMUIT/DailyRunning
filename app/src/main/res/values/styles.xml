@@ -27,8 +27,8 @@
     </style>
 
     <style name="MySeekBar" parent="Widget.AppCompat.SeekBar">
-        <item name="android:progressTint">#04B6F6</item>
-        <item name="android:colorControlActivated">#04B6F6</item>
+        <item name="android:progressTint">@color/teal_200</item>
+        <item name="android:colorControlActivated">@color/color_palette_3</item>
     </style>
 
     <style name="NumberPickerStyle" parent="Theme.AppCompat.Light">

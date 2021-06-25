@@ -113,6 +113,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
 
     }
 
+
     public void hideNavBar()
     {
         findViewById(R.id.bottom_nav_bar).setVisibility(View.GONE);

@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentCustomDialogBinding;
@@ -26,11 +27,28 @@ import org.jetbrains.annotations.NotNull;
 public class CustomDialog extends DialogFragment {
 
     FragmentCustomDialogBinding binding;
+
+    private boolean isSuccess;
+    private int remainingPoint;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding=FragmentCustomDialogBinding.inflate(inflater,container,false);
+        binding.setIsSuccess(isSuccess);
+        binding.setRemainingPoint(remainingPoint);
+        if(isSuccess)
+        {
+            binding.animation.setAnimation(R.raw.done_animation);
+
+            binding.animation.setMinAndMaxFrame(18,66);
+        }
+        else
+        {
+            binding.animation.setAnimation(R.raw.anim_failed);
+            binding.animation.setMinFrame(0);
+        }
+        binding.animation.playAnimation();
         return binding.getRoot();
     }
     Handler handler=new Handler();
@@ -47,9 +65,16 @@ public class CustomDialog extends DialogFragment {
         getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
         setCancelable(false);
         getDialog().setCanceledOnTouchOutside(false);
-        binding.animation.setMinAndMaxFrame(18,66);
+
     }
 
+    public void showDialog(FragmentManager manager,boolean isSuccess,int remainingPoint)
+    {
+        this.isSuccess=isSuccess;
+        this.remainingPoint=remainingPoint;
+
+        show(manager,"RunningPointExchanedDialog");
+    }
     @Override
     public void show(@NonNull @NotNull FragmentManager manager, @Nullable @org.jetbrains.annotations.Nullable String tag) {
         Dialog dialogFrg=getDialog();

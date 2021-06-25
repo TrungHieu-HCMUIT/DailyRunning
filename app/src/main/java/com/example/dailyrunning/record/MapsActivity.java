@@ -141,10 +141,6 @@ public class MapsActivity extends FragmentActivity implements RecordViewModel.Wo
                     public void onConnected(SpotifyAppRemote spotifyAppRemote) {
                         mSpotifyAppRemote = spotifyAppRemote;
                         mSpotifyViewModel.spotifyAppRemote.setValue(spotifyAppRemote);
-
-
-                        Log.d("MainActivity", "Connected! Yay!");
-
                         // Now you can start interacting with App Remote
                         connected();
                     }
@@ -228,6 +224,7 @@ public class MapsActivity extends FragmentActivity implements RecordViewModel.Wo
         //mSpotifyAppRemote.getPlayerApi().play("spotify:track:6IDKbALVvJKL7krrO6n7tf");
 
         final Track[] prevTrack = {null, null};
+
         mSpotifyAppRemote.getPlayerApi()
                 .subscribeToPlayerState()
                 .setEventCallback(playerState -> {

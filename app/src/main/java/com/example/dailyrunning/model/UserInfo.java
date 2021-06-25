@@ -20,6 +20,13 @@ public class UserInfo implements Serializable {
     {
         this.point+=point;
     }
+    public boolean exchangeGift(int point)
+    {
+        if(this.point<point)
+            return false;
+        this.point-=point;
+        return  true;
+    }
     public boolean validateData() {
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(displayName) || dob==null) {
             return false;

@@ -1,11 +1,12 @@
 package com.example.dailyrunning.user;
 
-import android.net.Uri;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -33,55 +34,50 @@ public class GiftFragment extends Fragment {
     View rootView;
     private HomeViewModel mHomeViewModel;
     private FragmentGiftBinding binding;
-    private GiftViewModel mGiftViewModel;
-    private CustomDialog mCustomDialog;
+    private UserViewModel mUserViewModel;
+    private Context mContext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding=FragmentGiftBinding.inflate(inflater,container,false);
+        binding = FragmentGiftBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        rootView=view;
-        mGiftViewModel=new ViewModelProvider(getActivity()).get(GiftViewModel.class);
-        binding.setGiftViewModel(mGiftViewModel);
+        mContext=getContext();
+        rootView = view;
+        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
+        binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
         initView();
         setUpGiftRecyclerView();
         mHomeViewModel.mHomeActivity.getValue().hideNavBar();
-        mCustomDialog=new CustomDialog();
-        backButton.setOnClickListener(v->{
+        backButton.setOnClickListener(v -> {
             getActivity().onBackPressed();
         });
     }
 
     private void initView() {
-        backButton=rootView.findViewById(R.id.back_button);
-        mGiftRecyclerView=rootView.findViewById(R.id.gift_recyclerView);
-        mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
+        backButton = rootView.findViewById(R.id.back_button);
+        mGiftRecyclerView = rootView.findViewById(R.id.gift_recyclerView);
+        mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
     }
 
     private void setUpGiftRecyclerView() {
         mGiftRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
 
-        ArrayList<GiftInfo> giftInfos=new ArrayList<GiftInfo>();
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        giftInfos.add(new GiftInfo(Uri.parse("Temp_uri"),"Provider 1","Gift detail 1",(int)(Math.random()*100),"temp_id"));
-        AllGiftAdapter allGiftAdapter=new AllGiftAdapter(giftInfos, gift -> {
-            mGiftViewModel.exchangeClick(() -> {
-                mCustomDialog.show(getChildFragmentManager(),"tag");
-            });
+        ArrayList<GiftInfo> giftInfos = new ArrayList<GiftInfo>();
+        AllGiftAdapter allGiftAdapter = new AllGiftAdapter(giftInfos, gift -> {
+            boolean isSuccess=mUserViewModel.exchangeGift(gift);
+            (new CustomDialog()).showDialog(getChildFragmentManager(),isSuccess,mUserViewModel.getCurrentUser().getValue().getPoint());
+        });
+        mUserViewModel.getGifts().observe((LifecycleOwner) mContext, gifts->{
+            giftInfos.clear();
+            giftInfos.addAll(gifts);
+            allGiftAdapter.notifyDataSetChanged();
         });
         mGiftRecyclerView.setAdapter(allGiftAdapter);
 

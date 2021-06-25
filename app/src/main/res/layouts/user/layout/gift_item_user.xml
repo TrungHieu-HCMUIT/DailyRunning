@@ -5,16 +5,15 @@
     android:paddingBottom="2dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_marginRight="23dp"
     xmlns:tools="http://schemas.android.com/tools">
 
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="130dp"
+        android:layout_width="160dp"
         app:cardBackgroundColor="@color/lighter_grey"
         app:cardCornerRadius="10dp"
 
-        android:layout_height="180dp">
+        android:layout_height="210dp">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -33,10 +32,12 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Tên nhà cung cấp"
-
+                android:text="Tên nhà cung cấpên nhà cung cấp"
+                android:maxEms="7"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textColor="#666666"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/gift_detail_textView"
@@ -46,36 +47,39 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginTop="1dp"
                 android:textColor="#333333"
-                android:textSize="10sp"
-                android:text="Chi tiết ưu đãi"
+                android:textSize="12sp"
+                android:maxEms="7"
+                android:singleLine="true"
+                android:ellipsize="end"
+                tools:text="Chi tiết ưu đãiChi tiết ưu đãiChi tiết ưu đãi"
                 android:layout_below="@id/provider_name_textView"/>
 
 
             <Button
                 android:id="@+id/point_button"
-                android:layout_width="24dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="0dp"
                 android:minWidth="0dp"
                 android:layout_below="@id/gift_imageView"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="9dp"
+                android:layout_marginEnd="11dp"
                 android:fontFamily="@font/roboto_regular"
                 android:padding="0dp"
                 android:backgroundTint="#FFE7BF"
-                android:paddingBottom="0dp"
                 android:clickable="false"
-                android:text="20"
+                android:paddingVertical="0dp"
+                tools:text="2000"
                 android:textColor="#D68D15"
-                android:textSize="8sp"
+                android:textSize="10sp"
                 android:textStyle="bold" />
             <TextView
                 android:id="@+id/running_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
-                android:textSize="6sp"
+                android:textSize="8sp"
                 android:text="RUNNING"
                 android:layout_alignParentEnd="true"
                 android:textColor="#333333"

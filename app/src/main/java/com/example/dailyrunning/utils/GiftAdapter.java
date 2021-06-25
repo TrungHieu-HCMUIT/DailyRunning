@@ -47,11 +47,9 @@ public class GiftAdapter  extends RecyclerView.Adapter<GiftAdapter.ViewHolder>{
         }
     }
     private List<GiftInfo> mGifts;
-    private StorageReference mGiftImageReference;
     public GiftAdapter(List<GiftInfo> mGifts)
     {
         this.mGifts=mGifts;
-        mGiftImageReference=FirebaseStorage.getInstance().getReference().child("gift_images");
     }
 
     @NonNull
@@ -70,12 +68,7 @@ public class GiftAdapter  extends RecyclerView.Adapter<GiftAdapter.ViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull GiftAdapter.ViewHolder holder, int position) {
         GiftInfo currentGift=mGifts.get(position);
-        mGiftImageReference.child("place_holder_picture.jpg").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(holder.mGiftImageView.getContext()).load(uri).into(holder.mGiftImageView);
-            }
-        });
+        Glide.with(holder.mGiftImageView.getContext()).load(currentGift.getPhotoUri()).into(holder.mGiftImageView);
         holder.mGiftDetailTextView.setText(currentGift.getGiftDetail());
         holder.mProviderNameTextView.setText(currentGift.getProviderName());
         holder.mPointButton.setText(String.valueOf(currentGift.getPoint()));

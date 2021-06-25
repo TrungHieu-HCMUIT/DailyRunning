@@ -10,6 +10,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,9 +128,6 @@ public class UserFragment extends Fragment implements UserNavigator{
         binding.setLifecycleOwner(getActivity());
 
         mMedalDialog=new MedalDialog();
-
-
-
         mMedalDialog = new MedalDialog();
 
         mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
@@ -152,12 +151,26 @@ public class UserFragment extends Fragment implements UserNavigator{
     }
 
 
+
+
     private void setUpGiftRecyclerView() {
-        binding.giftRecyclerView.setLayoutManager(new CardSliderLayoutManager(getContext()));
+
+        int activeCardLeft= (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                50,
+                getResources().getDisplayMetrics());
+        int cardWidth= (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                160,
+                getResources().getDisplayMetrics());
+        float cardsGap=  TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                23,
+                getResources().getDisplayMetrics());
+        binding.giftRecyclerView.setLayoutManager(new CardSliderLayoutManager(activeCardLeft,cardWidth,cardsGap));
         binding.giftRecyclerView.setHasFixedSize(true);
         try {
             new CardSnapHelper().attachToRecyclerView( binding.giftRecyclerView);
-
         }
         catch (Exception ex){}
         List<GiftInfo> gifts = new ArrayList<>();

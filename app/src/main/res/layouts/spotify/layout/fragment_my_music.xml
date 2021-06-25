@@ -22,6 +22,8 @@
                 android:layout_margin="10dp"
                 android:elevation="10dp"
                 android:hint="Search"
+                app:boxStrokeColor="@color/color_palette_3"
+                app:hintTextColor="@color/color_palette_3"
                 app:endIconMode="clear_text"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:startIconDrawable="@drawable/ic_search_music">
@@ -30,6 +32,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:imeOptions="actionSearch"
                     android:singleLine="true" />
 

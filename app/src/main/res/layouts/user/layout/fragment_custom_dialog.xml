@@ -4,6 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+        <variable
+            name="isSuccess"
+            type="boolean" />
+        <variable
+            name="remainingPoint"
+            type="int" />
+        <import type="android.view.View"/>
+        <import type="com.example.dailyrunning.R"/>
 
     </data>
 
@@ -25,14 +33,15 @@
                 android:id="@+id/animation"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                app:lottie_autoPlay="true"
+                app:lottie_autoPlay="false"
                 app:lottie_loop="false"
                 app:lottie_rawRes="@raw/done_animation" />
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bạn đã nhận quà thành công"
+                android:text="@{isSuccess?`Bạn đã nhận quà thành công`:`Bạn không đủ điểm để đổi`}"
                 android:fontFamily="@font/roboto_regular"
                 android:textFontWeight="400"
                 android:textColor="@color/black"
@@ -42,6 +51,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:orientation="horizontal"
+                android:id="@+id/remaining_point_linear_layout"
+            android:visibility="@{isSuccess?View.VISIBLE:View.GONE}"
                 android:layout_height="wrap_content">
 
                 <TextView
@@ -55,9 +66,10 @@
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/remaining_point_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="38"
+                    android:text="@{String.valueOf(remainingPoint)}"
                     android:fontFamily="@font/roboto_regular"
                     android:textFontWeight="900"
                     android:textColor="@color/black"

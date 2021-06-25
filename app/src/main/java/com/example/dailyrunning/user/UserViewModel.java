@@ -26,7 +26,6 @@ import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.GiftInfo;
-import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
 import com.facebook.AccessToken;
@@ -61,7 +60,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -76,7 +74,7 @@ public class UserViewModel extends ViewModel {
     public static final String EMAIL_PROVIDER_ID = "password";
     public static final String GOOGLE_PROVIDER_ID = "google.com";
     public static final String FACEBOOK_PROVIDER_ID = "facebook.com";
-    private MutableLiveData<List<GiftInfo>> gifts;
+    private MutableLiveData<ArrayList<GiftInfo>> gifts=new MutableLiveData<>();
     private final DatabaseReference mUserInfoRef = FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<String> avatarUri;
     public MutableLiveData<ArrayList<String>> followerUid =new MutableLiveData<>();
@@ -85,6 +83,8 @@ public class UserViewModel extends ViewModel {
 
     {
         step.setValue(0);
+        gifts.setValue(new ArrayList<>());
+        getGiftData();
 
     }
 
@@ -204,27 +204,87 @@ public class UserViewModel extends ViewModel {
         mUserNavigator.updateAvatarClick();
     }
 
-    public LiveData<List<GiftInfo>> getGifts() {
+    public LiveData<ArrayList<GiftInfo>> getGifts() {
         if (gifts == null) {
             gifts = new MutableLiveData<>();
-            getGiftData();
         }
 
         return gifts;
     }
 
+    public boolean exchangeGift(GiftInfo giftInfo)
+    {
+        UserInfo user=currentUser.getValue();
+        if( user.exchangeGift(giftInfo.getPoint()))
+        {
+            HashMap<String,Object> updatePointMap=new HashMap<>();
+            updatePointMap.put("point",user.getPoint());
+            FirebaseDatabase.getInstance().getReference().child("UserInfo").child(user.getUserID()).updateChildren(updatePointMap);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     private void getGiftData() {
-        List<GiftInfo> giftData = new ArrayList<>();
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        giftData.add(new GiftInfo(Uri.parse("Temp_uri"), "Provider 1", "Gift detail 1", (int) (Math.random() * 100), "temp_id"));
-        gifts.postValue(giftData);
+        FirebaseDatabase.getInstance().getReference().child("Gift").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                ArrayList<GiftInfo> giftData =gifts.getValue();
+                giftData.add(snapshot.getValue(GiftInfo.class));
+                gifts.postValue(giftData);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+                ArrayList<GiftInfo> giftData =gifts.getValue();
+                GiftInfo changedItem=snapshot.getValue(GiftInfo.class);
+                int index=-1;
+                for(int i=0;i<giftData.size();i++)
+                {
+                    if(giftData.get(i).getID().equals(changedItem.getID())) {
+                        index = i;
+                        break;
+                    }
+                }
+                if(index!=-1)
+                {
+                    giftData.set(index,changedItem);
+                    gifts.postValue(giftData);
+                }
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                ArrayList<GiftInfo> giftData =gifts.getValue();
+                GiftInfo deletedItem =snapshot.getValue(GiftInfo.class);
+                int index=-1;
+                for(int i=0;i<giftData.size();i++)
+                {
+                    if(giftData.get(i).getID().equals(deletedItem.getID())) {
+                        index = i;
+                        break;
+                    }
+                }
+                if(index!=-1)
+                {
+                    giftData.remove(index);
+                    gifts.postValue(giftData);
+                }
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+            }
+        });
     }
 
     @BindingAdapter({"dobText"})
@@ -404,7 +464,6 @@ public class UserViewModel extends ViewModel {
     public MutableLiveData<ArrayList<String>> timeWorking = new MutableLiveData<>();
     public MutableLiveData<ArrayList<Integer>> workingCount = new MutableLiveData<>();
     public MutableLiveData<ArrayList<MedalInfo>> medals = new MutableLiveData<>();
-    public int currentPage = 0;
     private Calendar c = Calendar.getInstance();
     private LocalDate now = new LocalDate();
     List<Activity> activities = new ArrayList<>();

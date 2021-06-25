@@ -35,6 +35,7 @@
                     app:cardCornerRadius="10dp">
 
                     <ImageView
+                        android:id="@+id/expand_image_view"
                         android:layout_width="91dp"
                         android:layout_height="91dp"
                         android:scaleType="centerCrop"
@@ -49,6 +50,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/expand_provider_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
@@ -64,6 +66,7 @@
                         android:src="@drawable/ic_running_point" />
 
                     <TextView
+                        android:id="@+id/expand_running_point"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
@@ -82,6 +85,7 @@
                 android:background="@android:color/darker_gray" />
 
             <TextView
+                android:id="@+id/expand_gift_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi " />
@@ -132,9 +136,12 @@
                         android:layout_height="wrap_content"
                         android:layout_toRightOf="@+id/image_holder"
                         android:fontFamily="@font/roboto_regular"
-                        android:text="Tên nhà cung cấp"
+                        tools:text="Tên nhà cung cấên nhà cung cấp"
                         android:textColor="#868686"
-                        android:textSize="10sp"
+                        android:textSize="12sp"
+                        android:maxEms="10"
+                        android:singleLine="true"
+                        android:ellipsize="end"
                         android:textStyle="bold" />
 
                     <TextView
@@ -145,6 +152,9 @@
                         android:layout_marginTop="3dp"
                         android:layout_toRightOf="@id/image_holder"
                         android:fontFamily="@font/roboto_regular"
+                        android:maxEms="2"
+                        android:ellipsize="end"
+                        android:maxLines="2"
                         android:text="Chi tiết ưu đãi Chi tiết ưu đãi Chi tiết ưu đãi"
                         android:textColor="#333333" />
 

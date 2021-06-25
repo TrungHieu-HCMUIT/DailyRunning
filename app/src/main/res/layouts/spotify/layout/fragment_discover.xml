@@ -24,6 +24,8 @@
                 android:elevation="10dp"
                 android:hint="Search"
                 app:endIconMode="clear_text"
+                app:boxStrokeColor="@color/color_palette_3"
+                app:hintTextColor="@color/color_palette_3"
                 app:startIconDrawable="@drawable/ic_search_music">
                 <!-- app:hintTextAppearance="@android:color/holo_blue_light"-->
 

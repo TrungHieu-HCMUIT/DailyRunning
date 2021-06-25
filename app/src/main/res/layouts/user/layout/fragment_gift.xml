@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="giftViewModel"
-            type="com.example.dailyrunning.user.GiftViewModel" />
+            name="userViewModel"
+            type="com.example.dailyrunning.user.UserViewModel" />
     </data>
 
     <LinearLayout
