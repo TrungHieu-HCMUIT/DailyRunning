@@ -1,5 +1,6 @@
 package com.example.dailyrunning.home.post;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -18,9 +19,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.CommentItemBinding;
+import com.example.dailyrunning.home.HomeActivity;
+import com.example.dailyrunning.home.find.UserRowAdapter;
 import com.example.dailyrunning.model.Comment;
 import com.example.dailyrunning.model.UserInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -35,8 +39,12 @@ import io.square1.richtextlib.v2.content.RichTextDocumentElement;
 public class CommentAdapter extends   RecyclerView.Adapter<CommentAdapter.ViewHolder>{
 
     ArrayList<Comment> comments;
-    CommentAdapter(ArrayList<Comment> data)
+    Context mContext;
+    UserRowAdapter.OnUserClick onUserClick;
+    CommentAdapter(ArrayList<Comment> data, Context mContext, UserRowAdapter.OnUserClick onUserClick)
     {
+        this.onUserClick=onUserClick;
+        this.mContext= mContext;
         comments=data;
     }
     public void updateComment( ArrayList<Comment> newComment)
@@ -104,8 +112,12 @@ public class CommentAdapter extends   RecyclerView.Adapter<CommentAdapter.ViewHo
                             return false;
                         }
                     }).into(binding.avatarImageView);
+                    binding.avatarImageView.setOnClickListener(v->{
+                        onUserClick.onUserClick(userInfo);
+                    });
                 }
             });
+
         }
     }
 }

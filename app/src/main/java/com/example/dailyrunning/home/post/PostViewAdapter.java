@@ -162,6 +162,12 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
 
         holder.userAvatar.setOnClickListener(onUserClickListener);
 
+        View.OnLongClickListener onLikeLongClick=new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        };
         holder.pressToLikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,7 +26,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.databinding.FragmentPostDetailBinding;
+import com.example.dailyrunning.home.find.OtherUserProfileViewModel;
+import com.example.dailyrunning.home.find.UserRowAdapter;
 import com.example.dailyrunning.model.Comment;
+import com.example.dailyrunning.model.UserInfo;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,6 +48,7 @@ public class PostDetailFragment extends Fragment {
 
     FragmentPostDetailBinding binding;
     PostViewModel mPostViewModel;
+    OtherUserProfileViewModel mOtherUserProfileViewModel;
     private Context mContext;
 
     @Override
@@ -51,7 +57,8 @@ public class PostDetailFragment extends Fragment {
         // Inflate the layout for this fragment
         binding=FragmentPostDetailBinding.inflate(inflater,container,false);
         binding.setLifecycleOwner(getActivity());
-        mPostViewModel=new ViewModelProvider(getActivity()).get(PostViewModel.class);
+        mPostViewModel=new ViewModelProvider((ViewModelStoreOwner) getContext()).get(PostViewModel.class);
+        mOtherUserProfileViewModel=new ViewModelProvider((ViewModelStoreOwner) getContext()).get(OtherUserProfileViewModel.class);
         binding.setPostViewModel(mPostViewModel);
         return binding.getRoot();
     }
@@ -108,7 +115,16 @@ public class PostDetailFragment extends Fragment {
 
     private void initRecyclerView()
     {
-        CommentAdapter adapter=new CommentAdapter((ArrayList<Comment>) mPostViewModel.getSelectedPost().getValue().getComments());
+        CommentAdapter adapter=new CommentAdapter((ArrayList<Comment>) mPostViewModel.getSelectedPost().getValue().getComments()
+                , mContext, new UserRowAdapter.OnUserClick() {
+            @Override
+            public void onUserClick(UserInfo user) {
+                if(user.getUserID().equals(FirebaseAuth.getInstance().getCurrentUser().getUid()))
+                    return;
+                mOtherUserProfileViewModel.onUserSelected(user);
+                Navigation.findNavController(getView()).navigate(R.id.action_postDetailFragment_to_otherUserProfile);
+            }
+        });
 
         binding.rvComment.setAdapter(adapter);
         binding.backButton.setOnClickListener(v->{getActivity().onBackPressed();});
