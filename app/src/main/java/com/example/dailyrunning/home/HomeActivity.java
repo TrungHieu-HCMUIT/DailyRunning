@@ -30,6 +30,7 @@ import com.example.dailyrunning.home.post.PostViewModel;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.record.MapsActivity;
 import com.example.dailyrunning.model.UserInfo;
+import com.example.dailyrunning.user.ListUserViewModel;
 import com.example.dailyrunning.user.UserViewModel;
 import com.example.dailyrunning.user.stepcounter.MyPeriodicWork;
 import com.example.dailyrunning.utils.RunningLoadingDialog;
@@ -72,6 +73,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
 
     private PostViewModel mPostViewModel;
     private RunningLoadingDialog mLoadingDialog;
+    public ListUserViewModel mListUserViewModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //init firebaseAuth
@@ -90,6 +92,8 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mHomeViewModel=new ViewModelProvider(this).get(HomeViewModel.class);
         mPostViewModel=new ViewModelProvider(this).get(PostViewModel.class);
+        mListUserViewModel=new ViewModelProvider(this).get(ListUserViewModel.class);
+
         mOtherUserProfileViewModel = new ViewModelProvider(this).get(OtherUserProfileViewModel.class);
 
         //
@@ -262,7 +266,6 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         {
             mNavController.navigate(Uri.parse("android-app://com.example.dailyrunning/comment_view"));
         }
-
     }
 
     @Override

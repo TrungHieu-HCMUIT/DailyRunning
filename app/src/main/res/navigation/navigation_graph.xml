@@ -99,5 +99,6 @@
         <action
             android:id="@+id/action_listUserFragment_to_otherUserProfile"
             app:destination="@id/otherUserProfile" />
+        <deepLink app:uri="android-app://com.example.dailyrunning/list_user_view" />
     </fragment>
 </navigation>

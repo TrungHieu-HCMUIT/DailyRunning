@@ -3,6 +3,7 @@ package com.example.dailyrunning.home.post;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +26,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.dailyrunning.home.HomeActivity;
+import com.example.dailyrunning.home.find.UserRowAdapter;
 import com.example.dailyrunning.model.Post;
 import com.example.dailyrunning.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -165,9 +168,14 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         View.OnLongClickListener onLikeLongClick=new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                homeActivity.mListUserViewModel.showUserList((ArrayList<String>) postsList.get(position).getLikesUserId(),"Người thích");
+                navController.navigate(Uri.parse("android-app://com.example.dailyrunning/list_user_view"));
                 return false;
             }
         };
+        holder.pressToLikeBtn.setOnLongClickListener(onLikeLongClick);
+        holder.pressToUnlikeBtn.setOnLongClickListener(onLikeLongClick);
+        holder.likeTv.setOnLongClickListener(onLikeLongClick);
         holder.pressToLikeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
