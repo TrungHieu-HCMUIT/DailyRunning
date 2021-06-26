@@ -28,6 +28,7 @@ import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
+import com.example.dailyrunning.utils.SetStepTargetDialogFragment;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
@@ -41,6 +42,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -79,15 +81,57 @@ public class UserViewModel extends ViewModel {
     public MutableLiveData<String> avatarUri;
     public MutableLiveData<ArrayList<String>> followerUid =new MutableLiveData<>();
     public MutableLiveData<ArrayList<String>> followingUid =new MutableLiveData<>();
+    public MutableLiveData<Integer> targetStep=new MutableLiveData<>();
+    public SetStepDialog setStepDialog;
+    Calendar c = Calendar.getInstance();;
+    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy");
+    String formattedDate = df.format(c.getTime());
+
     public MutableLiveData<Integer> step=new MutableLiveData<>();
 
     {
         step.setValue(0);
         gifts.setValue(new ArrayList<>());
         getGiftData();
+        targetStep.setValue(2000);
 
     }
 
+    private void setStep()
+    {
+        FirebaseDatabase.getInstance().getReference()
+                .child("Step")
+                .child(currentUser.getValue().getUserID())
+                .child(formattedDate).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    long data = snapshot.getValue(Long.class);
+                    step.setValue(Integer.parseInt(String.valueOf(data)));
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull @org.jetbrains.annotations.NotNull DatabaseError error) {
+
+            }
+        });
+
+    }
+    public void setStepTarget()
+    {
+        if(targetStep.getValue()==null)
+            return;
+        setStepDialog.showDialog(new SetStepTargetDialogFragment.ResultCallBack() {
+            @Override
+            public void onResult(int res) {
+                targetStep.setValue(res);
+                if(targetStep.getValue()!=null&& targetStep.getValue()>=2000)
+                    FirebaseDatabase.getInstance().getReference().child("Step").child(currentUser.getValue().getUserID()).child("target")
+                            .setValue(targetStep.getValue());
+            }
+        },targetStep.getValue());
+
+    }
     public void getFollowInfo()
     {
         followerUid.postValue(new ArrayList<>());
@@ -148,8 +192,19 @@ public class UserViewModel extends ViewModel {
                 return;
             }
             currentUser.setValue(taskRes.getValue(UserInfo.class));
+            getStepTarget();
+            setStep();
             getFollowInfo();
             taskCallBack.onSuccess();
+        });
+    }
+
+    private void getStepTarget() {
+        FirebaseDatabase.getInstance().getReference()
+                .child("Step").child(currentUser.getValue().getUserID()).child("target")
+                .get().addOnSuccessListener(dataSnapshot -> {
+                if(dataSnapshot.exists())
+                    targetStep.setValue(dataSnapshot.getValue(Integer.class));
         });
     }
 
@@ -464,12 +519,11 @@ public class UserViewModel extends ViewModel {
     public MutableLiveData<ArrayList<String>> timeWorking = new MutableLiveData<>();
     public MutableLiveData<ArrayList<Integer>> workingCount = new MutableLiveData<>();
     public MutableLiveData<ArrayList<MedalInfo>> medals = new MutableLiveData<>();
-    private Calendar c = Calendar.getInstance();
     private LocalDate now = new LocalDate();
     List<Activity> activities = new ArrayList<>();
     private DatabaseReference activityRef = FirebaseDatabase.getInstance().getReference().child("Activity");
     private SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    DecimalFormat df = new DecimalFormat("#.##");
+    DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     public void resetStatisticData() {
         distance = new MutableLiveData<>();
@@ -764,5 +818,9 @@ public class UserViewModel extends ViewModel {
 
     }
 
+
+    public interface SetStepDialog{
+        void showDialog(SetStepTargetDialogFragment.ResultCallBack callBack,int initValue);
+    }
 
 }

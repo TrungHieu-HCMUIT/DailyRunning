@@ -16,7 +16,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.dailyrunning.authentication.LoginViewModel;
-import com.example.dailyrunning.generated.callback.OnClickListener;
 import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.Comment;
 import com.example.dailyrunning.model.Post;

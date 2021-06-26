@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -40,6 +41,7 @@ import com.example.dailyrunning.utils.GiftAdapter;
 import com.example.dailyrunning.home.HomeViewModel;
 import com.example.dailyrunning.utils.MedalAdapter;
 import com.example.dailyrunning.databinding.FragmentUserBinding;
+import com.example.dailyrunning.utils.SetStepTargetDialogFragment;
 import com.flyco.tablayout.listener.OnTabSelectListener;
 
 import com.google.android.material.tabs.TabLayout;
@@ -66,7 +68,7 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
-public class UserFragment extends Fragment implements UserNavigator{
+public class UserFragment extends Fragment implements UserNavigator, UserViewModel.SetStepDialog {
 
     private static final int RC_PHOTO_PICKER = 101;
 
@@ -87,9 +89,7 @@ public class UserFragment extends Fragment implements UserNavigator{
     FragmentUserBinding binding;
     private MedalDialog mMedalDialog;
 
-    Calendar c = Calendar.getInstance();;
-    SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy");
-    String formattedDate = df.format(c.getTime());
+
     private ListUserViewModel mListUserViewModel;
 
     @Nullable
@@ -126,7 +126,7 @@ public class UserFragment extends Fragment implements UserNavigator{
         mUserViewModel.setNavigator(this);
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner(getActivity());
-
+        mUserViewModel.setStepDialog=this;
         mMedalDialog=new MedalDialog();
         mMedalDialog = new MedalDialog();
 
@@ -141,7 +141,6 @@ public class UserFragment extends Fragment implements UserNavigator{
             setUpTabLayout();
             updateUI();
             setFollowCount();
-            setStep();
         });
 
         mHomeViewModel.mHomeActivity.getValue().showNavBar();
@@ -213,7 +212,13 @@ public class UserFragment extends Fragment implements UserNavigator{
 
             @Override
             public void onFinish() {
-                binding.stepRingChart.stopAnimateLoading(0.6f);
+                binding.stepRingChart.stopAnimateLoading(mUserViewModel.step.getValue()*1.0f/mUserViewModel.targetStep.getValue());
+                mUserViewModel.step.observe((LifecycleOwner) getContext(), step->{
+                    binding.stepRingChart.stopAnimateLoading(step*1.0f/mUserViewModel.targetStep.getValue());
+                });
+                mUserViewModel.targetStep.observe((LifecycleOwner) getContext(), step->{
+                    binding.stepRingChart.stopAnimateLoading(mUserViewModel.step.getValue()*1.0f/step);
+                });
             }
         }.start();
 
@@ -257,26 +262,7 @@ public class UserFragment extends Fragment implements UserNavigator{
 
     }
 
-    private void setStep()
-    {
-        FirebaseDatabase.getInstance().getReference()
-                .child("Step")
-                .child(mUserViewModel.getCurrentUser().getValue().getUserID())
-                .child(formattedDate).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                    long step = snapshot.getValue(Long.class);
-                    mUserViewModel.step.setValue(Integer.parseInt(String.valueOf(step)));
-                }
-            }
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
-            }
-        });
-
-    }
     private void setFollowCount() {
 
 
@@ -362,5 +348,10 @@ public class UserFragment extends Fragment implements UserNavigator{
     @Override
     public void pop() {
         mNavController.popBackStack();
+    }
+
+    @Override
+    public void showDialog(SetStepTargetDialogFragment.ResultCallBack resultCallBack,int initValue) {
+        (new SetStepTargetDialogFragment()).showDialog(getChildFragmentManager(),initValue,resultCallBack);
     }
 }

@@ -50,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 public class HomeActivity extends AppCompatActivity implements PostViewAdapter.PostUtils, LoginViewModel.LoadingDialog {
 
     private static final int RC_SIGN_IN = 1;
-    private static final String TEXT_NUM_STEPS = " bước";
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mUserInfoRef;
     private DatabaseReference mCurrentUserRef;

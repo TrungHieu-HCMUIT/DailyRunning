@@ -310,6 +310,7 @@
                     app:srcCompat="@drawable/ic_foot" />
 
                 <com.taosif7.android.ringchartlib.RingChart
+                    android:onClick="@{()->userViewModel.setStepTarget()}"
                     android:id="@+id/step_ring_chart"
                     android:layout_width="192dp"
                     android:layout_height="192dp"
