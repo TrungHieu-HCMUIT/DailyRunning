@@ -3,6 +3,7 @@ package com.example.dailyrunning.home;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -19,6 +20,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.dailyrunning.authentication.LoginActivity;
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -47,7 +50,7 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.concurrent.TimeUnit;
 
-public class HomeActivity extends AppCompatActivity implements PostViewAdapter.PostUtils, LoginViewModel.LoadingDialog {
+public class HomeActivity extends AppCompatActivity implements PostViewAdapter.PostUtils, LoginViewModel.LoadingDialog, UserViewModel.RunningSnackBar {
 
     private static final int RC_SIGN_IN = 1;
     private FirebaseDatabase mFirebaseDatabase;
@@ -72,7 +75,9 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
 
     private PostViewModel mPostViewModel;
     private RunningLoadingDialog mLoadingDialog;
+    private RelativeLayout rootLayout;
     public ListUserViewModel mListUserViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //init firebaseAuth
@@ -80,23 +85,24 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mLoadingDialog=new RunningLoadingDialog();
-        (new Handler()).postDelayed(this::showDialog,100);
+        mLoadingDialog = new RunningLoadingDialog();
+        (new Handler()).postDelayed(this::showDialog, 100);
         //init firebase database
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUserInfoRef = mFirebaseDatabase.getReference().child("UserInfo");
 
         //init viewmodel
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
-        mHomeViewModel=new ViewModelProvider(this).get(HomeViewModel.class);
-        mPostViewModel=new ViewModelProvider(this).get(PostViewModel.class);
-        mListUserViewModel=new ViewModelProvider(this).get(ListUserViewModel.class);
+        mHomeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        mPostViewModel = new ViewModelProvider(this).get(PostViewModel.class);
+        mListUserViewModel = new ViewModelProvider(this).get(ListUserViewModel.class);
         mOtherUserProfileViewModel = new ViewModelProvider(this).get(OtherUserProfileViewModel.class);
 
         //
         mHomeViewModel.mHomeActivity.setValue(this);
 
-        mUserViewModel.loadingDialog=this;
+        mUserViewModel.loadingDialog = this;
+        mUserViewModel.snackBar = this;
         mFirebaseAuth = FirebaseAuth.getInstance();
         setUpAuthStateListener();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
@@ -104,24 +110,22 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         initWidgets();
         MapsInitializer.initialize(this);
 
-        startMarker= BitmapDescriptorFactory.fromResource(R.drawable.marker_start);
-        endMarker= BitmapDescriptorFactory.fromResource(R.drawable.marker_end);
+        startMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_start);
+        endMarker = BitmapDescriptorFactory.fromResource(R.drawable.marker_end);
 
         // Enable BottomNavigationViewEx
         setupBottomNavView();
-
-
+        rootLayout = findViewById(R.id.home_activity_root);
 
 
     }
 
 
-    public void hideNavBar()
-    {
+    public void hideNavBar() {
         findViewById(R.id.bottom_nav_bar).setVisibility(View.GONE);
     }
-    public void showNavBar()
-    {
+
+    public void showNavBar() {
         findViewById(R.id.bottom_nav_bar).setVisibility(View.VISIBLE);
     }
 
@@ -146,13 +150,13 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
                 });
                 bottomNavigationViewEx.setSelectedItemId(R.id.homeFragment);
 
-                } else if (resultCode == RESULT_CANCELED) {
+            } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
                 finish();
             }
         } else if (requestCode == MapsActivity.RECORD_CODE) {
             if (resultCode == RESULT_OK) {
-                int pointAcquired=data.getIntExtra("point",0);
+                int pointAcquired = data.getIntExtra("point", 0);
                 mUserViewModel.addPoint(pointAcquired);
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Canceled Record", Toast.LENGTH_SHORT).show();
@@ -166,13 +170,12 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         mAuthStateListener = firebaseAuth -> checkAuthenticationState();
     }
 
-    private void startLoginSession()
-    {
+    private void startLoginSession() {
         startActivityForResult(new Intent(this, LoginActivity.class), RC_SIGN_IN);
 
     }
-    private void onLoadData()
-    {
+
+    private void onLoadData() {
         mPostViewModel.getMyPosts();
         mPostViewModel.getFollowingUser();
         // This is PeriodicWorkRequest it repeats every 5 seconds.
@@ -182,6 +185,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
                 .build();
         WorkManager.getInstance().enqueue(mPeriodicWorkRequest);
     }
+
     private void checkAuthenticationState() {
         FirebaseUser mCurrentUser = mFirebaseAuth.getCurrentUser();
         if (mCurrentUser == null) {
@@ -197,7 +201,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
                 @Override
                 public void onError(Exception exception) {
                     if (mHomeViewModel.isActivityShow)
-                    mUserViewModel.onLogOutClick();
+                        mUserViewModel.onLogOutClick();
                 }
             });
 
@@ -209,14 +213,14 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
     @Override
     protected void onPause() {
         super.onPause();
-        mHomeViewModel.isActivityShow=false;
+        mHomeViewModel.isActivityShow = false;
     }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        mHomeViewModel.isActivityShow=true;
+        mHomeViewModel.isActivityShow = true;
 
     }
 
@@ -256,24 +260,28 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
     @Override
     public void onPostSelected(Post post, boolean isMap) {
         mPostViewModel.selectPost(post);
-        if(isMap) {
+        if (isMap) {
             Log.i("OnMapSelected", post.getPostID());
             mNavController.navigate(Uri.parse("android-app://com.example.dailyrunning/map_view"));
-        }
-        else
-        {
+        } else {
             mNavController.navigate(Uri.parse("android-app://com.example.dailyrunning/comment_view"));
         }
     }
 
     @Override
     public void showDialog() {
-        mLoadingDialog.show(getSupportFragmentManager(),"HomeActivityLoading");
+        mLoadingDialog.show(getSupportFragmentManager(), "HomeActivityLoading");
     }
 
     @Override
     public void dismissDialog() {
         mLoadingDialog.dismiss();
+    }
+
+    @Override
+    public void showSnackBar(String content, Snackbar.Callback callback) {
+        Snackbar.make(rootLayout, content, Snackbar.LENGTH_SHORT).setTextColor(ContextCompat.getColor(this, R.color.color_palette_3))
+                .addCallback(callback).show();
     }
 }
 

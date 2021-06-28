@@ -3,6 +3,7 @@ package com.example.dailyrunning.user;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -37,6 +38,7 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -72,6 +74,8 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+import static com.example.dailyrunning.authentication.RegisterFragment.isValidPassword;
+
 public class UserViewModel extends ViewModel {
 
     private MutableLiveData<UserInfo> currentUser;
@@ -94,6 +98,7 @@ public class UserViewModel extends ViewModel {
     public SetStepDialog setStepDialog;
     Calendar c = Calendar.getInstance();;
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy");
+    public RunningSnackBar snackBar;
     public MutableLiveData<Boolean> canChangePassword=new MutableLiveData<>();
     public LoginViewModel.LoadingDialog loadingDialog;
     String formattedDate = df.format(c.getTime());
@@ -112,15 +117,34 @@ public class UserViewModel extends ViewModel {
 
     public void onChangePasswordClick()
     {
+        loadingDialog.showDialog();
         new Runnable() {
             @Override
             public void run() {
-                loadingDialog.showDialog();
                 String crPass=currentPassword.getValue(),newPass=newPassword.getValue(),newPassRetype=newPasswordRetype.getValue();
-                if(TextUtils.isEmpty(crPass)||TextUtils.isEmpty(newPass)||TextUtils.isEmpty(newPassRetype))
+                if(TextUtils.isEmpty(crPass)||TextUtils.isEmpty(newPass)||TextUtils.isEmpty(newPassRetype)) {
+                    (new Handler()).postDelayed(() -> {
+                        loadingDialog.dismissDialog();
+                    },100);
+                    snackBar.showSnackBar("Vui lòng nhập đầy đủ thông tin",null);
                     return;
-                if(!newPass.equals(newPassRetype))
+                }
+
+                if(!isValidPassword(newPass))
+                {
+                    (new Handler()).postDelayed(() -> {
+                        loadingDialog.dismissDialog();
+                    },100);
+                    snackBar.showSnackBar("Mật khẩu mới không hợp lệ",null);
                     return;
+                }
+                if(!newPass.equals(newPassRetype)) {
+                    (new Handler()).postDelayed(() -> {
+                        loadingDialog.dismissDialog();
+                    },100);
+                    snackBar.showSnackBar("Mật khẩu mới không trùng khớp",null);
+                    return;
+                }
                 AuthCredential credential = EmailAuthProvider
                         .getCredential(currentUser.getValue().getEmail(),crPass);
 
@@ -130,14 +154,21 @@ public class UserViewModel extends ViewModel {
                             @Override
                             public void onSuccess(Void unused) {
                                 loadingDialog.dismissDialog();
-                                FirebaseAuth.getInstance().signOut();
+                                snackBar.showSnackBar("Đổi mật khẩu thành công!",new Snackbar.Callback() {
+                                    @Override
+                                    public void onDismissed(Snackbar snackbar, int event) {
+                                        super.onDismissed(snackbar, event);
+                                        FirebaseAuth.getInstance().signOut();
+                                    }
+                                });
 
                             }
                         });
                     } else {
                         // Password is incorrect
-                        int a=4;
                         loadingDialog.dismissDialog();
+                        snackBar.showSnackBar("Sai mật khẩu",null
+                        );
                     }
                 });
             }
@@ -881,6 +912,10 @@ public class UserViewModel extends ViewModel {
 
     public interface SetStepDialog{
         void showDialog(SetStepTargetDialogFragment.ResultCallBack callBack,int initValue);
+    }
+
+    public interface RunningSnackBar{
+        void showSnackBar(String content, Snackbar.Callback callback);
     }
 
 }

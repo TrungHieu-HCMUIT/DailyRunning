@@ -69,7 +69,7 @@ public class RegisterFragment extends Fragment {
 
     }
 
-    public boolean isValidPassword(final String password) {
+    static public boolean isValidPassword(final String password) {
 
         Pattern pattern;
         Matcher matcher;
