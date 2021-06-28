@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DailyRunning</string>
+    <string name="sign_in_cancel">Sign in canceled!</string>
+    <string name="for_admin">For admin</string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="forget_password">Quên mật khẩu?</string>
+    <string name="login">Đăng nhập</string>
+</resources>
