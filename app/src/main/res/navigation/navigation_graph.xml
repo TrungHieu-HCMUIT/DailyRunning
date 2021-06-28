@@ -58,7 +58,11 @@
         android:id="@+id/updateInfoFragment"
         android:name="com.example.dailyrunning.user.UpdateInfoFragment"
         android:label="fragment_update_info"
-        tools:layout="@layout/fragment_update_info" />
+        tools:layout="@layout/fragment_update_info" >
+        <action
+            android:id="@+id/action_updateInfoFragment_to_changePasswordFragment"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
     <fragment
         android:id="@+id/postDetailFragment"
         android:name="com.example.dailyrunning.home.post.PostDetailFragment"
@@ -101,4 +105,8 @@
             app:destination="@id/otherUserProfile" />
         <deepLink app:uri="android-app://com.example.dailyrunning/list_user_view" />
     </fragment>
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.example.dailyrunning.user.ChangePasswordFragment"
+        android:label="ChangePasswordFragment" />
 </navigation>

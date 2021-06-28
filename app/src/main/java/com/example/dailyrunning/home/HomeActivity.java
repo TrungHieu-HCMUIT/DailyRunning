@@ -86,18 +86,17 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mUserInfoRef = mFirebaseDatabase.getReference().child("UserInfo");
 
-
         //init viewmodel
         mUserViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         mHomeViewModel=new ViewModelProvider(this).get(HomeViewModel.class);
         mPostViewModel=new ViewModelProvider(this).get(PostViewModel.class);
         mListUserViewModel=new ViewModelProvider(this).get(ListUserViewModel.class);
-
         mOtherUserProfileViewModel = new ViewModelProvider(this).get(OtherUserProfileViewModel.class);
 
         //
         mHomeViewModel.mHomeActivity.setValue(this);
 
+        mUserViewModel.loadingDialog=this;
         mFirebaseAuth = FirebaseAuth.getInstance();
         setUpAuthStateListener();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);

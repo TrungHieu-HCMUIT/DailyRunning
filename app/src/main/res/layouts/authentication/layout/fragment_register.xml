@@ -39,7 +39,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="-25dp"
-                app:cardBackgroundColor="@color/color_cardview_register"
+                app:cardBackgroundColor="#F2F5FC"
                 app:cardCornerRadius="25dp">
 
                 <LinearLayout

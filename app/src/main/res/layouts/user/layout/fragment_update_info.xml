@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
+        <import type="android.view.View" />
+
         <variable
             name="userViewModel"
             type="com.example.dailyrunning.user.UserViewModel" />
@@ -36,11 +39,11 @@
                 <ImageButton
                     android:id="@+id/back_button"
                     android:layout_width="28dp"
-                    android:onClick="@{()->userViewModel.onBackPress()}"
                     android:layout_height="28dp"
                     android:layout_margin="16dp"
                     android:background="@null"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:onClick="@{()->userViewModel.onBackPress()}"
                     android:src="@drawable/ic_arrow_left" />
 
                 <TextView
@@ -62,8 +65,8 @@
                 android:layout_marginStart="25dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="25dp"
-                android:hint="Email"
                 android:enabled="false"
+                android:hint="Email"
                 app:boxBackgroundColor="@color/white"
                 app:boxCornerRadiusBottomEnd="18dp"
                 app:boxCornerRadiusBottomStart="18dp"
@@ -84,16 +87,16 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="0dp"
                     android:ellipsize="end"
+                    android:fontFamily="@font/roboto_regular"
                     android:inputType="textPersonName"
                     android:maxLength="40"
                     android:maxLines="1"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textStyle="bold"
-                    android:textColor="#505050"
-                    android:text="@{userViewModel.currentUser.email}"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:textColorHint="#FFFFFF" />
+                    android:text="@{userViewModel.currentUser.email}"
+                    android:textColor="#505050"
+                    android:textColorHint="#FFFFFF"
+                    android:textStyle="bold" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,16 +129,16 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="0dp"
                     android:ellipsize="end"
-                    android:text="@{userViewModel.currentUser.displayName}"
-                    android:inputType="textPersonName"
                     android:fontFamily="@font/roboto_regular"
-                    android:textStyle="bold"
-                    android:textColor="#505050"
+                    android:inputType="textPersonName"
                     android:maxLength="40"
                     android:maxLines="1"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:textColorHint="#FFFFFF" />
+                    android:text="@{userViewModel.currentUser.displayName}"
+                    android:textColor="#505050"
+                    android:textColorHint="#FFFFFF"
+                    android:textStyle="bold" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -151,13 +154,13 @@
                     android:id="@+id/male_radio_button"
                     android:layout_width="145dp"
                     android:layout_height="46dp"
-                    android:textAlignment="center"
                     android:background="@drawable/white_rounded_background"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/roboto_regular"
                     android:checked="@{userViewModel.currentUser.gender}"
-                    android:textStyle="bold"
-                    android:text="Nam" />
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Nam"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                 <Space
                     android:layout_width="0dp"
@@ -166,15 +169,15 @@
 
                 <CheckBox
                     android:id="@+id/female_radio_button"
-                    android:textAlignment="center"
                     android:layout_width="145dp"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:checked="@{!userViewModel.currentUser.gender}"
-
-                    android:background="@drawable/white_rounded_background"
                     android:layout_height="46dp"
-                    android:text="Nữ" />
+                    android:background="@drawable/white_rounded_background"
+                    android:checked="@{!userViewModel.currentUser.gender}"
+                    android:text="Nữ"
+
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -203,24 +206,24 @@
                 app:hintTextColor="@color/primary_text">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    dobText="@{userViewModel.currentUser.dob}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="0dp"
-                    android:textAlignment="center"
-                    android:focusable="false"
                     android:ellipsize="end"
-                    android:paddingVertical="10dp"
-                    dobText="@{userViewModel.currentUser.dob}"
-                    android:textSize="20sp"
+                    android:focusable="false"
+                    android:fontFamily="@font/roboto_regular"
                     android:inputType="textPersonName"
                     android:maxLength="40"
                     android:maxLines="1"
+                    android:paddingVertical="10dp"
                     android:scrollHorizontally="true"
-                    android:fontFamily="@font/roboto_regular"
-                    android:textStyle="bold"
-                    android:textColor="#505050"
                     android:singleLine="true"
-                    android:textColorHint="#FFFFFF" />
+                    android:textAlignment="center"
+                    android:textColor="#505050"
+                    android:textColorHint="#FFFFFF"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -233,45 +236,45 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
-                    app:cardElevation="10dp"
+                    android:layout_height="wrap_content"
                     app:cardCornerRadius="10dp"
+                    app:cardElevation="10dp"
                     app:strokeColor="@color/color_palette_3"
-                    app:strokeWidth="1dp"
-                    android:layout_height="wrap_content">
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
-                        android:gravity="center_vertical"
                         android:background="@color/white"
+                        android:gravity="center_vertical"
 
                         android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
                             android:fontFamily="@font/roboto_regular"
-                            android:text="Chiều cao" />
+                            android:text="Chiều cao"
+                            android:textColor="#333333"
+                            android:textSize="16sp" />
 
                         <NumberPicker
                             android:id="@+id/height_picker"
-                            android:layout_width="wrap_content"
-                            android:theme="@style/NumberPickerStyle"
-                            pickerMin="@{130}"
                             pickerMax="@{220}"
+                            pickerMin="@{130}"
                             pickerValue="@{userViewModel.currentUser.height}"
-                            android:layout_height="wrap_content" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/NumberPickerStyle" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
                             android:fontFamily="@font/roboto_regular"
-                            android:text="cm" />
+                            android:text="cm"
+                            android:textColor="#333333"
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
@@ -283,57 +286,68 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="wrap_content"
-                    app:strokeColor="@color/color_palette_3"
-                    app:strokeWidth="1dp"
+                    android:layout_height="wrap_content"
                     android:elevation="0dp"
                     app:cardCornerRadius="10dp"
-                    android:layout_height="wrap_content">
+                    app:strokeColor="@color/color_palette_3"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:background="@color/white"
-
                         android:layout_height="wrap_content"
+
                         android:layout_margin="8dp"
+                        android:background="@color/white"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
                             android:fontFamily="@font/roboto_regular"
-                            android:text="Cân nặng" />
+                            android:text="Cân nặng"
+                            android:textColor="#333333"
+                            android:textSize="16sp" />
 
                         <NumberPicker
                             android:id="@+id/weight_picker"
-                            android:layout_width="wrap_content"
-                            android:theme="@style/NumberPickerStyle"
-                            pickerMin="@{30}"
                             pickerMax="@{200}"
+                            pickerMin="@{30}"
                             pickerValue="@{userViewModel.currentUser.weight}"
-                            android:layout_height="wrap_content" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:theme="@style/NumberPickerStyle" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="#333333"
-                            android:textSize="16sp"
                             android:fontFamily="@font/roboto_regular"
-                            android:text="kg" />
+                            android:text="kg"
+                            android:textColor="#333333"
+                            android:textSize="16sp" />
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/change_password_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:text="Đổi mật khẩu"
+                android:textColor="#00A896"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="@{userViewModel.canChangePassword?View.VISIBLE:View.GONE}" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="70dp"
+                android:layout_marginTop="40dp"
                 android:fontFamily="@font/font_spring_blue_vinyl"
                 android:text="@string/app_name"
                 android:textColor="#000000"
@@ -353,8 +367,8 @@
             <Space
                 android:layout_width="1dp"
                 android:layout_height="0dp"
-                android:minHeight="20dp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:minHeight="20dp" />
 
             <Button
                 android:id="@+id/save_button"

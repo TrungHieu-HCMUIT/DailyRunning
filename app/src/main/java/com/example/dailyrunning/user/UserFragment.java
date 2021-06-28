@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.viewpager2.widget.ViewPager2;
@@ -80,7 +82,6 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
     private FirebaseStorage mFirebaseStorage;
     private StorageReference mAvatarStorageReference;
     private UserInfo mCurrentUser;
-    private Fragment mContext = UserFragment.this;
 
     private NavController mNavController;
     private UserViewModel mUserViewModel;
@@ -89,6 +90,7 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
     FragmentUserBinding binding;
     private MedalDialog mMedalDialog;
 
+    private Context mContext;
 
     private ListUserViewModel mListUserViewModel;
 
@@ -115,22 +117,23 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mContext=getContext();
         rootView = view;
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseStorage = FirebaseStorage.getInstance();
         //init viewmodel
-        mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
-        mHomeViewModel = new ViewModelProvider(getActivity()).get(HomeViewModel.class);
-        mListUserViewModel = new ViewModelProvider(getActivity()).get(ListUserViewModel.class);
+        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(UserViewModel.class);
+        mHomeViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(HomeViewModel.class);
+        mListUserViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(ListUserViewModel.class);
 
         mUserViewModel.setNavigator(this);
         binding.setUserViewModel(mUserViewModel);
-        binding.setLifecycleOwner(getActivity());
+        binding.setLifecycleOwner((LifecycleOwner) mContext);
         mUserViewModel.setStepDialog=this;
         mMedalDialog=new MedalDialog();
         mMedalDialog = new MedalDialog();
 
-        mUserViewModel.getCurrentUser().observe(getActivity(), currentUser -> {
+        mUserViewModel.getCurrentUser().observe((LifecycleOwner) mContext, currentUser -> {
             if (currentUser==null)
                 return;
             if (!isAdded())
@@ -175,7 +178,7 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
         List<GiftInfo> gifts = new ArrayList<>();
         GiftAdapter adapter = new GiftAdapter(gifts);
         binding.giftRecyclerView.setAdapter(adapter);
-        mUserViewModel.getGifts().observe(getActivity(), giftData -> {
+        mUserViewModel.getGifts().observe((LifecycleOwner) mContext, giftData -> {
             gifts.clear();
             gifts.addAll(giftData);
             adapter.notifyDataSetChanged();
@@ -213,10 +216,10 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
             @Override
             public void onFinish() {
                 binding.stepRingChart.stopAnimateLoading(mUserViewModel.step.getValue()*1.0f/mUserViewModel.targetStep.getValue());
-                mUserViewModel.step.observe((LifecycleOwner) getContext(), step->{
+                mUserViewModel.step.observe((LifecycleOwner) mContext, step->{
                     binding.stepRingChart.stopAnimateLoading(step*1.0f/mUserViewModel.targetStep.getValue());
                 });
-                mUserViewModel.targetStep.observe((LifecycleOwner) getContext(), step->{
+                mUserViewModel.targetStep.observe((LifecycleOwner) mContext, step->{
                     binding.stepRingChart.stopAnimateLoading(mUserViewModel.step.getValue()*1.0f/step);
                 });
             }
@@ -295,7 +298,7 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
         });
         binding.medalRecycleView.setAdapter(adapter);
 
-        mUserViewModel.medals.observe(getActivity(),medals->{
+        mUserViewModel.medals.observe((LifecycleOwner) mContext, medals->{
             if(medals!=null)
             {
                 medalInfos.clear();
@@ -312,8 +315,8 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
         //region update avatar
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             mUserViewModel.putAvatarToFireStorage(data);
-            mUserViewModel.getAvatarUri().observe(getActivity(),uri->{
-                Glide.with(binding.avatarView.getContext()).load(uri).into(binding.avatarView);
+            mUserViewModel.getAvatarUri().observe((LifecycleOwner) mContext, uri->{
+                Glide.with(mContext).load(uri).into(binding.avatarView);
             });
         }
         //endregion
@@ -344,6 +347,8 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         startActivityForResult(Intent.createChooser(intent, "Complete action using"), RC_PHOTO_PICKER);
     }
+
+
 
     @Override
     public void pop() {

@@ -36,9 +36,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 
-public class UpdateInfoFragment extends Fragment implements UserNavigator {
+public class UpdateInfoFragment extends Fragment  {
 
     private final int MALE = 0;
     private final int FEMALE = 1;
@@ -79,7 +80,9 @@ public class UpdateInfoFragment extends Fragment implements UserNavigator {
         setUpGenderCheckBox();
         setUpDatePicker();
         setUpTextInputLayout();
-
+        binding.changePasswordTextView.setOnClickListener(v->{
+            Navigation.findNavController(requireView()).navigate(R.id.action_updateInfoFragment_to_changePasswordFragment);
+        });
     }
 
 
@@ -196,23 +199,6 @@ public class UpdateInfoFragment extends Fragment implements UserNavigator {
         mDateFormat = new SimpleDateFormat("dd/MM/yyyy");
     }
 
-    @Override
-    public void settingOnClick() {
 
-    }
 
-    @Override
-    public void allGiftOnClick() {
-
-    }
-
-    @Override
-    public void updateAvatarClick() {
-
-    }
-
-    @Override
-    public void pop() {
-        getActivity().onBackPressed();
-    }
 }

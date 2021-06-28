@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -28,12 +29,17 @@ import com.example.dailyrunning.model.Activity;
 import com.example.dailyrunning.model.GiftInfo;
 import com.example.dailyrunning.model.MedalInfo;
 import com.example.dailyrunning.model.UserInfo;
+import com.example.dailyrunning.utils.RunningLoadingDialog;
 import com.example.dailyrunning.utils.SetStepTargetDialogFragment;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -81,10 +87,15 @@ public class UserViewModel extends ViewModel {
     public MutableLiveData<String> avatarUri;
     public MutableLiveData<ArrayList<String>> followerUid =new MutableLiveData<>();
     public MutableLiveData<ArrayList<String>> followingUid =new MutableLiveData<>();
+    public MutableLiveData<String> currentPassword =new MutableLiveData<>();
+    public MutableLiveData<String> newPassword =new MutableLiveData<>();
+    public MutableLiveData<String> newPasswordRetype =new MutableLiveData<>();
     public MutableLiveData<Integer> targetStep=new MutableLiveData<>();
     public SetStepDialog setStepDialog;
     Calendar c = Calendar.getInstance();;
     SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyy");
+    public MutableLiveData<Boolean> canChangePassword=new MutableLiveData<>();
+    public LoginViewModel.LoadingDialog loadingDialog;
     String formattedDate = df.format(c.getTime());
 
     public MutableLiveData<Integer> step=new MutableLiveData<>();
@@ -94,9 +105,45 @@ public class UserViewModel extends ViewModel {
         gifts.setValue(new ArrayList<>());
         getGiftData();
         targetStep.setValue(2000);
-
+        canChangePassword.setValue(false);
     }
 
+
+
+    public void onChangePasswordClick()
+    {
+        new Runnable() {
+            @Override
+            public void run() {
+                loadingDialog.showDialog();
+                String crPass=currentPassword.getValue(),newPass=newPassword.getValue(),newPassRetype=newPasswordRetype.getValue();
+                if(TextUtils.isEmpty(crPass)||TextUtils.isEmpty(newPass)||TextUtils.isEmpty(newPassRetype))
+                    return;
+                if(!newPass.equals(newPassRetype))
+                    return;
+                AuthCredential credential = EmailAuthProvider
+                        .getCredential(currentUser.getValue().getEmail(),crPass);
+
+                FirebaseAuth.getInstance().getCurrentUser().reauthenticate(credential)  .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        FirebaseAuth.getInstance().getCurrentUser().updatePassword(newPass).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                loadingDialog.dismissDialog();
+                                FirebaseAuth.getInstance().signOut();
+
+                            }
+                        });
+                    } else {
+                        // Password is incorrect
+                        int a=4;
+                        loadingDialog.dismissDialog();
+                    }
+                });
+            }
+        }.run();
+
+    }
     private void setStep()
     {
         FirebaseDatabase.getInstance().getReference()
@@ -194,6 +241,7 @@ public class UserViewModel extends ViewModel {
             currentUser.setValue(taskRes.getValue(UserInfo.class));
             getStepTarget();
             setStep();
+            canChangePassword.setValue(getChangePasswordCapability());
             getFollowInfo();
             taskCallBack.onSuccess();
         });
@@ -818,6 +866,18 @@ public class UserViewModel extends ViewModel {
 
     }
 
+    boolean getChangePasswordCapability()
+    {
+        switch (FirebaseAuth.getInstance().getCurrentUser().getProviderData().get(1).getProviderId()) {
+            case EMAIL_PROVIDER_ID:
+                return true;
+            case GOOGLE_PROVIDER_ID:
+            case FACEBOOK_PROVIDER_ID:
+              return false;
+
+        }
+        return false;
+    }
 
     public interface SetStepDialog{
         void showDialog(SetStepTargetDialogFragment.ResultCallBack callBack,int initValue);
