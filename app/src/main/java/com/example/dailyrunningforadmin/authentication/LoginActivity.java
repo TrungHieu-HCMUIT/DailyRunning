@@ -1,8 +1,10 @@
-package com.example.dailyrunningforadmin;
+package com.example.dailyrunningforadmin.authentication;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.dailyrunningforadmin.R;
 
 public class LoginActivity extends AppCompatActivity {
 

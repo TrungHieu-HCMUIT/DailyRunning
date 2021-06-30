@@ -1,4 +1,4 @@
-package com.example.dailyrunningforadmin;
+package com.example.dailyrunningforadmin.authentication;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
