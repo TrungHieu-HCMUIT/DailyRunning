@@ -13,9 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/lighter_grey"
-
-
+        android:background="#F2F5FC"
         tools:context=".user.GiftFragment">
 
         <androidx.appcompat.widget.Toolbar

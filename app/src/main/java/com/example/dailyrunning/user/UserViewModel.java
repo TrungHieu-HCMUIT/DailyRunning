@@ -811,15 +811,15 @@ public class UserViewModel extends ViewModel {
         if (acquired)
             switch (rank) {
                 case 1:
-                    return new MedalInfo(R.drawable.medal_1, "Huy chương đồng", "Bạn là một người tập chạy bộ để rèn luyện sức khỏe.");
+                    return new MedalInfo(R.drawable.medal_1, "Huy chương đồng", "Bạn là một người tập chạy bộ để rèn luyện sức khỏe. Hoàn thành 50km trong một năm để nhận được huy chương này.");
                 case 2:
-                    return new MedalInfo(R.drawable.medal_2, "Huy chương bạc", "Bạn là một người có hứng thú chạy bộ.");
+                    return new MedalInfo(R.drawable.medal_2, "Huy chương bạc", "Bạn là một người có hứng thú chạy bộ. Hoàn thành 100km trong một năm để nhận được huy chương này.");
                 case 3:
-                    return new MedalInfo(R.drawable.medal_3, "Huy chương vàng", "Bạn là một người có sức khỏe và thể lực rất tốt.");
+                    return new MedalInfo(R.drawable.medal_3, "Huy chương vàng", "Bạn là một người có sức khỏe và thể lực rất tốt. Hoàn thành 200km trong một năm để nhận được huy chương này.");
                 case 4:
-                    return new MedalInfo(R.drawable.medal_4, "Huy chương đam mê", "Bạn là một người thực sự có niềm đam mê chạy bộ.");
+                    return new MedalInfo(R.drawable.medal_4, "Huy chương đam mê", "Bạn là một người thực sự có niềm đam mê chạy bộ. Hoàn thành 500km trong một năm để nhận được huy chương này.");
                 case 5:
-                    return new MedalInfo(R.drawable.medal_5, "Huy chương vận động viên", "Bạn là một người có tình yêu mãnh liệt với chạy bộ.");
+                    return new MedalInfo(R.drawable.medal_5, "Huy chương vận động viên", "Bạn là một người có tình yêu mãnh liệt với chạy bộ. Hoàn thành 1000km trong một năm để nhận được huy chương này.");
                 default:
                     return null;
             }
@@ -827,15 +827,15 @@ public class UserViewModel extends ViewModel {
             switch (rank) {
                 case 1:
                     return new MedalInfo(R.drawable.medal_1_greyscale
-                            , "Huy chương đồng", "Bạn là một người tập chạy bộ để rèn luyện sức khỏe.");
+                            , "Huy chương đồng", "Bạn là một người tập chạy bộ để rèn luyện sức khỏe. Hoàn thành 50km trong một năm để nhận được huy chương này.");
                 case 2:
-                    return new MedalInfo(R.drawable.medal_2_greyscale, "Huy chương bạc", "Bạn là một người có hứng thú chạy bộ.");
+                    return new MedalInfo(R.drawable.medal_2_greyscale, "Huy chương bạc", "Bạn là một người có hứng thú chạy bộ. Hoàn thành 100km trong một năm để nhận được huy chương này.");
                 case 3:
-                    return new MedalInfo(R.drawable.medal_3_greyscale, "Huy chương vàng", "Bạn là một người có sức khỏe và thể lực rất tốt.");
+                    return new MedalInfo(R.drawable.medal_3_greyscale, "Huy chương vàng", "Bạn là một người có sức khỏe và thể lực rất tốt. Hoàn thành 200km trong một năm để nhận được huy chương này.");
                 case 4:
-                    return new MedalInfo(R.drawable.medal_4_greyscale, "Huy chương đam mê", "Bạn là một người thực sự có niềm đam mê chạy bộ.");
+                    return new MedalInfo(R.drawable.medal_4_greyscale, "Huy chương đam mê", "Bạn là một người thực sự có niềm đam mê chạy bộ. Hoàn thành 500km trong một năm để nhận được huy chương này.");
                 case 5:
-                    return new MedalInfo(R.drawable.medal_5_greyscale, "Huy chương vận động viên", "Bạn là một người có tình yêu mãnh liệt với chạy bộ.");
+                    return new MedalInfo(R.drawable.medal_5_greyscale, "Huy chương vận động viên", "Bạn là một người có tình yêu mãnh liệt với chạy bộ. Hoàn thành 1000km trong một năm để nhận được huy chương này.");
                 default:
                     return null;
             }

@@ -75,22 +75,19 @@ public class SetStepTargetDialogFragment extends DialogFragment {
         binding.numberSlider.addOnChangeListener((slider, value, fromUser) -> {
             if(value<4000)
             {
-                binding.currentStepTextView.setTextColor(Color.parseColor("#fcba03"));
+                binding.currentStepTextView.setTextColor(Color.parseColor("#05668D"));
             }
             else if(value<10000)
             {
-                binding.currentStepTextView.setTextColor(Color.parseColor("#31fc03"));
-
-
+                binding.currentStepTextView.setTextColor(Color.parseColor("#028090"));
             }
             else if (value <16000)
             {
-                binding.currentStepTextView.setTextColor(Color.parseColor("#fc8c03"));
-
+                binding.currentStepTextView.setTextColor(Color.parseColor("#00A896"));
             }
             else
             {
-                binding.currentStepTextView.setTextColor(Color.parseColor("#fc0303"));
+                binding.currentStepTextView.setTextColor(Color.parseColor("#02C39A"));
             }
             binding.currentStepTextView.setText(String.valueOf((int)value)+" Bước");
         });

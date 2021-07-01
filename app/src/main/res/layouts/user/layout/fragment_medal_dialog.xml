@@ -40,7 +40,6 @@
                     android:fontFamily="@font/roboto_regular"
                     android:textFontWeight="700"
                     android:textSize="18sp"
-                    android:maxLines="1"
                     android:ellipsize="marquee"
                     />
             </LinearLayout>
@@ -51,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:fontFamily="@font/roboto_regular"
+                android:justificationMode="inter_word"
                 android:textFontWeight="400"
                 android:maxLines="3"
                 android:ellipsize="marquee"
