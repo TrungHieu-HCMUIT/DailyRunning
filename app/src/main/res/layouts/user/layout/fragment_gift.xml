@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="userViewModel"
             type="com.example.dailyrunning.user.UserViewModel" />
@@ -12,8 +13,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:background="#F2F5FC"
+        android:orientation="vertical"
         tools:context=".user.GiftFragment">
 
         <androidx.appcompat.widget.Toolbar
@@ -52,8 +53,8 @@
             android:layout_height="match_parent"
             android:layout_marginStart="0dp"
             android:layout_marginTop="17dp"
-            android:paddingBottom="100dp"
+            android:layout_marginEnd="0dp"
             android:clipToPadding="false"
-            android:layout_marginEnd="0dp" />
+            android:paddingBottom="100dp" />
     </LinearLayout>
 </layout>
