@@ -1,22 +1,25 @@
 package com.example.dailyrunningforadmin.home;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.dailyrunningforadmin.DataLoadListener;
@@ -31,7 +34,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -39,7 +41,14 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
+    private static final int PERMISSION_CODE = 0;
+
     private static final int RC_SIGN_IN = 1;
+    private static final int RC_PICK_IMAGE = 2;
+
+    private Uri selectedImageUri;
+    View bottomSheetView;
+    BottomSheetDialog bottomSheetDialog;
 
     private Context mContext;
 
@@ -101,9 +110,9 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
         binding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(
+                bottomSheetDialog = new BottomSheetDialog(
                         HomeActivity.this, R.style.BottomSheetDialogTheme);
-                View bottomSheetView = LayoutInflater.from(getApplicationContext())
+                bottomSheetView = LayoutInflater.from(getApplicationContext())
                         .inflate(R.layout.bottom_sheet_layout, (ConstraintLayout)findViewById(R.id.bottom_sheet_container));
                 bottomSheetDialog.setContentView(bottomSheetView);
 
@@ -116,6 +125,20 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
                     @Override
                     public void onClick(View v) {
                         bottomSheetDialog.hide();
+                    }
+                });
+
+                bottomSheetView.findViewById(R.id.select_image_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+                            String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
+                            requestPermissions(permissions, PERMISSION_CODE);
+                        }
+                        else {
+                            pickImageFromGallery();
+                        }
                     }
                 });
             }
@@ -143,6 +166,33 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
                 finish();
             }
         }
+        else if (requestCode == RC_PICK_IMAGE) {
+            if (data != null) {
+                selectedImageUri = data.getData();
+                ImageView imageView = (ImageView) bottomSheetView.findViewById(R.id.gift_imageView);
+                imageView.setImageURI(selectedImageUri);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    pickImageFromGallery();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Quyền truy cập bị từ chối", Toast.LENGTH_LONG);
+                }
+        }
+    }
+
+    private void pickImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, RC_PICK_IMAGE);
     }
 
     private void setUpAuthStateListener() {
