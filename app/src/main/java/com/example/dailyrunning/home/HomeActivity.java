@@ -151,7 +151,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
                 bottomNavigationViewEx.setSelectedItemId(R.id.homeFragment);
 
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Signed in canceled!", Toast.LENGTH_SHORT).show();
                 finish();
             }
         } else if (requestCode == MapsActivity.RECORD_CODE) {
@@ -159,7 +159,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
                 int pointAcquired = data.getIntExtra("point", 0);
                 mUserViewModel.addPoint(pointAcquired);
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Canceled Record", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Canceled Record", Toast.LENGTH_SHORT).show();
 
             }
 
