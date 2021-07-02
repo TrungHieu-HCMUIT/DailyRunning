@@ -72,8 +72,7 @@ public class CustomDialog extends DialogFragment {
     {
         this.isSuccess=isSuccess;
         this.remainingPoint=remainingPoint;
-
-        show(manager,"RunningPointExchanedDialog");
+        show(manager,"RunningPointExchangedDialog");
     }
     @Override
     public void show(@NonNull @NotNull FragmentManager manager, @Nullable @org.jetbrains.annotations.Nullable String tag) {

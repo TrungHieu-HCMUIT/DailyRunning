@@ -367,7 +367,7 @@ public class UserViewModel extends ViewModel {
             public void onChildAdded(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 ArrayList<GiftInfo> giftData =gifts.getValue();
                 giftData.add(snapshot.getValue(GiftInfo.class));
-                gifts.postValue(giftData);
+                gifts.setValue(giftData);
             }
 
             @Override
@@ -386,7 +386,7 @@ public class UserViewModel extends ViewModel {
                 if(index!=-1)
                 {
                     giftData.set(index,changedItem);
-                    gifts.postValue(giftData);
+                    gifts.setValue(giftData);
                 }
             }
 
@@ -405,7 +405,7 @@ public class UserViewModel extends ViewModel {
                 if(index!=-1)
                 {
                     giftData.remove(index);
-                    gifts.postValue(giftData);
+                    gifts.setValue(giftData);
                 }
             }
 
