@@ -158,6 +158,15 @@ public class MyMusicFragment extends Fragment {
 
                     } else {
                         Log.v("USER IDENTIFY", "free user");
+                        //region Search
+                        searchInMyMusic();
+                        //endregion
+                        if(restoreState())
+                            return;
+                        //region load
+                        loadRecently();
+                        loadMyPlaylist();
+                        //endregion
                     }
                 }
 
