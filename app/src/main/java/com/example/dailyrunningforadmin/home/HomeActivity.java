@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
@@ -37,7 +38,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity implements DataLoadListener {
+public class HomeActivity extends AppCompatActivity implements DataLoadListener, PickImageListener {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -47,8 +48,7 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
     private static final int RC_PICK_IMAGE = 2;
 
     private Uri selectedImageUri;
-    View bottomSheetView;
-    BottomSheetDialog bottomSheetDialog;
+    GiftBottomSheetDialog bottomSheetDialog;
 
     private Context mContext;
 
@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
         initFirebaseAuth();
 
         homeViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(HomeViewModel.class);
-        homeViewModel.init(mContext);
+        homeViewModel.init(this);
 
         initRecycleView();
 
@@ -94,6 +94,10 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
         giftAdapter = new GiftAdapter(homeViewModel.getGiftList().getValue());
 
         recyclerView.setAdapter(giftAdapter);
+
+        homeViewModel.getGiftList().observe((LifecycleOwner) this, giftInfos -> {
+            giftAdapter.notifyDataSetChanged();
+        });
     }
 
     private void initWidget() {
@@ -110,37 +114,9 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
         binding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheetDialog = new BottomSheetDialog(
-                        HomeActivity.this, R.style.BottomSheetDialogTheme);
-                bottomSheetView = LayoutInflater.from(getApplicationContext())
-                        .inflate(R.layout.bottom_sheet_layout, (ConstraintLayout)findViewById(R.id.bottom_sheet_container));
-                bottomSheetDialog.setContentView(bottomSheetView);
-
-                BottomSheetBehavior mBehavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
-                mBehavior.setPeekHeight(1500);
-
+                bottomSheetDialog = new GiftBottomSheetDialog(HomeActivity.this, R.style.BottomSheetDialogTheme);
+                bottomSheetDialog.initView();
                 bottomSheetDialog.show();
-
-                bottomSheetView.findViewById(R.id.exit_button).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        bottomSheetDialog.hide();
-                    }
-                });
-
-                bottomSheetView.findViewById(R.id.select_image_button).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-                            String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
-                            requestPermissions(permissions, PERMISSION_CODE);
-                        }
-                        else {
-                            pickImageFromGallery();
-                        }
-                    }
-                });
             }
         });
         // endregion
@@ -148,12 +124,18 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
 
     @Override
     public void onGiftLoaded() {
-        homeViewModel.getGiftList().observe(this, new Observer<ArrayList<GiftInfo>>() {
-            @Override
-            public void onChanged(ArrayList<GiftInfo> giftInfos) {
-                giftAdapter.notifyDataSetChanged();
-            }
-        });
+        giftAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void pickImageFromGallery() {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            String[] permissions = {Manifest.permission.READ_EXTERNAL_STORAGE};
+            requestPermissions(permissions, PERMISSION_CODE);
+        }
+        else {
+            pickImage();
+        }
     }
 
     @Override
@@ -169,7 +151,7 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
         else if (requestCode == RC_PICK_IMAGE) {
             if (data != null) {
                 selectedImageUri = data.getData();
-                ImageView imageView = (ImageView) bottomSheetView.findViewById(R.id.gift_imageView);
+                ImageView imageView = (ImageView) bottomSheetDialog.getView().findViewById(R.id.gift_imageView);
                 imageView.setImageURI(selectedImageUri);
             }
         }
@@ -181,7 +163,7 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
         switch (requestCode) {
             case PERMISSION_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    pickImageFromGallery();
+                    pickImage();
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Quyền truy cập bị từ chối", Toast.LENGTH_LONG);
@@ -189,7 +171,7 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener 
         }
     }
 
-    private void pickImageFromGallery() {
+    private void pickImage() {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
         startActivityForResult(intent, RC_PICK_IMAGE);

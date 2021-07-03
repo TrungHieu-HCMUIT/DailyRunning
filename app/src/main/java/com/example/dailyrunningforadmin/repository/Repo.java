@@ -35,7 +35,9 @@ public class Repo {
     }
 
     public MutableLiveData<ArrayList<GiftInfo>> getGiftList() {
-        loadGiftList();
+        if (giftList.isEmpty()) {
+            loadGiftList();
+        }
 
         MutableLiveData<ArrayList<GiftInfo>> list = new MutableLiveData<>();
         list.setValue(giftList);
@@ -53,6 +55,7 @@ public class Repo {
                 for (DataSnapshot ds: snapshot.getChildren()) {
                     giftList.add(ds.getValue(GiftInfo.class));
                 }
+                Log.d("Debug", "Repo loadedGiftList");
                 dataLoadListener.onGiftLoaded();
             }
 
