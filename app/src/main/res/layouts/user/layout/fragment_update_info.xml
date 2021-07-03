@@ -17,7 +17,10 @@
         android:layout_height="match_parent"
         android:background="#E5E5E5"
         android:orientation="vertical"
-        tools:context=".user.UpdateInfoFragment">
+        tools:context=".user.UpdateInfoFragment"
+        android:layout_marginBottom="-50dp"
+
+        >
 
 
         <LinearLayout
@@ -376,7 +379,7 @@
                 android:layout_height="55dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginHorizontal="25dp"
-                android:layout_marginBottom="60dp"
+                android:layout_marginBottom="100dp"
                 android:backgroundTint="@color/color_palette_3"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Xác nhận"

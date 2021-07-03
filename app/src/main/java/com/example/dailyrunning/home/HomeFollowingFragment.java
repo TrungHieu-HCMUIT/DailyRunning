@@ -69,7 +69,7 @@ public class HomeFollowingFragment extends Fragment {
         mNavController = Navigation.findNavController((Activity) context,R.id.home_fragment_container);
 
         String userId = FirebaseAuth.getInstance().getUid();
-        postViewAdapter = new PostViewAdapter((HomeActivity) context, userId, postList, mNavController);
+        postViewAdapter = new PostViewAdapter((HomeActivity) context, userId, postList, mNavController,false);
         recyclerView.setAdapter(postViewAdapter);
 
         mUserViewModel.getCurrentUser().observe((LifecycleOwner) context, user->{

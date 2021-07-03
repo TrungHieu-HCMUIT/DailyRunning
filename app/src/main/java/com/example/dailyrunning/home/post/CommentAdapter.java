@@ -89,7 +89,6 @@ public class CommentAdapter extends   RecyclerView.Adapter<CommentAdapter.ViewHo
                     RichTextDocumentElement element=new RichTextDocumentElement
                             .TextBuilder(userInfo.getDisplayName())
                             .bold()
-                            .font("font/svn_avo_bold.ttf")
                             .color(Color.BLACK)
                             .append("  "+item.getContent())
                             .color(Color.parseColor("#666666"))

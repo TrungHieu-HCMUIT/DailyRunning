@@ -108,7 +108,6 @@ public class UserViewModel extends ViewModel {
     {
         step.setValue(0);
         gifts.setValue(new ArrayList<>());
-        getGiftData();
         targetStep.setValue(2000);
         canChangePassword.setValue(false);
     }
@@ -361,7 +360,9 @@ public class UserViewModel extends ViewModel {
             return false;
         }
     }
-    private void getGiftData() {
+    public void getGiftData() {
+        if(!gifts.getValue().isEmpty())
+            return;
         FirebaseDatabase.getInstance().getReference().child("Gift").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull @org.jetbrains.annotations.NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {

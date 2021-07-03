@@ -68,7 +68,7 @@ public class HomeUserFragment extends Fragment {
         mPostViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(PostViewModel.class);
         mNavController= Navigation.findNavController((Activity) context,R.id.home_fragment_container);
         //populateData();
-        postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), FirebaseAuth.getInstance().getUid(), postList, mNavController);
+        postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), FirebaseAuth.getInstance().getUid(), postList, mNavController,false);
         recyclerView.setAdapter(postViewAdapter);
         listenMyPostChange();
         mHomeViewModel=new ViewModelProvider(getActivity()).get(HomeViewModel.class);
@@ -88,37 +88,6 @@ public class HomeUserFragment extends Fragment {
             }
         });
     }
-    private void populateData() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference rt = database.getReference();
-        mUserViewModel.getCurrentUser().observe(getActivity(),
-                userInfo -> {
-                    if (userInfo==null)
-                        return;
-                    Query query = rt.child("Post").child(userInfo.getUserID()).orderByChild("dateCreated");
-                    query.addValueEventListener(new ValueEventListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.N)
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            postList.clear();
-                            for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                                // TODO: handle the post
-                                Post post = postSnapshot.getValue(Post.class);
-                                if(post.getComments()==null)
-                                    post.setComments(new ArrayList<>());
-                                postList.add(post);
-                                postViewAdapter.notifyItemChanged(postList.size()-1);
-                                Collections.reverse(postList);
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                        }
-                    });
-                });
-    }
-
     //region save state
 
     @Override

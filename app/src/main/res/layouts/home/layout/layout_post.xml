@@ -169,7 +169,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider"
                 app:shimmer_auto_start="true"
-                app:shimmer_base_color="@color/color_palette_4"
+                app:shimmer_base_color="@color/darker_grey"
                 app:shimmer_colored="true"
                 app:shimmer_highlight_color="@color/lighter_grey">
 

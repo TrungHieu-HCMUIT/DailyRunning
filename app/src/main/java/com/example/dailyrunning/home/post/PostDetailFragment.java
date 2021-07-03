@@ -154,7 +154,7 @@ public class PostDetailFragment extends Fragment {
         RichTextDocumentElement element=new RichTextDocumentElement
                 .TextBuilder(mPostViewModel.getSelectedPost().getValue().getOwnerName())
                 .bold()
-                .font("font/svn_avo_bold.ttf")
+                .font("res/font/svn_avo_bold.ttf")
                 .color(Color.BLACK)
                 .append("  "+mPostViewModel.getSelectedPost().getValue().getActivity().getDescribe())
                 .color(getResources().getColor(R.color.describe_color))

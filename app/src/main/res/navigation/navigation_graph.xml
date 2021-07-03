@@ -10,22 +10,29 @@
         android:label="HomeFragment" >
         <action
             android:id="@+id/action_homeFragment_to_findFragment"
-            app:destination="@id/findFragment" />
+            app:destination="@id/findFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
         <action
             android:id="@+id/action_homeFragment_to_postDetailFragment"
-            app:destination="@id/postDetailFragment" />
-        <action
-            android:id="@+id/action_homeFragment_to_updateInfoFragment"
-            app:destination="@id/updateInfoFragment" />
+            app:destination="@id/postDetailFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
         <action
             android:id="@+id/action_homeFragment_to_otherUserProfile"
-            app:destination="@id/otherUserProfile" />
+            app:destination="@id/otherUserProfile"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
         <action
             android:id="@+id/action_homeFragment_to_mapViewFragment"
-            app:destination="@id/mapViewFragment" />
+            app:destination="@id/mapViewFragment"
+            app:enterAnim="@anim/push_up_in"
+            app:popExitAnim="@anim/push_down_out" />
         <action
             android:id="@+id/action_homeFragment_to_listUserFragment"
-            app:destination="@id/listUserFragment" />
+            app:destination="@id/listUserFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
     </fragment>
     <fragment
         android:id="@+id/findFragment"
@@ -33,7 +40,9 @@
         android:label="FindFragment" >
         <action
             android:id="@+id/action_findFragment_to_otherUserProfile"
-            app:destination="@id/otherUserProfile" />
+            app:destination="@id/otherUserProfile"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"
@@ -41,13 +50,19 @@
         android:label="UserFragment" >
         <action
             android:id="@+id/action_userFragment_to_giftFragment"
-            app:destination="@id/giftFragment" />
+            app:destination="@id/giftFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
         <action
             android:id="@+id/action_userFragment_to_updateInfoFragment"
-            app:destination="@id/updateInfoFragment" />
+            app:destination="@id/updateInfoFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
         <action
             android:id="@+id/action_userFragment_to_listUserFragment"
-            app:destination="@id/listUserFragment" />
+            app:destination="@id/listUserFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
     </fragment>
     <fragment
         android:id="@+id/giftFragment"
@@ -61,7 +76,9 @@
         tools:layout="@layout/fragment_update_info" >
         <action
             android:id="@+id/action_updateInfoFragment_to_changePasswordFragment"
-            app:destination="@id/changePasswordFragment" />
+            app:destination="@id/changePasswordFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
     </fragment>
     <fragment
         android:id="@+id/postDetailFragment"
@@ -70,40 +87,58 @@
         tools:layout="@layout/fragment_post_detail" >
         <action
             android:id="@+id/action_postDetailFragment_to_otherUserProfile"
-            app:destination="@id/otherUserProfile" />
-        <deepLink app:uri="android-app://com.example.dailyrunning/comment_view" />
+            app:destination="@id/otherUserProfile"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
     </fragment>
     <fragment
         android:id="@+id/mapViewFragment"
         android:name="com.example.dailyrunning.home.MapViewFragment"
         android:label="fragment_map_view"
 
-        tools:layout="@layout/fragment_map_view" >
-        <deepLink app:uri="android-app://com.example.dailyrunning/map_view" />
-    </fragment>
+        tools:layout="@layout/fragment_map_view" />
     <fragment
         android:id="@+id/otherUserProfile"
         android:name="com.example.dailyrunning.home.find.OtherUserProfileFragment"
         android:label="OtherUserProfile" >
         <action
             android:id="@+id/action_otherUserProfile_to_activityListFragment"
-            app:destination="@id/activityListFragment" />
+            app:destination="@id/activityListFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
         <action
             android:id="@+id/action_otherUserProfile_to_listUserFragment"
-            app:destination="@id/listUserFragment" />
+            app:destination="@id/listUserFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
     </fragment>
     <fragment
         android:id="@+id/activityListFragment"
         android:name="com.example.dailyrunning.home.find.ActivityListFragment"
-        android:label="ActivityListFragment" />
+        android:label="ActivityListFragment" >
+        <action
+            android:id="@+id/action_activityListFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
+        <action
+            android:id="@+id/action_activityListFragment_to_listUserFragment"
+            app:destination="@id/listUserFragment" />
+        <action
+            android:id="@+id/action_activityListFragment_to_mapViewFragment"
+            app:destination="@id/mapViewFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
+    </fragment>
     <fragment
         android:id="@+id/listUserFragment"
         android:name="com.example.dailyrunning.user.ListUserFragment"
         android:label="ListUserFragment" >
         <action
             android:id="@+id/action_listUserFragment_to_otherUserProfile"
-            app:destination="@id/otherUserProfile" />
-        <deepLink app:uri="android-app://com.example.dailyrunning/list_user_view" />
+            app:destination="@id/otherUserProfile"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
     </fragment>
     <fragment
         android:id="@+id/changePasswordFragment"

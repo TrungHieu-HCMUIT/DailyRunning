@@ -60,7 +60,7 @@ public class ActivityListFragment extends Fragment {
         mUserViewModel = new ViewModelProvider(getActivity()).get(UserViewModel.class);
 
         // init recyclerView
-        postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), FirebaseAuth.getInstance().getUid(), postsList, mNavController);
+        postViewAdapter = new PostViewAdapter((HomeActivity) getActivity(), FirebaseAuth.getInstance().getUid(), postsList, mNavController,true);
         binding.activitiesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.activitiesRecyclerView.setAdapter(postViewAdapter);
 

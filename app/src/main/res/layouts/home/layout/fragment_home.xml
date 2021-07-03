@@ -38,7 +38,8 @@
                 android:elevation="0dp"
                 app:layout_collapseMode="pin"
                 app:menu="@menu/top_app_bar_menu"
-                app:title="Good morning, Trung Hieu" />
+
+                app:title="Good morning, Trung Hieu Trung Hieu Trung Hieu" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 

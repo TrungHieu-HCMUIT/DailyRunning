@@ -127,6 +127,8 @@ public class UserFragment extends Fragment implements UserNavigator, UserViewMod
         mListUserViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(ListUserViewModel.class);
 
         mUserViewModel.setNavigator(this);
+        mUserViewModel.getGiftData();
+
         binding.setUserViewModel(mUserViewModel);
         binding.setLifecycleOwner((LifecycleOwner) mContext);
         mUserViewModel.setStepDialog=this;

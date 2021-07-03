@@ -73,7 +73,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
 
     private PeriodicWorkRequest mPeriodicWorkRequest;
 
-    private PostViewModel mPostViewModel;
+    public PostViewModel mPostViewModel;
     private RunningLoadingDialog mLoadingDialog;
     private RelativeLayout rootLayout;
     public ListUserViewModel mListUserViewModel;
@@ -262,9 +262,9 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         mPostViewModel.selectPost(post);
         if (isMap) {
             Log.i("OnMapSelected", post.getPostID());
-            mNavController.navigate(Uri.parse("android-app://com.example.dailyrunning/map_view"));
+            mNavController.navigate(R.id.action_homeFragment_to_mapViewFragment);
         } else {
-            mNavController.navigate(Uri.parse("android-app://com.example.dailyrunning/comment_view"));
+            mNavController.navigate(R.id.action_homeFragment_to_postDetailFragment);
         }
     }
 

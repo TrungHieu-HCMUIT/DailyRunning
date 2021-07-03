@@ -17,6 +17,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,7 +45,7 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
     private String currentUserId;
     private ArrayList<Post> postsList;
     private NavController navController;
-
+    private boolean isOtherProfile;
     public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView userAvatar;
         public TextView userName;
@@ -81,11 +82,12 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
         }
     }
 
-    public PostViewAdapter(HomeActivity homeActivity, String currentUserId, ArrayList<Post> postsList, NavController navController) {
+    public PostViewAdapter(HomeActivity homeActivity, String currentUserId, ArrayList<Post> postsList, NavController navController,boolean isOtherProfile) {
         this.homeActivity = homeActivity;
         this.currentUserId = currentUserId;
         this.postsList = postsList;
         this.navController = navController;
+        this.isOtherProfile=isOtherProfile;
     }
     public void  setPost(ArrayList<Post> data)
     {
@@ -127,14 +129,54 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
                     }
                 })
                 .into(holder.image);
-        holder.image.setOnClickListener(v -> {
-            homeActivity.hideNavBar();
-            homeActivity.onPostSelected(postsList.get(position), true);
-        });
-        holder.commentBtn.setOnClickListener(v -> {
-            homeActivity.hideNavBar();
-            homeActivity.onPostSelected(postsList.get(position), false);
-        });
+        View.OnLongClickListener onLikeLongClick;
+        if(!isOtherProfile) {
+            View.OnClickListener onUserClickListener= v -> {
+                if (postsList.get(position).getOwnerID().equals(currentUserId))
+                    return;
+                homeActivity.mOtherUserProfileViewModel.onUserSelected(postsList.get(position).getOwnerID());
+                navController.navigate(R.id.action_homeFragment_to_otherUserProfile);
+            };
+
+            onLikeLongClick = v -> {
+                homeActivity.mListUserViewModel.showUserList((ArrayList<String>) postsList.get(position).getLikesUserId(),"Người thích");
+                navController.navigate(R.id.action_homeFragment_to_listUserFragment);
+                return false;
+            };
+            holder.userName.setOnClickListener(onUserClickListener);
+
+            holder.userAvatar.setOnClickListener(onUserClickListener);
+            holder.image.setOnClickListener(v -> {
+                homeActivity.mPostViewModel.selectPost(postsList.get(position));
+                homeActivity.hideNavBar();
+                homeActivity.onPostSelected(postsList.get(position), true);
+            });
+            holder.commentBtn.setOnClickListener(v -> {
+                homeActivity.mPostViewModel.selectPost(postsList.get(position));
+                homeActivity.hideNavBar();
+                homeActivity.onPostSelected(postsList.get(position), false);
+            });
+        }
+        else
+        {
+            onLikeLongClick = v -> {
+                homeActivity.mListUserViewModel.showUserList((ArrayList<String>) postsList.get(position).getLikesUserId(),"Người thích");
+                navController.navigate(R.id.action_activityListFragment_to_listUserFragment);
+                return false;
+            };
+            holder.image.setOnClickListener(v -> {
+                homeActivity.mPostViewModel.selectPost(postsList.get(position));
+                homeActivity.hideNavBar();
+                navController.navigate(R.id.action_activityListFragment_to_mapViewFragment);
+
+            });
+            holder.commentBtn.setOnClickListener(v -> {
+                homeActivity.mPostViewModel.selectPost(postsList.get(position));
+                homeActivity.hideNavBar();
+                navController.navigate(R.id.action_activityListFragment_to_postDetailFragment);
+            });
+        }
+
 
         if (postsList.get(position).getLikesUserId() == null) {
             postsList.get(position).setLikesUserId(new ArrayList<>());
@@ -152,27 +194,11 @@ public class PostViewAdapter extends RecyclerView.Adapter<PostViewAdapter.ViewHo
             holder.pressToUnlikeBtn.setVisibility(View.INVISIBLE);
         }
 
-        View.OnClickListener onUserClickListener=new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (postsList.get(position).getOwnerID().equals(currentUserId))
-                    return;
-                homeActivity.mOtherUserProfileViewModel.onUserSelected(postsList.get(position).getOwnerID());
-                navController.navigate(R.id.action_homeFragment_to_otherUserProfile);
-            }
-        };
-        holder.userName.setOnClickListener(onUserClickListener);
 
-        holder.userAvatar.setOnClickListener(onUserClickListener);
 
-        View.OnLongClickListener onLikeLongClick=new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                homeActivity.mListUserViewModel.showUserList((ArrayList<String>) postsList.get(position).getLikesUserId(),"Người thích");
-                navController.navigate(Uri.parse("android-app://com.example.dailyrunning/list_user_view"));
-                return false;
-            }
-        };
+
+
+
         holder.pressToLikeBtn.setOnLongClickListener(onLikeLongClick);
         holder.pressToUnlikeBtn.setOnLongClickListener(onLikeLongClick);
         holder.likeTv.setOnLongClickListener(onLikeLongClick);
