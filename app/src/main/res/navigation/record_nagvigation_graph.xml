@@ -12,13 +12,19 @@
         tools:layout="@layout/fragment_record" >
         <action
             android:id="@+id/action_recordFragment_to_finishFragment"
-            app:destination="@id/finishFragment" />
+            app:destination="@id/finishFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
         <action
             android:id="@+id/action_recordFragment_to_spotifyFragment"
-            app:destination="@id/spotifyFragment" />
+            app:destination="@id/spotifyFragment"
+            app:enterAnim="@anim/push_left_in"
+            app:popExitAnim="@anim/push_right_out" />
         <action
             android:id="@+id/action_recordFragment_to_playerFragment2"
-            app:destination="@id/playerFragment2" />
+            app:destination="@id/playerFragment2"
+            app:enterAnim="@anim/push_up_in"
+            app:popExitAnim="@anim/push_down_out" />
     </fragment>
     <fragment
         android:id="@+id/finishFragment"

@@ -4,4 +4,6 @@ public interface LoginNavigator {
     void onGoogleLoginClick();
     void navToRegister();
     void navToUpdateInfo();
+    void navToForgotPassword();
+    void popBack();
 }

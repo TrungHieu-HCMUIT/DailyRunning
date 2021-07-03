@@ -11,8 +11,11 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.provider.MediaStore;
 import android.text.format.DateUtils;
@@ -49,11 +52,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class FinishFragment extends Fragment  {
+public class FinishFragment extends Fragment implements UserViewModel.RunningSnackBar {
 
     private RecordViewModel mRecordViewModel;
 
     FragmentFinishBinding binding;
+    Context mContext;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,10 +68,11 @@ public class FinishFragment extends Fragment  {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding.setLifecycleOwner(getActivity());
-        mRecordViewModel=new ViewModelProvider(getActivity()).get(RecordViewModel.class);
+        mContext=getContext();
+        binding.setLifecycleOwner((LifecycleOwner) mContext);
+        mRecordViewModel=new ViewModelProvider((ViewModelStoreOwner) mContext).get(RecordViewModel.class);
         binding.setRecordViewModel(mRecordViewModel);
-        requireActivity().getOnBackPressedDispatcher().addCallback(getActivity(), new OnBackPressedCallback(true) {
+        requireActivity().getOnBackPressedDispatcher().addCallback((LifecycleOwner) mContext, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 confirmCancelActivity();
@@ -75,24 +80,32 @@ public class FinishFragment extends Fragment  {
         });
         binding.cancelButton.setOnClickListener(v-> confirmCancelActivity());
         binding.saveButton.setOnClickListener(v->{
-            mRecordViewModel.onSaveClick(new UserViewModel.OnTaskComplete() {
-                @Override
-                public void onComplete(boolean result) {
-                    if(result) {
-                        Snackbar.make(view, "Lưu hoạt động thành công", Snackbar.LENGTH_LONG).show();
-                        Intent point = new Intent();
-                        point.putExtra("point",mRecordViewModel.runningPointAcquired.getValue());
-                        getActivity().setResult(android.app.Activity.RESULT_OK,point);
-                        getActivity().finish();
-                    }
-                    else
-                    {
-                        Snackbar.make(view, "Lưu hoạt động thất bại", Snackbar.LENGTH_LONG).show();
-                        getActivity().setResult(Activity.RESULT_CANCELED);
-                        getActivity().finish();
-                    }
+            mRecordViewModel.onSaveClick(result -> {
+                if(result) {
+                    showSnackBar("Lưu hoạt động thành công",new Snackbar.Callback(){
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            Intent point = new Intent();
+                            point.putExtra("point",mRecordViewModel.runningPointAcquired.getValue());
+                            ((Activity)mContext).setResult(Activity.RESULT_OK,point);
+                            ((Activity)mContext).finish();
+                        }
+                    });
 
                 }
+                else
+                {
+                    showSnackBar("Lưu hoạt động thất bại",new Snackbar.Callback(){
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            ((Activity)mContext).setResult(Activity.RESULT_CANCELED);
+                            ((Activity)mContext).finish();
+                        }
+                    });
+                }
+
             });
         });
     }
@@ -106,4 +119,9 @@ public class FinishFragment extends Fragment  {
     }
 
 
+    @Override
+    public void showSnackBar(String content, Snackbar.Callback callback) {
+        Snackbar.make(binding.rootScrollView, content, Snackbar.LENGTH_SHORT).setTextColor(ContextCompat.getColor(mContext, R.color.color_palette_3))
+                .addCallback(callback).show();
+    }
 }

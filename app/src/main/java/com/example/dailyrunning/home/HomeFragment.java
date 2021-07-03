@@ -76,7 +76,6 @@ public class HomeFragment extends Fragment{
                 userInfo -> {
                     if (userInfo == null)
                         return;
-
                     mTopToolBar.setTitle(getGreet() + userInfo.getDisplayName());
                     Log.v("Home Fragment", "user updated " + mTopToolBar.getTitle() + "\n" + userInfo.getDisplayName());
 

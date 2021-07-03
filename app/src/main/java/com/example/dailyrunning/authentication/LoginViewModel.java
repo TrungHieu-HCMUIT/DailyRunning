@@ -21,6 +21,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.model.UserInfo;
 import com.example.dailyrunning.record.RecordViewModel;
+import com.example.dailyrunning.user.UserViewModel;
 import com.example.dailyrunning.utils.ConfirmDialog;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -30,12 +31,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -47,6 +51,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -59,7 +64,9 @@ public class LoginViewModel extends ViewModel {
     private MutableLiveData<UserInfo> mNewUser=new MutableLiveData<>();
     private DatabaseReference mUserInfoRef = FirebaseDatabase.getInstance().getReference().child("UserInfo");
     public MutableLiveData<UserInfo> mRegisterUser=new MutableLiveData<>();
+    public MutableLiveData<String> forgotPasswordEmail=new MutableLiveData<>();
     public LoadingDialog loadingDialog;
+    public UserViewModel.RunningSnackBar snackBar;
     public RecordViewModel.ShowConfirmDialog confirmDialog;
 
     {
@@ -76,6 +83,36 @@ public class LoginViewModel extends ViewModel {
         return mNewUser;
     }
 
+    public void onForgotPasswordClick(){
+        mNavigator.navToForgotPassword();
+    }
+    public void onSendEmailClick() {
+        if(forgotPasswordEmail.getValue()==null)
+            return;
+        String emailString=forgotPasswordEmail.getValue();
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(emailString).matches()) {
+            snackBar.showSnackBar("Email không hợp lệ",null);
+            return;
+        }
+        FirebaseAuth.getInstance().sendPasswordResetEmail(emailString).addOnCompleteListener(task -> {
+           if(task.isSuccessful())
+           {
+               snackBar.showSnackBar("Gửi mail thành công!",new Snackbar.Callback() {
+                   @Override
+                   public void onDismissed(Snackbar snackbar, int event) {
+                       super.onDismissed(snackbar, event);
+                       mNavigator.popBack();
+                   }
+               });
+
+           }
+           else
+           {
+                Exception ex=task.getException();
+                snackBar.showSnackBar("Không tồn tại người dùng nào với email này!",null);
+           }
+        });
+    }
     public CallbackManager mCallbackManager;
     private LoginNavigator mNavigator;
 
@@ -85,7 +122,7 @@ public class LoginViewModel extends ViewModel {
 
     public void onNormalLoginClick(String email, String password, TaskCallBack mTaskCallBack) {
         if(email.isEmpty() || password.isEmpty()) {
-            mTaskCallBack.onError(new Exception("Empty email or password"));
+            snackBar.showSnackBar("Vui lòng nhập email và mật khẩu",null);
             return;
         }
         loadingDialog.showDialog();
@@ -120,8 +157,14 @@ public class LoginViewModel extends ViewModel {
                     } else {
                         loadingDialog.dismissDialog();
 
+                        Exception ex=task.getException();
                         Log.v("NormalLoginError", task.getException().toString());
                         mTaskCallBack.onError(task.getException());
+                        if (ex instanceof FirebaseAuthInvalidCredentialsException) {
+                            snackBar.showSnackBar("Sai mật khẩu",null);
+                        } else if (ex instanceof FirebaseAuthInvalidUserException) {
+                            snackBar.showSnackBar("Không tồn tại người dùng này",null);
+                        }
                     }
                 });
     }

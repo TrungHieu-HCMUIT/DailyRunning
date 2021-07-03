@@ -124,12 +124,6 @@ public class LoginFragment extends Fragment implements LoginNavigator{
 
                     @Override
                     public void onError(Exception exception) {
-                            if (exception instanceof FirebaseAuthInvalidCredentialsException) {
-                                showDialog("Lỗi đăng nhập", "Sai mật khẩu");
-                            } else if (exception instanceof FirebaseAuthInvalidUserException) {
-                                showDialog("Lỗi đăng nhập", "Không tồn tại người dùng này");
-                            }
-
                     }
                 })
         );
@@ -144,7 +138,7 @@ public class LoginFragment extends Fragment implements LoginNavigator{
 
     //region showDialog message
 
-    private void showDialog(String title, String message) {
+  /*  private void showDialog(String title, String message) {
         new androidx.appcompat.app.AlertDialog.Builder(getActivity())
                 .setTitle(title)
                 .setMessage(message)
@@ -155,7 +149,7 @@ public class LoginFragment extends Fragment implements LoginNavigator{
                 })
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .show();
-    }
+    }*/
     //endregion
 
 
@@ -264,5 +258,16 @@ public class LoginFragment extends Fragment implements LoginNavigator{
     @Override
     public void navToUpdateInfo() {
         mNavController.navigate(R.id.action_loginFragment_to_registerAddInfoFragment2);
+    }
+
+    @Override
+    public void navToForgotPassword() {
+        mNavController.navigate(R.id.action_loginFragment_to_forgotPasswordFragment);
+
+    }
+
+    @Override
+    public void popBack() {
+        mNavController.popBackStack();
     }
 }
