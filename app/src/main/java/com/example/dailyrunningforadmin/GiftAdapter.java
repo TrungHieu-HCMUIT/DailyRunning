@@ -1,6 +1,7 @@
 package com.example.dailyrunningforadmin;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.dailyrunningforadmin.home.GiftBottomSheetDialog;
 import com.example.dailyrunningforadmin.home.HomeActivity;
+import com.example.dailyrunningforadmin.home.HomeActivityCallBack;
 import com.example.dailyrunningforadmin.model.GiftInfo;
 
 import java.util.List;
@@ -20,10 +22,14 @@ import java.util.List;
 public class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.ViewHolder>{
 
     private List<GiftInfo> mGifts;
+    private Context mContext;
+    private HomeActivityCallBack homeActivityCallBack;
 
-    public GiftAdapter(List<GiftInfo> mGifts)
+    public GiftAdapter(Context context,List<GiftInfo> mGifts)
     {
+        this.mContext = context;
         this.mGifts=mGifts;
+        homeActivityCallBack = (HomeActivityCallBack) mContext;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -62,13 +68,11 @@ public class GiftAdapter extends RecyclerView.Adapter<GiftAdapter.ViewHolder>{
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GiftBottomSheetDialog bottomSheetDialog = GiftBottomSheetDialog.getInstance(v.getContext(), R.style.BottomSheetDialogTheme, currentGift);
-                bottomSheetDialog.initView();
-                bottomSheetDialog.show();
+                homeActivityCallBack.initBottomSheet(currentGift);
             }
         });
 
-        Glide.with(holder.mGiftImageView.getContext()).load(currentGift.getPhotoUri()).into(holder.mGiftImageView);
+        Glide.with(mContext).load(currentGift.getPhotoUri()).into(holder.mGiftImageView);
         holder.mGiftDetailTextView.setText(currentGift.getGiftDetail());
         holder.mProviderNameTextView.setText(currentGift.getProviderName());
         holder.mPointTextView.setText(String.valueOf(currentGift.getPoint()));

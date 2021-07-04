@@ -3,6 +3,7 @@ package com.example.dailyrunningforadmin.repository;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
@@ -29,6 +30,9 @@ public class Repo {
 
     static Repo instance;
     static Context mContext;
+
+    DatabaseReference giftDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Gift");
+    StorageReference giftStorageReference = FirebaseStorage.getInstance().getReference().child("gift_images");
 
     private ArrayList<GiftInfo> giftList = new ArrayList<>();
     static DataLoadListener dataLoadListener;
@@ -73,25 +77,48 @@ public class Repo {
     }
 
     public void addGift(GiftInfo gift, Bitmap bitmap) {
-        String id;
+        String giftId;
 
-        DatabaseReference giftDatabaseReference = FirebaseDatabase.getInstance().getReference().child("Gift");
-        StorageReference giftStorageReference = FirebaseStorage.getInstance().getReference().child("gift_images");
-
-        id = giftDatabaseReference.push().getKey();
+        giftId = giftDatabaseReference.push().getKey();
 
         byte[] imageData = bitmapToByteArray(bitmap);
-        
-        UploadTask uploadTask = giftStorageReference.child(id).putBytes(imageData);
+
+        UploadTask uploadTask = giftStorageReference.child(giftId).putBytes(imageData);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                gift.setID(id);
-                gift.setPhotoUri(id);
-                giftDatabaseReference.child(id).setValue(gift).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                gift.setID(giftId);
+                giftStorageReference.child(giftId).getDownloadUrl().addOnSuccessListener(uri -> {
+                    gift.setPhotoUri(uri.toString());
+                    giftDatabaseReference.child(giftId).setValue(gift).addOnCompleteListener(task -> {
                         loadGiftList();
+                        Toast.makeText(mContext, "Thêm thành công", Toast.LENGTH_LONG).show();
+                    });
+                });
+            }
+        });
+    }
+
+    public void updateGift(GiftInfo gift, Bitmap bitmap) {
+        String giftId = gift.getID();
+
+        giftStorageReference.child(giftId).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                byte[] imageData = bitmapToByteArray(bitmap);
+
+                UploadTask uploadTask = giftStorageReference.child(giftId).putBytes(imageData);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        gift.setID(giftId);
+                        giftStorageReference.child(giftId).getDownloadUrl().addOnSuccessListener(uri -> {
+                            gift.setPhotoUri(uri.toString());
+                            giftDatabaseReference.child(giftId).setValue(gift).addOnCompleteListener(task -> {
+                                loadGiftList();
+                                Toast.makeText(mContext, "Cập nhật thành công", Toast.LENGTH_LONG).show();
+                            });
+                        });
                     }
                 });
             }
@@ -99,8 +126,11 @@ public class Repo {
     }
 
     public void deleteGift(GiftInfo gift) {
-        DatabaseReference giftRef = FirebaseDatabase.getInstance().getReference().child("Gift");
-        giftRef.child(gift.getID()).removeValue();
+        giftStorageReference.child(gift.getID()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {}
+        });
+        giftDatabaseReference.child(gift.getID()).removeValue();
         getGiftList();
     }
 

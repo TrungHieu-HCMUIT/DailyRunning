@@ -32,6 +32,10 @@ public class HomeViewModel extends ViewModel {
         Repo.getInstance(context).addGift(gift, bitmap);
     }
 
+    public void updateGift(Context context, GiftInfo gift, Bitmap bitmap) {
+        Repo.getInstance(context).updateGift(gift, bitmap);
+    }
+
     public void deleteGift(Context context, GiftInfo gift) {
         Repo.getInstance(context).deleteGift(gift);
     }

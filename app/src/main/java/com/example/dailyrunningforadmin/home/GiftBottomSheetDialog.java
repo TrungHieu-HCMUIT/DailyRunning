@@ -1,12 +1,9 @@
 package com.example.dailyrunningforadmin.home;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,12 +19,9 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import com.bumptech.glide.Glide;
 import com.example.dailyrunningforadmin.R;
 import com.example.dailyrunningforadmin.model.GiftInfo;
-import com.example.dailyrunningforadmin.repository.Repo;
 import com.example.dailyrunningforadmin.viewmodel.HomeViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-
-import java.io.ByteArrayOutputStream;
 
 public class GiftBottomSheetDialog extends BottomSheetDialog {
 
@@ -45,30 +39,24 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
     private Button confirmButton;
     private Button deleteButton;
 
-    static PickImageListener pickImageListener;
+    static HomeActivityCallBack homeActivityCallBack;
 
     private GiftBottomSheetDialog(@NonNull Context context, int theme, GiftInfo giftInfo) {
         super(context, theme);
         mContext = context;
-        pickImageListener = (PickImageListener) context;
+        homeActivityCallBack = (HomeActivityCallBack) context;
         mGift = giftInfo;
 
         homeViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(HomeViewModel.class);
     }
 
     public static GiftBottomSheetDialog getInstance(@NonNull Context context, int theme, GiftInfo giftInfo) {
-        if (instance == null) {
-            instance = new GiftBottomSheetDialog(context, theme, giftInfo);
-        }
-        else {
-            mContext = context;
-            mGift = giftInfo;
-        }
+        instance = new GiftBottomSheetDialog(context, theme, giftInfo);
         return instance;
     }
 
-    public View getView() {
-        return mView;
+    public ImageView getGiftImageView() {
+        return giftImageView;
     }
 
     public void initView() {
@@ -126,7 +114,7 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
         mView.findViewById(R.id.select_image_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pickImageListener.pickImageFromGallery();
+                homeActivityCallBack.pickImageFromGallery();
             }
         });
 
@@ -135,21 +123,26 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
             public void onClick(View v) {
                 boolean isValidInput = checkInput(providerEditText.getText().toString(),
                         describeEditText.getText().toString(),
-                        Integer.parseInt(runningPointEditText.getText().toString()));
+                        runningPointEditText.getText().toString(),
+                        giftImageView.getTag().toString());
                 if (isValidInput) {
-                    GiftInfo gift = new GiftInfo(
-                            null,
-                            null,
-                            providerEditText.getText().toString(),
-                            describeEditText.getText().toString(),
-                            Integer.parseInt(runningPointEditText.getText().toString())
-                    );
+                    GiftInfo gift;
                     Bitmap bitmap = ((BitmapDrawable) giftImageView.getDrawable()).getBitmap();
-                    homeViewModel.addGift(mContext, gift, bitmap);
-
-                    hide();
-                    Toast.makeText(mContext, "Thêm thành công", Toast.LENGTH_LONG).show();
+                    if (mGift == null) {
+                        gift = new GiftInfo(
+                                null,
+                                null,
+                                providerEditText.getText().toString(),
+                                describeEditText.getText().toString(),
+                                Integer.parseInt(runningPointEditText.getText().toString()));
+                        homeViewModel.addGift(mContext, gift, bitmap);
+                    }
+                    else {
+                        gift = mGift;
+                        homeViewModel.updateGift(mContext, gift, bitmap);
+                    }
                 }
+                hide();
             }
         });
 
@@ -163,9 +156,19 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
         });
     }
 
-
-
-    private boolean checkInput(String providerName, String description, int runningPoint) {
+    private boolean checkInput(String providerName, String description, String runningPoint, String imageTag) {
+        if (providerName.isEmpty() || description.isEmpty() || runningPoint.isEmpty()) {
+            Toast.makeText(mContext, "Vui lòng nhập đủ thông tin", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if (Integer.parseInt(runningPoint) <= 0) {
+            Toast.makeText(mContext, "Định dạng số cho điểm Running chưa đúng", Toast.LENGTH_LONG).show();
+            return false;
+        }
+        else if (imageTag.equals("isUnset")) {
+            Toast.makeText(mContext, "Vui lòng chọn ảnh", Toast.LENGTH_LONG).show();
+            return false;
+        }
         return true;
     }
 }

@@ -3,9 +3,7 @@ package com.example.dailyrunningforadmin.home;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,12 +15,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.dailyrunningforadmin.DataLoadListener;
 import com.example.dailyrunningforadmin.GiftAdapter;
 import com.example.dailyrunningforadmin.R;
@@ -31,14 +28,10 @@ import com.example.dailyrunningforadmin.authentication.LoginActivity;
 import com.example.dailyrunningforadmin.databinding.ActivityHomeBinding;
 import com.example.dailyrunningforadmin.model.GiftInfo;
 import com.example.dailyrunningforadmin.viewmodel.HomeViewModel;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.ArrayList;
-
-public class HomeActivity extends AppCompatActivity implements DataLoadListener, PickImageListener {
+public class HomeActivity extends AppCompatActivity implements DataLoadListener, HomeActivityCallBack {
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -93,7 +86,7 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
         recyclerView = findViewById(R.id.gift_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
 
-        giftAdapter = new GiftAdapter(homeViewModel.getGiftList().getValue());
+        giftAdapter = new GiftAdapter(this, homeViewModel.getGiftList().getValue());
 
         recyclerView.setAdapter(giftAdapter);
 
@@ -141,10 +134,19 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
     }
 
     @Override
+    public void initBottomSheet(GiftInfo gift) {
+        bottomSheetDialog = GiftBottomSheetDialog.getInstance(HomeActivity.this, R.style.BottomSheetDialogTheme, gift);
+        bottomSheetDialog.initView();
+        bottomSheetDialog.show();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            if (resultCode == RESULT_OK) {}
+            if (resultCode == RESULT_OK) {
+                homeViewModel.init(mContext);
+            }
             else if (requestCode == RESULT_CANCELED) {
                 Toast.makeText(this, R.string.sign_in_cancel, Toast.LENGTH_LONG).show();
                 finish();
@@ -152,10 +154,10 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
         }
         else if (requestCode == RC_PICK_IMAGE) {
             if (data != null) {
-                Log.d(TAG, "onActivityResult");
                 selectedImageUri = data.getData();
-                ImageView imageView = (ImageView) bottomSheetDialog.getView().findViewById(R.id.gift_imageView);
-                imageView.setImageURI(selectedImageUri);
+                ImageView imageView = bottomSheetDialog.getGiftImageView();
+                Glide.with(mContext).load(selectedImageUri).into(imageView);
+                imageView.setTag("isSet");
             }
         }
     }
