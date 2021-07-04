@@ -4,24 +4,67 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
+import com.bumptech.glide.Glide;
 import com.example.dailyrunningforadmin.R;
+import com.example.dailyrunningforadmin.model.GiftInfo;
+import com.example.dailyrunningforadmin.repository.Repo;
+import com.example.dailyrunningforadmin.viewmodel.HomeViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
+import java.io.ByteArrayOutputStream;
+
 public class GiftBottomSheetDialog extends BottomSheetDialog {
+
+    static GiftBottomSheetDialog instance;
+
     private View mView;
+    static HomeViewModel homeViewModel;
+    static GiftInfo mGift;
+    static Context mContext;
 
-    public PickImageListener pickImageListener;
+    private ImageView giftImageView;
+    private EditText providerEditText;
+    private EditText describeEditText;
+    private EditText runningPointEditText;
+    private Button confirmButton;
+    private Button deleteButton;
 
-    public GiftBottomSheetDialog(@NonNull Context context, int theme) {
+    static PickImageListener pickImageListener;
+
+    private GiftBottomSheetDialog(@NonNull Context context, int theme, GiftInfo giftInfo) {
         super(context, theme);
+        mContext = context;
         pickImageListener = (PickImageListener) context;
+        mGift = giftInfo;
+
+        homeViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(HomeViewModel.class);
+    }
+
+    public static GiftBottomSheetDialog getInstance(@NonNull Context context, int theme, GiftInfo giftInfo) {
+        if (instance == null) {
+            instance = new GiftBottomSheetDialog(context, theme, giftInfo);
+        }
+        else {
+            mContext = context;
+            mGift = giftInfo;
+        }
+        return instance;
     }
 
     public View getView() {
@@ -33,14 +76,43 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
                 .inflate(R.layout.bottom_sheet_layout, (ConstraintLayout)findViewById(R.id.bottom_sheet_container));
         setContentView(mView);
 
+        giftImageView = mView.findViewById(R.id.gift_imageView);
+        providerEditText = mView.findViewById(R.id.provider_name_editText);
+        describeEditText = mView.findViewById(R.id.describe_editText);
+        runningPointEditText = mView.findViewById(R.id.running_point_editText);
+        confirmButton = mView.findViewById(R.id.confirm_button);
+        deleteButton = mView.findViewById(R.id.delete_button);
+
+        initWidget();
+
         setBehavior();
 
         addOnListener();
     }
 
+    private void initWidget() {
+
+        if (mGift != null) {
+            Glide.with(mContext).load(mGift.getPhotoUri()).into(giftImageView);
+            providerEditText.setText(mGift.getProviderName());
+            describeEditText.setText(mGift.getGiftDetail());
+            runningPointEditText.setText(String.valueOf(mGift.getPoint()));
+            deleteButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            giftImageView.setImageResource(R.drawable.image_placeholder);
+            deleteButton.setVisibility(View.GONE);
+        }
+    }
+
     private void setBehavior() {
         BottomSheetBehavior mBehavior = BottomSheetBehavior.from((View) mView.getParent());
-        mBehavior.setPeekHeight(1500);
+        if (deleteButton.getVisibility() == View.GONE) {
+            mBehavior.setPeekHeight(1500);
+        }
+        else {
+            mBehavior.setPeekHeight(2000);
+        }
     }
 
     private void addOnListener() {
@@ -57,5 +129,43 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
                 pickImageListener.pickImageFromGallery();
             }
         });
+
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isValidInput = checkInput(providerEditText.getText().toString(),
+                        describeEditText.getText().toString(),
+                        Integer.parseInt(runningPointEditText.getText().toString()));
+                if (isValidInput) {
+                    GiftInfo gift = new GiftInfo(
+                            null,
+                            null,
+                            providerEditText.getText().toString(),
+                            describeEditText.getText().toString(),
+                            Integer.parseInt(runningPointEditText.getText().toString())
+                    );
+                    Bitmap bitmap = ((BitmapDrawable) giftImageView.getDrawable()).getBitmap();
+                    homeViewModel.addGift(mContext, gift, bitmap);
+
+                    hide();
+                    Toast.makeText(mContext, "Thêm thành công", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeViewModel.deleteGift(mContext, mGift);
+                hide();
+                Toast.makeText(mContext, "Xóa thành công", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
+
+    private boolean checkInput(String providerName, String description, int runningPoint) {
+        return true;
     }
 }

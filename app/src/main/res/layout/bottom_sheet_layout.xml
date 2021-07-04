@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:background="#00A896">
 
+
     <ImageButton
         android:id="@+id/exit_button"
         android:layout_width="wrap_content"
@@ -150,14 +151,28 @@
             android:id="@+id/confirm_button"
             android:layout_width="match_parent"
             android:layout_height="58dp"
-            android:layout_marginTop="24dp"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
             android:backgroundTint="#ECBA67"
             android:fontFamily="@font/roboto_regular"
             android:text="XÁC NHẬN"
             android:textColor="@color/white"
             android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/delete_button"
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="24dp"
+            android:backgroundTint="#DC4A4A"
+            android:fontFamily="@font/roboto_regular"
+            android:text="XÓA"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:visibility="gone" />
 
 
     </LinearLayout>

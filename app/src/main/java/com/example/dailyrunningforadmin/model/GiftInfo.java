@@ -1,19 +1,20 @@
 package com.example.dailyrunningforadmin.model;
 
 public class GiftInfo {
+    private String ID;
     private String photoUri;
     private String providerName;
     private String giftDetail;
     private int point;
-    private String ID;
 
     public GiftInfo(){}
-    public GiftInfo(String photoUri, String providerName, String giftDetail, int point,String ID) {
+
+    public GiftInfo(String ID, String photoUri, String providerName, String giftDetail, int point) {
+        this.ID = ID;
         this.photoUri = photoUri;
         this.providerName = providerName;
         this.giftDetail = giftDetail;
         this.point = point;
-        this.ID=ID;
     }
 
     public String getPhotoUri() {

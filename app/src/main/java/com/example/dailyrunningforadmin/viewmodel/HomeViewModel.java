@@ -1,6 +1,7 @@
 package com.example.dailyrunningforadmin.viewmodel;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -25,5 +26,13 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<ArrayList<GiftInfo>> getGiftList() {
         return giftList;
+    }
+
+    public void addGift(Context context, GiftInfo gift, Bitmap bitmap) {
+        Repo.getInstance(context).addGift(gift, bitmap);
+    }
+
+    public void deleteGift(Context context, GiftInfo gift) {
+        Repo.getInstance(context).deleteGift(gift);
     }
 }

@@ -76,6 +76,8 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
         homeViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(HomeViewModel.class);
         homeViewModel.init(this);
 
+        bottomSheetDialog = GiftBottomSheetDialog.getInstance(HomeActivity.this, R.style.BottomSheetDialogTheme, null);
+
         initRecycleView();
 
         initWidget();
@@ -114,7 +116,7 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
         binding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bottomSheetDialog = new GiftBottomSheetDialog(HomeActivity.this, R.style.BottomSheetDialogTheme);
+                bottomSheetDialog = GiftBottomSheetDialog.getInstance(HomeActivity.this, R.style.BottomSheetDialogTheme, null);
                 bottomSheetDialog.initView();
                 bottomSheetDialog.show();
             }
@@ -150,6 +152,7 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
         }
         else if (requestCode == RC_PICK_IMAGE) {
             if (data != null) {
+                Log.d(TAG, "onActivityResult");
                 selectedImageUri = data.getData();
                 ImageView imageView = (ImageView) bottomSheetDialog.getView().findViewById(R.id.gift_imageView);
                 imageView.setImageURI(selectedImageUri);
