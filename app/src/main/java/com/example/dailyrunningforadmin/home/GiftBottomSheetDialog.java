@@ -76,6 +76,7 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
         setBehavior();
 
         addOnListener();
+        
     }
 
     private void initWidget() {
