@@ -46,6 +46,7 @@ public class PostViewModel extends ViewModel {
     ValueEventListener postChangeListener;
     ChildEventListener mfollowingPostEventListener;
     DatabaseReference followingRef;
+    DatabaseReference followingPostRef;
     DatabaseReference myPostRef;
     public PostViewModel()
     {
@@ -60,8 +61,6 @@ public class PostViewModel extends ViewModel {
                     if(temp.getComments()==null)
                         temp.setComments(new ArrayList<>());
                         selectedPost.setValue(temp);
-
-
                 }
             }
 
@@ -74,10 +73,17 @@ public class PostViewModel extends ViewModel {
             @Override
             public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
                 ArrayList<Post> temp=myPosts.getValue();
-                temp.add(snapshot.getValue(Post.class));
-                temp.sort(Post::compareTo);
-                myPosts.postValue(temp);
+                Post newPost=snapshot.getValue(Post.class);
+                if(newPost!=null) {
+                    if (temp.stream().anyMatch((post -> newPost.getPostID().equals(post.getPostID())))) {
+                        return;
+                    }
+                    temp.add(newPost);
+                    temp.sort(Post::compareTo);
+                    myPosts.postValue(temp);
+                }
             }
+
 
             @Override
             public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
@@ -232,16 +238,25 @@ public class PostViewModel extends ViewModel {
     }
     private void addFollowingPost(String userID)
     {
-        DatabaseReference followingPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
+
+        followingPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
                 .child(userID);
         followingPostRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
 
                 ArrayList<Post> temp=followingPosts.getValue();
-                temp.add(snapshot.getValue(Post.class));
-                temp.sort(Post::compareTo);
-                followingPosts.postValue(temp);
+                Post newPost=snapshot.getValue(Post.class);
+                if(newPost!=null) {
+                    if (temp.stream().anyMatch((post -> {
+                        return newPost.getPostID().equals(post.getPostID());
+                    }))) {
+                        return;
+                    }
+                        temp.add(newPost);
+                    temp.sort(Post::compareTo);
+                    followingPosts.postValue(temp);
+                }
             }
 
             @Override
