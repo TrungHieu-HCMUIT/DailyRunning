@@ -1,8 +1,10 @@
 package com.example.dailyrunningforadmin.viewmodel;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
+import androidx.databinding.Bindable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -19,6 +21,10 @@ public class LoginViewModel extends ViewModel {
 
     public void setContext(Context context) {
         this.mContext = context;
+    }
+
+    public void setNavigator(LoginNavigator nav) {
+        mNavigator = nav;
     }
 
     public void onForgotPasswordClick(){

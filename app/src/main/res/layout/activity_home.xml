@@ -8,35 +8,44 @@
     android:background="#F2F5FC"
     tools:context=".view.HomeActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+<!--    <androidx.appcompat.widget.Toolbar-->
+<!--        android:id="@+id/toolbar"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:background="@color/color_palette_3"-->
+<!--        android:layoutDirection="ltr"-->
+<!--        android:minHeight="?attr/actionBarSize"-->
+<!--        android:theme="?attr/actionBarTheme"-->
+<!--        app:titleTextColor="@color/white">-->
+
+
+<!--    </androidx.appcompat.widget.Toolbar>-->
+
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/color_palette_3"
-        android:layoutDirection="rtl"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:titleTextColor="@color/white">
+        android:layout_height="wrap_content">
 
-        <ImageButton
-            android:id="@+id/logout_button"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_margin="16dp"
-            android:background="@null"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_logout" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/color_palette_3"
+            android:layoutDirection="ltr"
+            app:menu="@menu/menu"
+            style="@style/MyThemeOverlay_Toolbar">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:fontFamily="@font/roboto_regular"
-            android:text="Danh sách quà tặng"
-            android:textColor="@android:color/white"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-    </androidx.appcompat.widget.Toolbar>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Danh sách quà tặng"
+                android:textColor="@android:color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/gift_recyclerView"

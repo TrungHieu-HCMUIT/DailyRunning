@@ -20,6 +20,8 @@ import com.example.dailyrunningforadmin.viewmodel.LoginViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 
+import java.util.Objects;
+
 import static android.app.Activity.RESULT_OK;
 
 public class LoginFragment extends Fragment implements LoginNavigator {
@@ -39,7 +41,7 @@ public class LoginFragment extends Fragment implements LoginNavigator {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = FragmentLoginBinding.inflate(inflater,container,false);
+        binding = FragmentLoginBinding.inflate(inflater, container,false);
         return binding.getRoot();
     }
 
@@ -51,6 +53,8 @@ public class LoginFragment extends Fragment implements LoginNavigator {
         mLoginViewModel = new ViewModelProvider(getActivity()).get(LoginViewModel.class);
 
         binding.setLoginViewModel(mLoginViewModel);
+        binding.setLifecycleOwner(getActivity());
+        mLoginViewModel.setNavigator(this);
 
         setUpOnClickListener();
     }

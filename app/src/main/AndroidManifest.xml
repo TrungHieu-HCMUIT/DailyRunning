@@ -19,6 +19,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".view.authentication.ChangePasswordFragment"/>
+
         <activity android:name=".view.authentication.LoginActivity"/>
     </application>
 

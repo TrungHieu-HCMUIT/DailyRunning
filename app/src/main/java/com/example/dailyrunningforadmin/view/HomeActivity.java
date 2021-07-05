@@ -3,9 +3,12 @@ package com.example.dailyrunningforadmin.view;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +18,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -23,6 +30,8 @@ import com.bumptech.glide.Glide;
 import com.example.dailyrunningforadmin.utils.DataLoadListener;
 import com.example.dailyrunningforadmin.utils.GiftAdapter;
 import com.example.dailyrunningforadmin.R;
+import com.example.dailyrunningforadmin.utils.LoginNavigator;
+import com.example.dailyrunningforadmin.view.authentication.ChangePasswordFragment;
 import com.example.dailyrunningforadmin.view.authentication.LoginActivity;
 
 import com.example.dailyrunningforadmin.databinding.ActivityHomeBinding;
@@ -32,7 +41,7 @@ import com.example.dailyrunningforadmin.viewmodel.HomeViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class HomeActivity extends AppCompatActivity implements DataLoadListener, HomeActivityCallBack {
+public class HomeActivity extends AppCompatActivity implements DataLoadListener, HomeActivityCallBack{
 
     private static final String TAG = HomeActivity.class.getSimpleName();
 
@@ -69,12 +78,29 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
 
         homeViewModel = new ViewModelProvider((ViewModelStoreOwner) mContext).get(HomeViewModel.class);
         homeViewModel.init(this);
+        homeViewModel.setContext(this);
 
         bottomSheetDialog = GiftBottomSheetDialog.getInstance(HomeActivity.this, R.style.BottomSheetDialogTheme, null);
 
         initRecycleView();
 
         initWidget();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            default:
+                Log.d("Debug", "default");
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initFirebaseAuth() {
@@ -97,15 +123,22 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
     }
 
     private void initWidget() {
-        // region logoutButton
-        binding.logoutButton.setOnClickListener(new View.OnClickListener() {
+        binding.topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.ic_change_password:
+                        Intent intent = new Intent(getApplicationContext(), ChangePasswordFragment.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.rtl_anim, R.anim.ltr_anim);
+                        return true;
+                    case R.id.ic_logout:
+                        homeViewModel.signOut();
+                        return true;
+                }
+                return false;
             }
         });
-        // endregion
-
         // region addButton
         binding.addButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +154,11 @@ public class HomeActivity extends AppCompatActivity implements DataLoadListener,
     @Override
     public void onGiftLoaded() {
         giftAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSuccess() {
+
     }
 
     @Override
