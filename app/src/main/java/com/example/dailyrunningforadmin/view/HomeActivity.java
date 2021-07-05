@@ -23,7 +23,7 @@ import com.bumptech.glide.Glide;
 import com.example.dailyrunningforadmin.utils.DataLoadListener;
 import com.example.dailyrunningforadmin.utils.GiftAdapter;
 import com.example.dailyrunningforadmin.R;
-import com.example.dailyrunningforadmin.authentication.LoginActivity;
+import com.example.dailyrunningforadmin.view.authentication.LoginActivity;
 
 import com.example.dailyrunningforadmin.databinding.ActivityHomeBinding;
 import com.example.dailyrunningforadmin.model.GiftInfo;

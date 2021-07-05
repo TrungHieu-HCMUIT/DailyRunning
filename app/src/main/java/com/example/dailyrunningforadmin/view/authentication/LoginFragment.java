@@ -1,4 +1,4 @@
-package com.example.dailyrunningforadmin.authentication;
+package com.example.dailyrunningforadmin.view.authentication;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,15 +9,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import com.example.dailyrunningforadmin.R;
 import com.example.dailyrunningforadmin.databinding.FragmentLoginBinding;
+import com.example.dailyrunningforadmin.utils.LoginNavigator;
+import com.example.dailyrunningforadmin.viewmodel.LoginViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 import static android.app.Activity.RESULT_OK;
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements LoginNavigator {
 
     private static final String TAG = "LoginFragment";
 
@@ -29,6 +34,9 @@ public class LoginFragment extends Fragment {
     private static final int EMPTY_PASSWORD = 2;
     private static final int WRONG_EMAIL = 3;
 
+    private NavController mNavController;
+    private LoginViewModel mLoginViewModel;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentLoginBinding.inflate(inflater,container,false);
@@ -38,6 +46,11 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mNavController = Navigation.findNavController(getActivity(), R.id.login_fragment_container);
+        mLoginViewModel = new ViewModelProvider(getActivity()).get(LoginViewModel.class);
+
+        binding.setLoginViewModel(mLoginViewModel);
 
         setUpOnClickListener();
     }
@@ -85,5 +98,15 @@ public class LoginFragment extends Fragment {
         else if (!email.equals(adminEmail))
             return WRONG_EMAIL;
         return 0;
+    }
+
+    @Override
+    public void popBack() {
+        mNavController.popBackStack();
+    }
+
+    @Override
+    public void navToForgotPassword() {
+        mNavController.navigate(R.id.action_loginFragment_to_forgotPasswordFragment);
     }
 }

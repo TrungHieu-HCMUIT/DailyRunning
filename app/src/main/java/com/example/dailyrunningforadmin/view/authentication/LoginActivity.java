@@ -1,4 +1,4 @@
-package com.example.dailyrunningforadmin.authentication;
+package com.example.dailyrunningforadmin.view.authentication;
 
 import android.os.Bundle;
 
