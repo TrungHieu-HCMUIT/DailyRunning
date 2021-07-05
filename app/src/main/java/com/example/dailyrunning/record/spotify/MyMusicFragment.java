@@ -166,7 +166,6 @@ public class MyMusicFragment extends Fragment {
                                     @Override
                                     public void onDismissed(Snackbar transientBottomBar, int event) {
                                         super.onDismissed(transientBottomBar, event);
-
                                     }
                                 });
                         //endregion
