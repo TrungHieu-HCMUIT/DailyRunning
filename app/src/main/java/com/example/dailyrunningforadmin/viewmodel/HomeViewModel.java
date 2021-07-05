@@ -18,7 +18,7 @@ public class HomeViewModel extends ViewModel {
     MutableLiveData<ArrayList<GiftInfo>> giftList;
 
     public void init(Context context) {
-        if (giftList != null && FirebaseAuth.getInstance().getCurrentUser() != null) {
+        if (giftList != null && FirebaseAuth.getInstance().getCurrentUser() == null) {
             return;
         }
         giftList = Repo.getInstance(context).getGiftList();

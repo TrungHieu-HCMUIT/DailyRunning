@@ -1,4 +1,4 @@
-package com.example.dailyrunningforadmin.home;
+package com.example.dailyrunningforadmin.utils;
 
 import com.example.dailyrunningforadmin.model.GiftInfo;
 

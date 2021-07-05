@@ -1,7 +1,6 @@
-package com.example.dailyrunningforadmin;
+package com.example.dailyrunningforadmin.utils;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.dailyrunningforadmin.home.GiftBottomSheetDialog;
-import com.example.dailyrunningforadmin.home.HomeActivity;
-import com.example.dailyrunningforadmin.home.HomeActivityCallBack;
+import com.example.dailyrunningforadmin.R;
 import com.example.dailyrunningforadmin.model.GiftInfo;
 
 import java.util.List;

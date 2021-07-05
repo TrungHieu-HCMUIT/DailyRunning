@@ -2,13 +2,12 @@ package com.example.dailyrunningforadmin.repository;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.dailyrunningforadmin.DataLoadListener;
+import com.example.dailyrunningforadmin.utils.DataLoadListener;
 import com.example.dailyrunningforadmin.model.GiftInfo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;

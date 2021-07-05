@@ -1,4 +1,4 @@
-package com.example.dailyrunningforadmin.home;
+package com.example.dailyrunningforadmin.view;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,13 +20,14 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.dailyrunningforadmin.DataLoadListener;
-import com.example.dailyrunningforadmin.GiftAdapter;
+import com.example.dailyrunningforadmin.utils.DataLoadListener;
+import com.example.dailyrunningforadmin.utils.GiftAdapter;
 import com.example.dailyrunningforadmin.R;
 import com.example.dailyrunningforadmin.authentication.LoginActivity;
 
 import com.example.dailyrunningforadmin.databinding.ActivityHomeBinding;
 import com.example.dailyrunningforadmin.model.GiftInfo;
+import com.example.dailyrunningforadmin.utils.HomeActivityCallBack;
 import com.example.dailyrunningforadmin.viewmodel.HomeViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

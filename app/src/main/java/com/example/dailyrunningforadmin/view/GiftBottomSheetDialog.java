@@ -1,9 +1,8 @@
-package com.example.dailyrunningforadmin.home;
+package com.example.dailyrunningforadmin.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +18,7 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import com.bumptech.glide.Glide;
 import com.example.dailyrunningforadmin.R;
 import com.example.dailyrunningforadmin.model.GiftInfo;
+import com.example.dailyrunningforadmin.utils.HomeActivityCallBack;
 import com.example.dailyrunningforadmin.viewmodel.HomeViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -82,6 +82,7 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
     private void initWidget() {
 
         if (mGift != null) {
+            giftImageView.setTag("isSet");
             Glide.with(mContext).load(mGift.getPhotoUri()).into(giftImageView);
             providerEditText.setText(mGift.getProviderName());
             describeEditText.setText(mGift.getGiftDetail());
@@ -140,6 +141,9 @@ public class GiftBottomSheetDialog extends BottomSheetDialog {
                     }
                     else {
                         gift = mGift;
+                        gift.setProviderName(providerEditText.getText().toString());
+                        gift.setGiftDetail(describeEditText.getText().toString());
+                        gift.setPoint(Integer.parseInt(runningPointEditText.getText().toString()));
                         homeViewModel.updateGift(mContext, gift, bitmap);
                     }
                 }
