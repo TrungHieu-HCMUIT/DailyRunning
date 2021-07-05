@@ -140,6 +140,7 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
                 mUserViewModel.getUserInfo(new LoginViewModel.TaskCallBack() {
                     @Override
                     public void onSuccess() {
+                        onLoadData();
                     }
 
                     @Override

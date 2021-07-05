@@ -94,6 +94,8 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
     public ShowConfirmDialog confirmDialog;
     public static SimpleDateFormat activityDateFormat = new SimpleDateFormat("dd-MM-yyy HH:mm");
     public boolean isMapLoading=true;
+
+    public RecordViewModel()
     {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setInterval(300);

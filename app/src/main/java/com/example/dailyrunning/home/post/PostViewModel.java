@@ -45,6 +45,9 @@ public class PostViewModel extends ViewModel {
     ChildEventListener mMyPostEventListener;
     ValueEventListener postChangeListener;
     ChildEventListener mfollowingPostEventListener;
+    DatabaseReference followingRef;
+    DatabaseReference myPostRef;
+    public PostViewModel()
     {
         myPosts.setValue(new ArrayList<>());
         followingPosts.setValue(new ArrayList<>());
@@ -97,6 +100,32 @@ public class PostViewModel extends ViewModel {
             @Override
             public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
 
+            }
+
+            @Override
+            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        };
+        mfollowingPostEventListener=new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+                ((Runnable) () -> addFollowingPost(snapshot.getValue(String.class))).run();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
+                removeFollowing(snapshot.getValue(String.class));
             }
 
             @Override
@@ -184,9 +213,13 @@ public class PostViewModel extends ViewModel {
     //region my posts
     public void getMyPosts()
     {
+
         myPosts.setValue(new ArrayList<>());
-        DatabaseReference myPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
+        if(myPostRef!=null)
+            myPostRef.removeEventListener(mMyPostEventListener);
+        myPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        myPostRef.removeEventListener(mMyPostEventListener);
         myPostRef.addChildEventListener(mMyPostEventListener);
     }
 
@@ -199,9 +232,9 @@ public class PostViewModel extends ViewModel {
     }
     private void addFollowingPost(String userID)
     {
-        DatabaseReference myPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
+        DatabaseReference followingPostRef=FirebaseDatabase.getInstance().getReference().child("Post")
                 .child(userID);
-        myPostRef.addChildEventListener(new ChildEventListener() {
+        followingPostRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
 
@@ -248,34 +281,14 @@ public class PostViewModel extends ViewModel {
     public void getFollowingUser()
     {
         followingPosts.setValue(new ArrayList<>());
-        FirebaseDatabase.getInstance().getReference()
+        if(followingRef!=null)
+            followingRef.removeEventListener(mfollowingPostEventListener);
+        followingRef= FirebaseDatabase.getInstance().getReference()
                 .child("Follow")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("following").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-                ((Runnable) () -> addFollowingPost(snapshot.getValue(String.class))).run();
-            }
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("following");
+        followingRef.removeEventListener(mfollowingPostEventListener);
 
-            @Override
-            public void onChildChanged(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull @NotNull DataSnapshot snapshot) {
-                removeFollowing(snapshot.getValue(String.class));
-            }
-
-            @Override
-            public void onChildMoved(@NonNull @NotNull DataSnapshot snapshot, @Nullable @org.jetbrains.annotations.Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull @NotNull DatabaseError error) {
-
-            }
-        });
+        followingRef.addChildEventListener(mfollowingPostEventListener);
     }
     //endregion
 
