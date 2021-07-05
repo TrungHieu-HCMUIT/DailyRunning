@@ -4,19 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    >
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:fitsSystemWindows="true">
+        >
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/collapsing_tool_bar"
-            android:fitsSystemWindows="true"
             app:collapsedTitleTextAppearance="@style/CollapsingToolbar_Collapsed_Style"
             app:expandedTitleTextAppearance="@style/CollapsingToolbar_Expanded_Style"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
@@ -25,7 +24,6 @@
                 android:id="@+id/header_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/post_banner" />
 

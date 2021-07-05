@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.dailyrunning.R;
+import com.example.dailyrunning.record.MapsActivity;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
 import com.squareup.okhttp.HttpUrl;
@@ -142,7 +144,7 @@ public class MyMusicFragment extends Fragment {
                 @Override
                 public void success(UserPrivate userPrivate, Response response) {
                     Log.v("USER IDENTIFY", userPrivate.product + "\n a");
-                    if (userPrivate.product != null)//premium user
+                    if (userPrivate.product != null && userPrivate.product.equals("premium"))//premium user
                     {
                         //region Search
                         searchInMyMusic();
@@ -159,7 +161,14 @@ public class MyMusicFragment extends Fragment {
                     } else {
                         Log.v("USER IDENTIFY", "free user");
                         //region Search
+                        ((MapsActivity) mContext).showSnackBar("Vui lòng nâng cấp Spotify Premium để sử dụng tính năng này!",
+                                new Snackbar.Callback(){
+                                    @Override
+                                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                                        super.onDismissed(transientBottomBar, event);
 
+                                    }
+                                });
                         //endregion
                     }
                 }

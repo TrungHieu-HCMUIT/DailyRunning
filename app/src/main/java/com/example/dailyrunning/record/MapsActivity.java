@@ -8,11 +8,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.MutableLiveData;
@@ -22,11 +24,13 @@ import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginViewModel;
 import com.example.dailyrunning.generated.callback.OnClickListener;
 import com.example.dailyrunning.record.spotify.SpotifyViewModel;
+import com.example.dailyrunning.user.UserViewModel;
 import com.example.dailyrunning.utils.ConfirmDialog;
 import com.example.dailyrunning.utils.RunningLoadingDialog;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.material.snackbar.Snackbar;
 import com.spotify.android.appremote.api.ConnectionParams;
 import com.spotify.android.appremote.api.Connector;
 import com.spotify.android.appremote.api.SpotifyAppRemote;
@@ -46,7 +50,9 @@ import retrofit.client.Response;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 
-public class MapsActivity extends FragmentActivity implements RecordViewModel.WorkingOnActivity , LoginViewModel.LoadingDialog, RecordViewModel.ShowConfirmDialog {
+public class MapsActivity extends FragmentActivity implements
+        RecordViewModel.WorkingOnActivity , LoginViewModel.LoadingDialog,
+        RecordViewModel.ShowConfirmDialog, UserViewModel.RunningSnackBar {
 
     //region spotify auth
     // Request code will be used to verify if result comes from the login activity. Can be set to any integer.
@@ -70,11 +76,13 @@ public class MapsActivity extends FragmentActivity implements RecordViewModel.Wo
     public static BitmapDescriptor endMarker;
     private RunningLoadingDialog loadingDialog;
     private ConfirmDialog confirmDialog;
+    private LinearLayout mRootView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
+        mRootView=findViewById(R.id.record_root_layout);
         mSpotifyViewModel = new ViewModelProvider(this).get(SpotifyViewModel.class);
         mSpotifyViewModel.mMapsActivity.setValue(this);
         mRecordViewModel=new ViewModelProvider(this).get(RecordViewModel.class);
@@ -287,5 +295,11 @@ public class MapsActivity extends FragmentActivity implements RecordViewModel.Wo
     @Override
     public void show(String title, String description, View.OnClickListener onCancel, View.OnClickListener onConfirm) {
         confirmDialog.show(getSupportFragmentManager(),title,description,onCancel,onConfirm);
+    }
+
+    @Override
+    public void showSnackBar(String content, Snackbar.Callback callback) {
+        Snackbar.make(mRootView, content, Snackbar.LENGTH_SHORT).setTextColor(ContextCompat.getColor(this, R.color.color_palette_3))
+                .addCallback(callback).show();
     }
 }
