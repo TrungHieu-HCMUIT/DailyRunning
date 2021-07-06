@@ -79,6 +79,7 @@ public class ActivityListFragment extends Fragment {
                             Post post = ds.getValue(Post.class);
                             postsList.add(post);
                         }
+                        postsList.sort(Post::compareTo);
                         postViewAdapter.notifyDataSetChanged();
                     }
         });
