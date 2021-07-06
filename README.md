@@ -119,7 +119,7 @@ Bạn là người mới bắt đầu chạy muốn học cách chạy hay bạn
 
 ## Diagram
 
-   <img src="https://drive.google.com/uc?export=view&id=12KQaAFUHDHmqVESZHJWVpzhNRQdkq9FY">
+   <img src="https://drive.google.com/uc?export=view&id=12KQaAFUHDHmqVESZHJWVpzhNRQdkq9FY" width="auto">
 
 ## Tác giả
 Võ Đức Trung Hiếu - 19521515@gm.uit.edu.vn
