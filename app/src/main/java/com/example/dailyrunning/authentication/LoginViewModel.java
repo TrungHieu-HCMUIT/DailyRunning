@@ -125,6 +125,10 @@ public class LoginViewModel extends ViewModel {
             snackBar.showSnackBar("Vui lòng nhập email và mật khẩu",null);
             return;
         }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            snackBar.showSnackBar("Email không hợp lệ",null);
+            return ;
+        }
         loadingDialog.showDialog();
         FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
