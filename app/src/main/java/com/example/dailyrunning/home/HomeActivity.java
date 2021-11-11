@@ -39,6 +39,7 @@ import com.example.dailyrunning.utils.RunningLoadingDialog;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +47,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceIdReceiver;
+import com.google.firebase.iid.internal.FirebaseInstanceIdInternal;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 
 import java.util.concurrent.TimeUnit;
@@ -118,6 +122,13 @@ public class HomeActivity extends AppCompatActivity implements PostViewAdapter.P
         rootLayout = findViewById(R.id.home_activity_root);
 
 
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(
+                s -> {
+                    Log.v("Firebase Token",s );
+
+                }
+        );
+        FirebaseMessaging.getInstance().subscribeToTopic("broadcast");
     }
 
 

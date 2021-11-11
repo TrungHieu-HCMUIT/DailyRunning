@@ -144,10 +144,8 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         map.getUiSettings().setScrollGesturesEnabled(false);
         map.getUiSettings().setRotateGesturesEnabled(false);
         map.getUiSettings().setCompassEnabled(false);
-
         map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         map.setMinZoomPreference(ZOOM);
-
         if (!isTracking.getValue())
             newRecord();
 
@@ -198,7 +196,6 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
     }
 
     void updatePolyline() {
-
         if(!isPaused.getValue())
         map.addPolyline(new PolylineOptions()
                 .addAll(locations)
@@ -310,7 +307,10 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
                     .map(location ->
                             new com.example.dailyrunning.model.LatLng(location.latitude, location.longitude))
                     .collect(Collectors.toCollection(ArrayList::new));
-            activityImageRef.child(key).putBytes(bitmapToByteArray(activityImage)).addOnSuccessListener(taskSnapshot -> activityImageRef.child(key).getDownloadUrl().addOnSuccessListener(
+            activityImageRef.child(key).putBytes(bitmapToByteArray(activityImage)).
+                    addOnSuccessListener(taskSnapshot -> activityImageRef.child(key).
+                            getDownloadUrl().
+                            addOnSuccessListener(
                     uri -> {
                         Activity newActivity = new Activity(
                                 key,

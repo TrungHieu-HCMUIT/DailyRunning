@@ -103,6 +103,12 @@ public class RegisterFragment extends Fragment {
                     binding.reTypePasswordOutlinedTextField.setError(null);
                 }
 
+                if(passwordString.isEmpty())
+                {
+                    binding.passwordOutlinedTextField.setError(null);
+                    return;
+                }
+
                 if(!isValidPassword(passwordString))
                 {
                     binding.passwordOutlinedTextField.setError("Mật khẩu không hợp lệ");
