@@ -19,6 +19,10 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.action.CoordinatesProvider;
+import androidx.test.espresso.action.GeneralClickAction;
+import androidx.test.espresso.action.Press;
+import androidx.test.espresso.action.Tap;
 import androidx.test.espresso.util.HumanReadables;
 import androidx.test.espresso.util.TreeIterables;
 
@@ -68,9 +72,8 @@ public class LoginActivityTest {
             onView(withId(R.id.home_fragment)).check(matches(isDisplayed()));
             onView(withId(R.id.userFragment)).perform(click());
             onView(withId(R.id.log_out_button)).perform(scrollTo());
-            SystemClock.sleep(3000);
 
-            onView(withId(R.id.log_out_button)).perform(click());
+            onView(withId(R.id.log_out_button)).perform(clickXY(20,20));
             scenario.close();
             SystemClock.sleep(3000);
         }
@@ -109,7 +112,6 @@ public class LoginActivityTest {
     @Test
     public void test_normalCase() {
         test_Logout();
-        SystemClock.sleep(5000);
 
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
 
@@ -117,7 +119,7 @@ public class LoginActivityTest {
         onView(withId(R.id.password_editText)).perform(replaceText(correctPassword));
         onView(withId(R.id.login_button)).perform(click());
         onView(withId(R.id.loading_dialog)).check(matches(isDisplayed()));
-        SystemClock.sleep(5000);
+        SystemClock.sleep(3000);
         onView(withId(R.id.home_fragment)).check(matches(isDisplayed()));
 
     }
@@ -184,6 +186,25 @@ public class LoginActivityTest {
                         .build();
             }
         };
+    }
+    public static ViewAction clickXY(final int x, final int y){
+        return new GeneralClickAction(
+                Tap.SINGLE,
+                new CoordinatesProvider() {
+                    @Override
+                    public float[] calculateCoordinates(View view) {
+
+                        final int[] screenPos = new int[2];
+                        view.getLocationOnScreen(screenPos);
+
+                        final float screenX = screenPos[0] + x;
+                        final float screenY = screenPos[1] + y;
+                        float[] coordinates = {screenX, screenY};
+
+                        return coordinates;
+                    }
+                },
+                Press.FINGER);
     }
 }
 
