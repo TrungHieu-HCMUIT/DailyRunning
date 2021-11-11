@@ -64,7 +64,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void test_Logout() {
+    public static void test_Logout() {
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
 
         try{
@@ -143,7 +143,18 @@ public class LoginActivityTest {
         onView(withId(R.id.password_editText)).perform(replaceText(""));
         onView(withId(R.id.login_button)).perform(click());
         SystemClock.sleep(100);
-        onView(withText("Vui lòng nhập email và mật khẩu")).check(matches(isDisplayed()));
+
+    }
+
+    @Test
+    public void test_wrongpassword() {
+        test_Logout();
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+        onView(withId(R.id.email_editText)).perform(typeText(correctEmail));
+        onView(withId(R.id.password_editText)).perform(replaceText(incorrectPassword));
+        onView(withId(R.id.login_button)).perform(click());
+        SystemClock.sleep(500);
+        onView(withText("Sai mật khẩu")).check(matches(isDisplayed()));
     }
 
 

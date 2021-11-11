@@ -85,7 +85,7 @@
                         app:hintTextColor="@color/primary_text">
 
                         <com.google.android.material.textfield.TextInputEditText
-
+                                android:id="@+id/registerName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@={loginViewModel.mRegisterUser.displayName}"
@@ -133,7 +133,8 @@
                             android:maxLength="40"
                             android:maxLines="1"
                             android:scrollHorizontally="true"
-                            android:singleLine="true" />
+                            android:singleLine="true"
+                            android:id="@+id/registerEmail"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -165,7 +166,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
-
+                            android:id="@+id/registerPassword"
                             android:inputType="textPassword"
                             android:maxLength="40"
                             android:maxLines="1"
@@ -203,7 +204,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
-
+                            android:id="@+id/registerRetypePassword"
                             android:inputType="textPassword"
                             android:maxLength="40"
                             android:maxLines="1"
