@@ -72,10 +72,11 @@ public class LoginActivityTest {
 
             onView(withId(R.id.log_out_button)).perform(click());
             scenario.close();
-
+            SystemClock.sleep(3000);
         }
         catch (Exception e){
             scenario.close();
+            SystemClock.sleep(3000);
         }
 
 //        onView(withId(R.id.userFragment)).perform(click());
@@ -119,9 +120,31 @@ public class LoginActivityTest {
         SystemClock.sleep(5000);
         onView(withId(R.id.home_fragment)).check(matches(isDisplayed()));
 
-
-
     }
+
+    @Test
+    public void test_wrongEmail() {
+        test_Logout();
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+        onView(withId(R.id.email_editText)).perform(typeText(incorrectEmail));
+        onView(withId(R.id.password_editText)).perform(replaceText(correctPassword));
+        onView(withId(R.id.login_button)).perform(click());
+        SystemClock.sleep(100);
+        onView(withText("Không tồn tại người dùng này")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void test_nullpassword() {
+        test_Logout();
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+        onView(withId(R.id.email_editText)).perform(typeText(correctEmail));
+        onView(withId(R.id.password_editText)).perform(replaceText(""));
+        onView(withId(R.id.login_button)).perform(click());
+        SystemClock.sleep(100);
+        onView(withText("Vui lòng nhập email và mật khẩu")).check(matches(isDisplayed()));
+    }
+
+
     public static ViewAction waitId(final int viewId, final long millis) {
         return new ViewAction() {
             @Override
