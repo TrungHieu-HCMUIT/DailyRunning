@@ -170,7 +170,7 @@ public class RegisterActivityTest {
         LoginActivityTest.test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
-        onView(withId(R.id.registerEmail)).perform(replaceText("test134@gmail.com"));
+        onView(withId(R.id.registerEmail)).perform(replaceText(correctEmail));
         onView(withId(R.id.registerPassword)).perform(replaceText(correctPassword));
         onView(withId(R.id.registerRetypePassword)).perform(replaceText(correctPassword));
         onView(withId(R.id.registerName)).perform(replaceText("Testing123"));
@@ -348,7 +348,7 @@ public class RegisterActivityTest {
         test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
-        onView(withId(R.id.registerEmail)).perform(replaceText("test134@gmail.com"));
+        onView(withId(R.id.registerEmail)).perform(replaceText("test1@gmail.com"));
         onView(withId(R.id.registerPassword)).perform(replaceText(correctPassword));
         onView(withId(R.id.registerRetypePassword)).perform(replaceText(correctPassword));
         onView(withId(R.id.registerName)).perform(replaceText("Testing123"));
@@ -545,7 +545,7 @@ public class RegisterActivityTest {
 
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
 
-        onView(withId(R.id.email_editText)).perform(typeText(correctEmail));
+        onView(withId(R.id.email_editText)).perform(typeText("sv1234@gmail.com"));
         onView(withId(R.id.password_editText)).perform(replaceText(correctPassword));
         onView(withId(R.id.login_button)).perform(click());
         onView(withId(R.id.loading_dialog)).check(matches(isDisplayed()));
@@ -558,8 +558,6 @@ public class RegisterActivityTest {
         SystemClock.sleep(300);
         onView(withText("OK")).perform(click());
 
-     /*   onView(withId(R.id.updateInfo)).perform(click());
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).check(matches(ToastMatcher.matchesDate(2017, 6, 30)));*/
         onView(withText("30/06/2017")).check(matches(isDisplayed()));
 
 
@@ -573,7 +571,7 @@ public class RegisterActivityTest {
         test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
-        onView(withId(R.id.registerEmail)).perform(replaceText("test3@gmail.com"));
+        onView(withId(R.id.registerEmail)).perform(replaceText("test2@gmail.com"));
         onView(withId(R.id.registerPassword)).perform(replaceText(correctPassword));
         onView(withId(R.id.registerRetypePassword)).perform(replaceText(correctPassword));
         onView(withId(R.id.registerName)).perform(replaceText("Testing123"));
@@ -594,7 +592,7 @@ public class RegisterActivityTest {
         test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
-        onView(withId(R.id.registerEmail)).perform(replaceText("test5@gmail.com"));
+        onView(withId(R.id.registerEmail)).perform(replaceText("test3@gmail.com"));
         onView(withId(R.id.registerPassword)).perform(replaceText(correctPassword));
         onView(withId(R.id.registerRetypePassword)).perform(replaceText(correctPassword));
         onView(withId(R.id.registerName)).perform(replaceText("Testing123"));
