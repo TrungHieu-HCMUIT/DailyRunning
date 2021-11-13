@@ -5,8 +5,10 @@
       <map>
         <entry key="..\:/new/DailyRunning/app/src/main/res/layouts/authentication/layout/fragment_login.xml" value="0.3070652173913043" />
         <entry key="..\:/new/DailyRunning/app/src/main/res/layouts/authentication/layout/fragment_register.xml" value="0.25" />
-        <entry key="..\:/new/DailyRunning/app/src/main/res/layouts/home/layout/fragment_home.xml" value="0.15260416666666668" />
+        <entry key="..\:/new/DailyRunning/app/src/main/res/layouts/authentication/layout/fragment_register_add_info.xml" value="0.21614583333333334" />
+        <entry key="..\:/new/DailyRunning/app/src/main/res/layouts/home/layout/fragment_home.xml" value="0.18" />
         <entry key="..\:/new/DailyRunning/app/src/main/res/layouts/user/layout/fragment_update_info.xml" value="0.22" />
+        <entry key="..\:/new/DailyRunning/app/src/main/res/layouts/user/layout/fragment_user.xml" value="0.5" />
       </map>
     </option>
   </component>
