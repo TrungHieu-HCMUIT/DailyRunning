@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <import type="android.view.View" />
 
         <variable
@@ -18,7 +17,7 @@
         android:background="#E5E5E5"
         android:orientation="vertical"
         tools:context=".user.UpdateInfoFragment"
-        android:layout_marginBottom="-50dp"
+
 
         >
 
@@ -50,6 +49,7 @@
                     android:src="@drawable/ic_arrow_left" />
 
                 <TextView
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
@@ -86,6 +86,7 @@
                 app:hintTextColor="@color/primary_text">
 
                 <com.google.android.material.textfield.TextInputEditText
+
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawablePadding="0dp"
@@ -209,6 +210,7 @@
                 app:hintTextColor="@color/primary_text">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/updateInfo"
                     dobText="@{userViewModel.currentUser.dob}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -387,6 +389,13 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:cornerRadius="18dp" />
+            <View
+                android:id="@+id/testview"
+             android:background="@color/black"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="200dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
 
         </LinearLayout>
 

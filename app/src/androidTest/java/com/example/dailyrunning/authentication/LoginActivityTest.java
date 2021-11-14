@@ -11,13 +11,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import android.content.Context;
-import android.location.Location;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.SystemClock;
 import android.view.View;
 
+import androidx.fragment.app.Fragment;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
@@ -31,16 +28,15 @@ import androidx.test.espresso.util.TreeIterables;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.home.HomeActivity;
+import com.example.dailyrunning.user.UserFragment;
 
 import junit.framework.AssertionFailedError;
 
 import org.hamcrest.Matcher;
-import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -51,7 +47,7 @@ public class LoginActivityTest {
     final String incorrectPassword = "Thisisawrongpassword1";
 
     public static void setUpBeforeClass() {
-        ActivityScenario<HomeActivity> scenario = ActivityScenario.launch(HomeActivity.class);
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
 
         try{
             onView(isRoot()).perform(waitId(R.id.home_fragment, TimeUnit.SECONDS.toMillis(3)));
@@ -68,8 +64,8 @@ public class LoginActivityTest {
     }
 
     @Test
-    public void test_Logout() {
-        ActivityScenario<HomeActivity> scenario = ActivityScenario.launch(HomeActivity.class);
+    public static void test_Logout() {
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
 
         try{
             SystemClock.sleep(3000);
@@ -79,10 +75,11 @@ public class LoginActivityTest {
 
             onView(withId(R.id.log_out_button)).perform(clickXY(20,20));
             scenario.close();
-
+            SystemClock.sleep(3000);
         }
         catch (Exception e){
             scenario.close();
+            SystemClock.sleep(3000);
         }
 
 //        onView(withId(R.id.userFragment)).perform(click());
@@ -104,7 +101,7 @@ public class LoginActivityTest {
 
     @Test
     public void test_emptyEmail() {
-        ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class);
+        ActivityScenario scenario = ActivityScenario.launch(LoginActivity.class);
 
         onView(withId(R.id.password_editText)).perform(replaceText(correctPassword));
         onView(withId(R.id.login_button)).perform(click());
@@ -125,9 +122,42 @@ public class LoginActivityTest {
         SystemClock.sleep(3000);
         onView(withId(R.id.home_fragment)).check(matches(isDisplayed()));
 
+    }
 
+    @Test
+    public void test_wrongEmail() {
+        test_Logout();
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+        onView(withId(R.id.email_editText)).perform(typeText(incorrectEmail));
+        onView(withId(R.id.password_editText)).perform(replaceText(correctPassword));
+        onView(withId(R.id.login_button)).perform(click());
+        SystemClock.sleep(100);
+        onView(withText("Không tồn tại người dùng này")).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void test_nullpassword() {
+        test_Logout();
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+        onView(withId(R.id.email_editText)).perform(typeText(correctEmail));
+        onView(withId(R.id.password_editText)).perform(replaceText(""));
+        onView(withId(R.id.login_button)).perform(click());
+        SystemClock.sleep(100);
 
     }
+
+    @Test
+    public void test_wrongpassword() {
+        test_Logout();
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+        onView(withId(R.id.email_editText)).perform(typeText(correctEmail));
+        onView(withId(R.id.password_editText)).perform(replaceText(incorrectPassword));
+        onView(withId(R.id.login_button)).perform(click());
+        SystemClock.sleep(500);
+        onView(withText("Sai mật khẩu")).check(matches(isDisplayed()));
+    }
+
+
     public static ViewAction waitId(final int viewId, final long millis) {
         return new ViewAction() {
             @Override
@@ -187,9 +217,6 @@ public class LoginActivityTest {
                 },
                 Press.FINGER);
     }
-
 }
-
-
 
 
