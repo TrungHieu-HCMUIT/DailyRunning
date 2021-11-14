@@ -11,10 +11,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.SystemClock;
 import android.view.View;
 
-import androidx.fragment.app.Fragment;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
@@ -28,15 +31,16 @@ import androidx.test.espresso.util.TreeIterables;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.home.HomeActivity;
-import com.example.dailyrunning.user.UserFragment;
 
 import junit.framework.AssertionFailedError;
 
 import org.hamcrest.Matcher;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -47,7 +51,7 @@ public class LoginActivityTest {
     final String incorrectPassword = "Thisisawrongpassword1";
 
     public static void setUpBeforeClass() {
-        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+        ActivityScenario<HomeActivity> scenario = ActivityScenario.launch(HomeActivity.class);
 
         try{
             onView(isRoot()).perform(waitId(R.id.home_fragment, TimeUnit.SECONDS.toMillis(3)));
@@ -65,7 +69,7 @@ public class LoginActivityTest {
 
     @Test
     public void test_Logout() {
-        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+        ActivityScenario<HomeActivity> scenario = ActivityScenario.launch(HomeActivity.class);
 
         try{
             SystemClock.sleep(3000);
@@ -100,7 +104,7 @@ public class LoginActivityTest {
 
     @Test
     public void test_emptyEmail() {
-        ActivityScenario scenario = ActivityScenario.launch(LoginActivity.class);
+        ActivityScenario<LoginActivity> scenario = ActivityScenario.launch(LoginActivity.class);
 
         onView(withId(R.id.password_editText)).perform(replaceText(correctPassword));
         onView(withId(R.id.login_button)).perform(click());
@@ -183,6 +187,9 @@ public class LoginActivityTest {
                 },
                 Press.FINGER);
     }
+
 }
+
+
 
 
