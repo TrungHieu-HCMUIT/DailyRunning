@@ -86,7 +86,7 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
     private TimerTask mTimerTask;
     private Timer mTimer;
     private float distance;
-    private long timeWorkingInSec;
+    public long timeWorkingInSec;
     private int mMapBoundsPadding = 25;
     public LoginViewModel.LoadingDialog loadingDialog;
     public Bitmap activityImage;
@@ -233,6 +233,8 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
     }
 
     String getTimeWorkingString() {
+        if(timeWorkingInSec<0)
+            return "Invalid input";
         Period period = new Period(timeWorkingInSec * 1000L);
         String time = String.format("%02d:%02d:%02d", period.getHours(), period.getMinutes(), period.getSeconds());
         return time;

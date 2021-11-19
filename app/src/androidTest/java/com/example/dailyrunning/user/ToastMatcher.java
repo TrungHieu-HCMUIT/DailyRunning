@@ -17,7 +17,7 @@ import org.hamcrest.TypeSafeMatcher;
 /**
  * Author: http://www.qaautomated.com/2016/01/how-to-test-toast-message-using-espresso.html
  */
-class ToastMatcher extends TypeSafeMatcher<Root> {
+public class ToastMatcher extends TypeSafeMatcher<Root> {
 
     @Override
     public boolean matchesSafely(Root item) {

@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class LoginActivityTest {
-    final String correctEmail = "sv123@gmail.com";
+    final String correctEmail = "sv1234@gmail.com";
     final String incorrectEmail = "fdsfsd@gmail.com";
     final String correctPassword = "Password1";
     final String incorrectPassword = "Thisisawrongpassword1";
