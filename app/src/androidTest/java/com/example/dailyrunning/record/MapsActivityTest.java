@@ -3,6 +3,9 @@ package com.example.dailyrunning.record;
 import static android.os.SystemClock.sleep;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -10,6 +13,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static com.example.dailyrunning.authentication.LoginActivityTest.clickXY;
 import static com.example.dailyrunning.authentication.LoginActivityTest.waitId;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -32,6 +36,7 @@ import androidx.test.espresso.ViewAction;
 
 import com.example.dailyrunning.R;
 import com.example.dailyrunning.authentication.LoginActivityTest;
+import com.example.dailyrunning.home.HomeActivity;
 import com.example.dailyrunning.model.LatLng;
 import com.example.dailyrunning.user.ToastMatcher;
 import com.google.android.gms.maps.GoogleMap;
@@ -48,52 +53,27 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class MapsActivityTest {
 
-/*    void startMocking(double x, double y, Activity activity) {
-        LocationManager lm = (LocationManager) activity
-                .getSystemService(Context.LOCATION_SERVICE);
-        Location location = new Location(GPS_PROVIDER);
-        location.setLatitude(x);
-        location.setLongitude(y);
-        location.setAccuracy(2);
-        location.setTime(System.currentTimeMillis());
-        location.setElapsedRealtimeNanos(1);
+    final String correctEmail = "sv1234@gmail.com";
+    final String incorrectEmail = "fdsfsd@gmail.com";
+    final String correctPassword = "Password1";
+    final String incorrectPassword = "Thisisawrongpassword1";
 
-        try {
-            // @throws IllegalArgumentException if a provider with the given name already exists
-            lm.addTestProvider(GPS_PROVIDER, false, false, false, false, false, true, true, 1, 2);
-        } catch (IllegalArgumentException ignored) {
-        }
-
-        try {
-            // @throws IllegalArgumentException if no provider with the given name exists
-            lm.setTestProviderEnabled(GPS_PROVIDER, true);
-        } catch (IllegalArgumentException ignored) {
-            lm.addTestProvider(GPS_PROVIDER, false, false, false, false, false, true, true, 1, 2);
-        }
-
-        try {
-            // @throws IllegalArgumentException if no provider with the given name exists
-            lm.setTestProviderLocation(GPS_PROVIDER, location);
-        } catch (IllegalArgumentException ignored) {
-            lm.addTestProvider(GPS_PROVIDER, false, false, false, false, false, true, true, 1, 2);
-            lm.setTestProviderEnabled(GPS_PROVIDER, true);
-            lm.setTestProviderLocation(GPS_PROVIDER, location);
-        }
-    }*/
-
-    void startMocking(double lat, double lng, Activity activity) {
+    LocationManager setupMock(Activity activity){
         LocationManager lm = (LocationManager) activity.getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);
 
-        String mocLocationProvider = LocationManager.GPS_PROVIDER;//lm.getBestProvider( criteria, true );
 
-        lm.addTestProvider(mocLocationProvider, false, false,
+        lm.addTestProvider( LocationManager.GPS_PROVIDER, false, false,
                 false, false, true, true, true, 1, 2);
-        lm.setTestProviderEnabled(mocLocationProvider, true);
+        lm.setTestProviderEnabled( LocationManager.GPS_PROVIDER, true);
+        return lm;
+    }
+    void startMocking(double lat, double lng ,LocationManager lm) {
 
-        Location loc = new Location(mocLocationProvider);
-        Location mockLocation = new Location(mocLocationProvider); // a string
+
+        Location loc = new Location( LocationManager.GPS_PROVIDER);
+        Location mockLocation = new Location( LocationManager.GPS_PROVIDER); // a string
         mockLocation.setLatitude(lat);  // double
         mockLocation.setLongitude(lng);
         mockLocation.setAltitude(loc.getAltitude());
@@ -102,16 +82,22 @@ public class MapsActivityTest {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             mockLocation.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
         }
-        lm.setTestProviderLocation(mocLocationProvider, mockLocation);
+        lm.setTestProviderLocation( LocationManager.GPS_PROVIDER, mockLocation);
     }
 
     void startMockTest(List<LatLng> latLngs, ActivityScenario scenario) {
         String oldDistance = "0.00 km";
         final int[] oldPolylineLength = {-1};
+        final LocationManager[] lm = new LocationManager[1];
+
+        scenario.onActivity(activity -> {
+            lm[0] =setupMock(activity);
+        });
+        sleep(1000);
         for (int i = 0; i < latLngs.size(); i++) {
             int finalI = i;
             scenario.onActivity(activity -> {
-                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), activity);
+                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), lm[0]);
                 RecordViewModel mRecordViewModel = new ViewModelProvider((ViewModelStoreOwner) activity).get(RecordViewModel.class);
                 Assert.assertNotEquals(oldPolylineLength[0], mRecordViewModel.locations.size());
                 oldPolylineLength[0] = mRecordViewModel.locations.size();
@@ -125,7 +111,7 @@ public class MapsActivityTest {
 
     @Test
     public void test_onLocationChanged() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario scenario = ActivityScenario.launch(MapsActivity.class);
         sleep(20000);
@@ -175,7 +161,7 @@ public class MapsActivityTest {
 
     @Test
     public void test_newRecord() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario scenario = ActivityScenario.launch(MapsActivity.class);
         sleep(20000);
@@ -198,10 +184,17 @@ public class MapsActivityTest {
     //region updatePace
     void startUpdatePaceTest(List<LatLng> latLngs, ActivityScenario scenario) {
         String oldPace = "0.00 m/s";
+        final LocationManager[] lm = new LocationManager[1];
+
+        scenario.onActivity(activity -> {
+            lm[0] =setupMock(activity);
+        });
+        sleep(1000);
+
         for (int i = 0; i < latLngs.size(); i++) {
             int finalI = i;
             scenario.onActivity(activity -> {
-                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), activity);
+                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(),lm[0]);
             });
             sleep(3000);
             try {
@@ -214,7 +207,7 @@ public class MapsActivityTest {
 
     @Test
     public void test_updatePace() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario scenario = ActivityScenario.launch(MapsActivity.class);
         sleep(20000);
@@ -246,21 +239,56 @@ public class MapsActivityTest {
     void startUpdateDistanceTest(List<LatLng> latLngs, ActivityScenario scenario) {
         String oldDistance = "0.00 m/s";
         final int[] oldPolylineLength = {-1};
+        final LocationManager[] lm = new LocationManager[1];
+
+        scenario.onActivity(activity -> {
+            lm[0] =setupMock(activity);
+        });
+        sleep(1000);
 
         for (int i = 0; i < latLngs.size(); i++) {
             int finalI = i;
             scenario.onActivity(activity -> {
-                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), activity);
+                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), lm[0]);
             });
             sleep(3000);
             onView(withId(R.id.data_distance)).check(matches(not(withText(oldDistance))));
             oldDistance = getText(withId(R.id.data_distance));
         }
     }
+    public  void test_Logout() {
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
 
+        try {
+            SystemClock.sleep(3000);
+            onView(withId(R.id.home_fragment)).check(matches(isDisplayed()));
+            onView(withId(R.id.userFragment)).perform(click());
+            onView(withId(R.id.log_out_button)).perform(scrollTo());
+
+            onView(withId(R.id.log_out_button)).perform(clickXY(20, 20));
+            scenario.close();
+            SystemClock.sleep(3000);
+        } catch (Exception e) {
+            scenario.close();
+            SystemClock.sleep(3000);
+        }
+    }
+    public void test_normalCase() {
+        test_Logout();
+
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+
+        onView(withId(R.id.email_editText)).perform(typeText(correctEmail));
+        onView(withId(R.id.password_editText)).perform(replaceText(correctPassword));
+        onView(withId(R.id.login_button)).perform(click());
+        onView(withId(R.id.loading_dialog)).check(matches(isDisplayed()));
+        SystemClock.sleep(3000);
+        onView(withId(R.id.home_fragment)).check(matches(isDisplayed()));
+
+    }
     @Test
     public void test_updateDistance() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario scenario = ActivityScenario.launch(MapsActivity.class);
         sleep(20000);
@@ -291,10 +319,17 @@ public class MapsActivityTest {
     //region update polyline
     void startUpdatePolylineTest(List<LatLng> latLngs, ActivityScenario scenario) {
         final int[] oldPolylineLength = {-1};
+        final LocationManager[] lm = new LocationManager[1];
+
+        scenario.onActivity(activity -> {
+            lm[0] =setupMock(activity);
+        });
+        sleep(1000);
+
         for (int i = 0; i < latLngs.size(); i++) {
             int finalI = i;
             scenario.onActivity(activity -> {
-                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), activity);
+                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), lm[0]);
                 RecordViewModel mRecordViewModel = new ViewModelProvider((ViewModelStoreOwner) activity).get(RecordViewModel.class);
                 Assert.assertNotEquals(oldPolylineLength[0], mRecordViewModel.locations.size());
                 oldPolylineLength[0] = mRecordViewModel.locations.size();
@@ -306,7 +341,7 @@ public class MapsActivityTest {
 
     @Test
     public void test_updatePolyline() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario scenario = ActivityScenario.launch(MapsActivity.class);
         sleep(20000);
@@ -337,10 +372,17 @@ public class MapsActivityTest {
     //region start timer
     void startTimerTest(List<LatLng> latLngs, ActivityScenario scenario) {
         final long[] oldTimeWorkingInSec = {-1};
+
+        final LocationManager[] lm = new LocationManager[1];
+
+        scenario.onActivity(activity -> {
+            lm[0] =setupMock(activity);
+        });        sleep(1000);
+
         for (int i = 0; i < latLngs.size(); i++) {
             int finalI = i;
             scenario.onActivity(activity -> {
-                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), activity);
+                startMocking(latLngs.get(finalI).getLatitude(), latLngs.get(finalI).getLongitude(), lm[0]);
                 RecordViewModel mRecordViewModel = new ViewModelProvider((ViewModelStoreOwner) activity).get(RecordViewModel.class);
                 Assert.assertNotEquals(oldTimeWorkingInSec[0], mRecordViewModel.timeWorkingInSec);
                 oldTimeWorkingInSec[0] = mRecordViewModel.timeWorkingInSec;
@@ -352,7 +394,7 @@ public class MapsActivityTest {
 
     @Test
     public void test_startTimer() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario scenario = ActivityScenario.launch(MapsActivity.class);
         sleep(20000);
@@ -382,7 +424,7 @@ public class MapsActivityTest {
     //region getTimeWorkingString
     @Test
     public void test_getTimeWorkingString() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario<MapsActivity> scenario = ActivityScenario.launch(MapsActivity.class);
         scenario.onActivity(activity -> {
@@ -400,7 +442,7 @@ public class MapsActivityTest {
     //region onTopControllerArrowClick
     @Test
     public void test_onTopControllerArrowClick() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario<MapsActivity> scenario = ActivityScenario.launch(MapsActivity.class);
         AtomicReference<RecordViewModel> mRecordViewModel = new AtomicReference<>();
@@ -425,7 +467,7 @@ public class MapsActivityTest {
     // region togglePause
     @Test
     public void test_togglePause() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario<MapsActivity> scenario = ActivityScenario.launch(MapsActivity.class);
         sleep(20000);
@@ -441,7 +483,7 @@ public class MapsActivityTest {
     // region finishRecord
     @Test
     public void test_finishRecord1() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario<MapsActivity> scenario = ActivityScenario.launch(MapsActivity.class);
         AtomicReference<RecordViewModel> mRecordViewModel = new AtomicReference<>();
@@ -469,7 +511,7 @@ public class MapsActivityTest {
 
     @Test
     public void test_finishRecord2() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario<MapsActivity> scenario = ActivityScenario.launch(MapsActivity.class);
         AtomicReference<RecordViewModel> mRecordViewModel = new AtomicReference<>();
@@ -507,7 +549,7 @@ public class MapsActivityTest {
     //region onSaveClick
     @Test
     public void test_onSaveClick1() {
-        (new LoginActivityTest()).test_normalCase();
+        test_normalCase();
 
         ActivityScenario<MapsActivity> scenario = ActivityScenario.launch(MapsActivity.class);
         AtomicReference<RecordViewModel> mRecordViewModel = new AtomicReference<>();
