@@ -193,8 +193,7 @@
                 android:fontFamily="@font/font_spring_blue_vinyl"
                 android:text="@string/app_name"
                 android:textColor="@color/black"
-                android:textSize="32sp"
-                />
+                android:textSize="32sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -208,6 +207,7 @@
                     android:layout_height="wrap_content">
 
                     <at.markushi.ui.CircleButton
+                        android:id="@+id/startButton"
                         android:layout_width="110dp"
                         app:cb_color="@color/color_palette_3"
                         android:layout_height="110dp"
