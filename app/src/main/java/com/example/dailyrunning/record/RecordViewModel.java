@@ -373,7 +373,13 @@ public class RecordViewModel extends ViewModel implements OnMapReadyCallback {
         void updateTimer(MutableLiveData<String> timeString);
     }
 
-    public double distance(double lat_a, double lng_a, double lat_b, double lng_b) {
+    public static double distance(double lat_a, double lng_a, double lat_b, double lng_b) {
+        if(lat_a < -90 || lat_a>90 ||
+                lat_b < -90 || lat_b>90 ||
+                lng_a < -180 || lng_a>180 ||
+                lng_b < -180 || lng_b>180
+        )
+            return -1000;
         double earthRadius = 3958.75;
         double latDiff = Math.toRadians(lat_b - lat_a);
         double lngDiff = Math.toRadians(lng_b - lng_a);

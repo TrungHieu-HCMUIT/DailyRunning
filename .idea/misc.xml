@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Huy/StudioProjects/DailyRunning/app/src/main/res/layouts/home/layout/activity_home.xml" value="0.2796296296296296" />
+        <entry key="..\:/Users/Huy/StudioProjects/DailyRunning/app/src/main/res/layouts/home/layout/layout_bottom_navigation_view.xml" value="0.2796296296296296" />
         <entry key="..\:/Users/Huy/StudioProjects/DailyRunning/app/src/main/res/layouts/record/layout/fragment_confirm_dialog.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/Huy/StudioProjects/DailyRunning/app/src/main/res/layouts/record/layout/fragment_finish.xml" value="0.25833333333333336" />
         <entry key="..\:/Users/Huy/StudioProjects/DailyRunning/app/src/main/res/layouts/record/layout/fragment_record.xml" value="0.33" />
