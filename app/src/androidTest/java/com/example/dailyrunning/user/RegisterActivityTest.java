@@ -16,7 +16,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static com.example.dailyrunning.authentication.LoginActivityTest.clickXY;
-import static com.example.dailyrunning.authentication.LoginActivityTest.test_Logout;
+
 
 import static org.hamcrest.Matchers.not;
 
@@ -54,11 +54,32 @@ public class RegisterActivityTest {
     final String correctName= "Test";
 
 
+    @Test
+    public  void test_Logout() {
+        ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
+
+        try{
+            SystemClock.sleep(3000);
+            onView(withId(R.id.home_fragment)).check(matches(isDisplayed()));
+            onView(withId(R.id.userFragment)).perform(click());
+            onView(withId(R.id.log_out_button)).perform(scrollTo());
+
+            onView(withId(R.id.log_out_button)).perform(clickXY(20,20));
+            scenario.close();
+            SystemClock.sleep(3000);
+        }
+        catch (Exception e){
+            scenario.close();
+            SystemClock.sleep(3000);
+        }
+
+    }
+
     //region isValidatePasswordTest
 
     @Test
     public void test_password1() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -67,7 +88,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password2() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -76,7 +97,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password3() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -85,7 +106,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password4() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -94,7 +115,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password5() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -103,7 +124,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password6() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -112,7 +133,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password7() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -121,7 +142,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password8() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -130,7 +151,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password9() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -139,7 +160,7 @@ public class RegisterActivityTest {
     }
     @Test
     public void test_password10() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerPassword)).check(matches(isDisplayed()));
@@ -153,7 +174,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_nullEmailAndPwdAndRePwd() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerEmail)).perform(replaceText(""));
@@ -167,7 +188,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_normalCase() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
         onView(withId(R.id.registerEmail)).perform(replaceText(correctEmail));
@@ -181,7 +202,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_wrongAll() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
 
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
@@ -197,7 +218,7 @@ public class RegisterActivityTest {
     //region validateData
     @Test
     public void test_nullEmailPwdRePwd() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 
@@ -213,7 +234,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_nullNamePwd() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 
@@ -229,7 +250,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_nullNamePwdWrongEmailRePwd() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 
@@ -245,7 +266,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_nullRePwd() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 
@@ -261,7 +282,7 @@ public class RegisterActivityTest {
 
     @Test// ko hien toast
     public void test_wrongEmail() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 
@@ -276,7 +297,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_nullNameEmailWrongRePwd() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 
@@ -292,7 +313,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_nullNameRePWdWrongEmailPwd() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 
@@ -308,7 +329,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_nullNameEmailWrongPwd() {
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 
@@ -324,7 +345,7 @@ public class RegisterActivityTest {
 
     @Test
     public void test_wrongPwdRePwd() {// ko hien toast
-        LoginActivityTest.test_Logout();
+        test_Logout();
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
         onView(withId(R.id.registerClickable_textView)).perform(click());
 

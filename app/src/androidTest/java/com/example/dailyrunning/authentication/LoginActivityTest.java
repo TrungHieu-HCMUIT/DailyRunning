@@ -64,7 +64,7 @@ public class LoginActivityTest {
     }
 
     @Test
-    public static void test_Logout() {
+    public  void test_Logout() {
         ActivityScenario scenario = ActivityScenario.launch(HomeActivity.class);
 
         try{
